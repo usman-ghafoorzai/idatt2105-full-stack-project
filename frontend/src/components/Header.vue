@@ -1,7 +1,5 @@
 <script setup>
 
-
-
 </script>
 
 
@@ -12,7 +10,7 @@
         </div>
         <div>
             <h3 id="home">HOME</h3>
-            <font-awesome-icon icon="fa-solid fa-house"></font-awesome-icon>
+            <fa icon="home" />
         </div>
         <div>
             <h3 id="categories">CATEGORIES</h3>
@@ -73,6 +71,7 @@
         font-size: 20px;
         margin-top: 55px;
         margin-right: 29px;
+        margin-bottom: 35px;
         border-radius: 10px;
     }
 </style>
