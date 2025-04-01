@@ -15,15 +15,17 @@
         padding-top: 10px;
         padding-left: 10px;
         font-size: 18px;
-        width: 450px;
+        width: 100%;
         height: 44px;
         border-radius: 10px;
+        box-sizing: border-box
     }
     #search-icon {
         position: absolute;
         transform: scaleX(-1);
+        transform: translateY(-50%);
         right: 10px;
-        top: 14px;
+        top: 50%;
         font-size: 22px;
     }
 </style>
