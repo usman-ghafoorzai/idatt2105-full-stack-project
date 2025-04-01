@@ -1,11 +1,11 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 import Header from './components/Header.vue'
+import RegisterUser from './components/RegisterUser.vue'
 </script>
 
 <template>
   <Header />
+  <RegisterUser />
 </template>
 
 <style scoped>
