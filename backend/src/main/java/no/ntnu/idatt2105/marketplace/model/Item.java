@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "listings")
-public class Listing {
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,7 +30,7 @@ public class Listing {
     private Double locationLongitude;
     
     @Enumerated(EnumType.STRING)
-    private ListingStatus status = ListingStatus.ACTIVE;
+    private ItemStatus status = ItemStatus.ACTIVE;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
