@@ -5,7 +5,6 @@ import RegisterUser from './components/RegisterUser.vue'
 
 <template>
   <Header />
-  <RegisterUser />
 </template>
 
 <style scoped>
