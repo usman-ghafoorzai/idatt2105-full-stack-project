@@ -1,5 +1,5 @@
 <script setup>
-
+    import Searchbar from './Searchbar.vue';
 </script>
 
 
@@ -18,7 +18,9 @@
         <div>
             <h3 id="sell">SELL</h3>
         </div>
-        <input type="text" id="search"></input>
+        <div>
+            <Searchbar />
+        </div>
     </div>
 
 </template>
@@ -65,13 +67,5 @@
         margin-top: 66px;
         margin-bottom: 42px;
     }
-    #search {
-        grid-area: search;
-        height: 44px;
-        font-size: 20px;
-        margin-top: 55px;
-        margin-right: 29px;
-        margin-bottom: 35px;
-        border-radius: 10px;
-    }
+
 </style>
