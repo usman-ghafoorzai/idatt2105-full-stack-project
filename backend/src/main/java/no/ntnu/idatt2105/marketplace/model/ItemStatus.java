@@ -1,7 +1,7 @@
 package no.ntnu.idatt2105.marketplace.model;
 
-public enum ListingStatus {
+public enum ItemStatus {
     ACTIVE,
     SOLD,
-    Archived
+    RESERVED
 }

@@ -23,7 +23,7 @@ public class User {
     private String email;
     
     @Column(nullable = false)
-    private String passwordHash;
+    private String password;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
