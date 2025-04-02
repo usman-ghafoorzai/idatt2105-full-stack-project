@@ -33,4 +33,10 @@ public class ItemController {
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+    itemService.deleteItem(id);
+    return ResponseEntity.noContent().build();
+  }
 }

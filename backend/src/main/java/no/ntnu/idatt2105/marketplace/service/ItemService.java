@@ -33,4 +33,8 @@ public class ItemService {
           return itemRepository.save(existingItem);
         });
   }
+
+  public void deleteItem(Long id) {
+    itemRepository.deleteById(id);
+  }
 }
