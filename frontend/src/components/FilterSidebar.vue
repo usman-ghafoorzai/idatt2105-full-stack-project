@@ -1,11 +1,28 @@
 <script setup>
     import { ref } from 'vue';
+    import categoryStore from '../assets/CategoryStore.js';
     let place = ref(false);
     let sizes = ref(false);
+    let item = ref('clothing');
+    let categories = categoryStore.categories;
+    let visibility = ref({});
+
+    for (let categoryKey in categories) {
+        if (categoryKey === item.value) {
+            for (let subcategoryKey in categories[categoryKey]) {
+                visibility.value[subcategoryKey] = false;
+            }
+        }
+    }
+
+    function toggleVisibility(subcategoryKey) {
+        visibility.value[subcategoryKey] = !visibility.value[subcategoryKey];
+    }
+
 </script>
 
 <template>
-    <div class="container">
+    <div class="filter-sidebar">
         <div class="category" @click="place = !place">
             <fa icon="chevron-right" v-if="!place"></fa>
             <fa icon="chevron-down" v-if="place"></fa>
@@ -20,28 +37,33 @@
             <li><input type="checkbox"/>Telemark</li>
             <li><input type="checkbox"/>Finmark</li>
         </ul>
-        <div class="category" @click="sizes = !sizes">
-            <fa icon="chevron-right" v-if="!sizes"></fa>
-            <fa icon="chevron-down" v-if="sizes"></fa>
-            <h3>Sizes</h3>
+        <div class="category">
+            <span></span>
+            <h3>Price range</h3>
         </div>
-        <ul v-if="sizes">
-            <li><input type="checkbox"/>XS</li>
-            <li><input type="checkbox"/>S</li>
-            <li><input type="checkbox"/>M</li>
-            <li><input type="checkbox"/>L</li>
-            <li><input type="checkbox"/>XL</li>
-            <li><input type="checkbox"/>XXL</li>
-        </ul>
+
+        <!-- Dynamic rendering of the filters -->
+        <template v-for="(subcategories, subcategoryKey) in categories[item]" :key="subcategoryKey">
+            <div class="category" @click="toggleVisibility(subcategoryKey)">
+                <fa icon="chevron-right" v-if="!visibility[subcategoryKey]"></fa>
+                <fa icon="chevron-down" v-if="visibility[subcategoryKey]"></fa>
+                <h3>{{ subcategoryKey }}</h3>
+            </div>
+            <ul v-if="visibility[subcategoryKey]">
+                <li v-for="(subcategory, index) in subcategories" :key="index">
+                    <input type="checkbox" /> {{ subcategory }}
+                </li>
+            </ul>
+        </template>
     </div>
 </template>
 
 <style scoped>
-    .container {
+    .filter-sidebar {
         display: flex;
         flex-direction: column;
         padding: 20px;
-        width: 15%;
+        width: 250px;
         height: 100vh;
         border-right: 2px solid black;
         align-content: center;
@@ -49,9 +71,13 @@
     }
     .category {
         display: grid;
-        grid-template-columns: auto 3fr;
+        grid-template-columns: 16px 3fr;
+        grid-template-areas: 'chevron category';
         align-items: baseline;
         column-gap: 3px;
+    }
+    .category span {
+        grid-area: chevron;
     }
     ul {
         list-style-type: none;
@@ -63,6 +89,7 @@
         font-size: 18px;
     }
     h3 {
+        grid-area: category;
         font-size: 24px;
         margin-bottom:0;
         border-bottom: 2px solid black;
