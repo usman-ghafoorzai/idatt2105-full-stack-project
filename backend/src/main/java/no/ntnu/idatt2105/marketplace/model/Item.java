@@ -44,7 +44,7 @@ public class Item {
    * This field cannot be null and must be a positive number.
    */
   @Column(nullable = false)
-  private Double price;
+  private Double price; // TODO validate that this is a positive number?
 
   /**
    * Latitude of the Item's location.
