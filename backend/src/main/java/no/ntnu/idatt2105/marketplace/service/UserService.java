@@ -1,11 +1,13 @@
 package no.ntnu.idatt2105.marketplace.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import no.ntnu.idatt2105.marketplace.repository.UserRepository;
 import no.ntnu.idatt2105.marketplace.model.User;
-import java.util.Optional;
+import no.ntnu.idatt2105.marketplace.repository.UserRepository;
 
 /**
  * Service class for handling user-related business logic.
