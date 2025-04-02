@@ -1,8 +1,14 @@
 <script setup>
     import Searchbar from './Searchbar.vue';
-    import { computed } from 'vue';
+    import { ref, computed } from 'vue';
 
-    let mail = 2;
+    // Define props so to pass values to test more easily
+    defineProps({
+        mail: {
+            type: Number,
+            default: 2,
+        }
+    })
     let userState = {
         loggedIn: false,
     }
