@@ -1,5 +1,7 @@
 package no.ntnu.idatt2105.marketplace.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -12,6 +14,10 @@ import no.ntnu.idatt2105.marketplace.repository.ItemRepository;
 @RequiredArgsConstructor
 public class ItemService {
   private final ItemRepository itemRepository;
+
+  public Optional<Item> getItemById(Long id) {
+    return itemRepository.findById(id);
+  }
 
   public Item saveItem(Item item) {
     return itemRepository.save(item);
