@@ -117,7 +117,7 @@
     .icons {
         font-size: 25px;
     }
-    #logo:hover, #home:hover, #categories:hover, #sell:hover, #inbox:hover, #username:hover {
+    #home:hover, #categories:hover, #sell:hover, #inbox:hover, #username:hover {
         cursor: pointer;
         border-bottom: 2px solid #000;
     }
