@@ -11,6 +11,6 @@ package no.ntnu.idatt2105.marketplace.model;
  * </ul>
  */
 public enum Role {
-  User,
-  Admin
+  USER,
+  ADMIN
 }
