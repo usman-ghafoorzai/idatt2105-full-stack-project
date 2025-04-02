@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "listings")
 public class Item {
-<<<<<<< backend/src/main/java/no/ntnu/idatt2105/marketplace/model/Item.java
 
   /**
    * Unique identifier for the Item.
