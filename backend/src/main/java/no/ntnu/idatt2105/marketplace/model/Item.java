@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "listings")
 public class Item {
+<<<<<<< backend/src/main/java/no/ntnu/idatt2105/marketplace/model/Item.java
 
   /**
    * Unique identifier for the Item.
@@ -70,7 +71,7 @@ public class Item {
    * This field is a foreign key reference to the {@link Category} entity.
    */
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "category_id", nullable = false)
+  @JoinColumn(name = "category_id")
   private Category category;
 
   /**
@@ -78,7 +79,7 @@ public class Item {
    * This field is a foreign key reference to the {@link User} entity.
    */
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "seller_id", nullable = false)
+  @JoinColumn(name = "seller_id")
   private User seller;
 
   /**
