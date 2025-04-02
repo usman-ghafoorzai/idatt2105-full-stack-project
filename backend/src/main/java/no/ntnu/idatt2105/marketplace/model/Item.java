@@ -85,7 +85,7 @@ public class Item {
    * The timestamp when the Item was created.
    * This field is automatically set to the current date and time when the Item is
    * created.
-   * This field is not updatable after creation.
+   * This field can not be null and is not updatable after creation.
    */
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
