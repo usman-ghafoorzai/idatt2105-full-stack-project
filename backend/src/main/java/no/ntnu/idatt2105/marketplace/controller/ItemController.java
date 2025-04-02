@@ -13,6 +13,13 @@ import no.ntnu.idatt2105.marketplace.service.ItemService;
 @RequiredArgsConstructor
 public class ItemController {
   private final ItemService itemService;
+
+  @GetMapping("/{id}")
+  public ResponseEntity<Item> getItemById(@PathVariable Long id) {
+    return itemService.getItemById(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  } 
   
   @PostMapping
   public ResponseEntity<Item> createItem(@RequestBody Item item) {
