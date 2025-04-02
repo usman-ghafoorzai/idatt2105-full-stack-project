@@ -1,65 +1,78 @@
 <script setup>
-let profilePic = document.getElementById("profile-pic");
-let inputFile = document.getElementById("input-file");
+import { ref } from 'vue';
+import genericAvatar from '../assets/generic-avatar.png';
 
-inputFile.onchange = function() {
-  profilePic.src = URL.createObjectURL(inputFile.files[0]);
+const profilePicSrc = ref(genericAvatar);
 
+function handleFileChange(event) {
+  const file = event.target.files[0];
+  if (file) {
+    profilePicSrc.value = URL.createObjectURL(file);
+  }
 }
 </script>
 
 <template>
-  <div class="profile-picture-container">
-    <div class="generic-avatar">
-      <img src="https://static.vecteezy.com/system/resources/previews/009/266/930/non_2x/user-icon-design-free-png.png"
-           alt="Generic avatar" class="avatar-image" id="profile-pic" />
-      <label for ="input-file">Upload image</label>
-      <input type="file" accept="image/jpeg, image/png, image/jpg" id="input-file">
+  <div class="upload-picture-container">
+    <div class="image-container">
+      <img :src="profilePicSrc" alt="Profile picture" id="profile-pic">
     </div>
+    <label for="input-file" class="upload-button">Upload image</label>
+    <input
+      type="file"
+      accept="image/jpeg, image/png, image/jpg"
+      id="input-file"
+      @change="handleFileChange">
   </div>
 </template>
 
 <style scoped>
-.profile-picture-container {
-  position: absolute;
-  width: 261px;
-  height: 256px;
-  left: 589px;
-  top: 208px;
+.upload-picture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  margin-bottom: 20px;
 }
 
-.generic-avatar {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  left: 620px;
-  top: 208px;
-  background: #EADDFF;
-  border-radius: 100px;
+.image-container {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1px solid #A6A6A6;
+  background: #FFFFFF;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-button {
+  width: 300px;
+  height: 40px;
+  background: #4D4D4D;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  margin-top: 10px;
 }
 
-.avatar-image {
-  max-width: 75%;
-  max-height: 75%;
-  object-fit: contain;
-}
-
-label {
-  display: block;
-  width: 200px;
-  background: cornflowerblue;
-  color: #fff;
-  padding: 12px;
-  margin: 10px auto;
-  border-radius: 5px;
-  cursor: pointer;
+.upload-button:hover {
+  background: #3D3D3D;
 }
 
 input {
-  display: none;}
-
+  display: none;
+}
 </style>
