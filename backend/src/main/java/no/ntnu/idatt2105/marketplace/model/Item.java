@@ -33,11 +33,11 @@ public class Item {
     private ItemStatus status = ItemStatus.ACTIVE;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id")       // OBS: This was nullable=false
     private Category category;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = "seller_id")     // OBS: This was nullable=false
     private User seller;
     
     @Column(nullable = false, updatable = false)
