@@ -116,4 +116,5 @@ public class ItemControllerTest {
         .andExpect(jsonPath("$.description").value("This is a new item."))
         .andExpect(jsonPath("$.price").value(50.0));
   }
+  // TODO: negative tests and test for delete
 }
