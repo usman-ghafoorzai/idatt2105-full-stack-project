@@ -87,4 +87,19 @@ public class UserRepositoryTest {
     assertThat(updatedUser).isNotNull();
     assertThat(updatedUser.getUsername()).isEqualTo("newusername");
   }
+
+  @Test
+  void testDeleteUser() {
+    User user = new User();
+    user.setUsername("tobedeleted");
+    user.setEmail("tobedeleted@example.com");
+    user.setPassword("password123");
+    user.setRole(Role.USER);
+    user = userRepository.save(user);
+    Long userId = user.getId();
+
+    userRepository.deleteById(userId);
+
+    assertThat(userRepository.findById(userId)).isEmpty();
+  }
 }
