@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,8 +88,29 @@ public class ItemControllerTest {
 
     // Perform the POST request and expect a 200 OK status
     mockMvc.perform(post("/api/items")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(item)))
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(item)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.title").value("New Item"))
+        .andExpect(jsonPath("$.description").value("This is a new item."))
+        .andExpect(jsonPath("$.price").value(50.0));
+  }
+
+  @Test
+  void testUpdateItem() throws Exception {
+    Item item = new Item();
+    item.setId(1L);
+    item.setTitle("New Item");
+    item.setDescription("This is a new item.");
+    item.setPrice(50.0);
+
+    // Mock the service call to return the updated item
+    when(itemService.updateItem(any(Long.class), any(Item.class))).thenReturn(Optional.of(item));
+
+    // Perform the PUT request and expect a 200 OK status
+    mockMvc.perform(put("/api/items/1")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(item)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.title").value("New Item"))
         .andExpect(jsonPath("$.description").value("This is a new item."))
