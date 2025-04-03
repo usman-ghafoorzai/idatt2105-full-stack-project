@@ -43,4 +43,18 @@ public class CategoryRepositoryTest {
     assertThat(foundCategory).isNotNull();
     assertThat(foundCategory.getName()).isEqualTo("Books");
   }
+
+  @Test
+  void testUpdateCategory() {
+    Category category = new Category();
+    category.setName("Clothing");
+    category = categoryRepository.save(category);
+  
+    category.setName("Fashion");
+    category = categoryRepository.save(category); // Update existing entry
+
+    Category updatedCategory = categoryRepository.findById(category.getId()).orElse(null);
+    assertThat(updatedCategory).isNotNull();
+    assertThat(updatedCategory.getName()).isEqualTo("Fashion");
+  }
 }
