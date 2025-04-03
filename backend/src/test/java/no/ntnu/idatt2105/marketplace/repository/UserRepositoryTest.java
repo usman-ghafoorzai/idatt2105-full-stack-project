@@ -55,4 +55,19 @@ public class UserRepositoryTest {
 
     assertThat(foundUser).isNull();
   }
+
+  @Test
+  void testFindById() {
+    User user = new User();
+    user.setUsername("userbyid");
+    user.setEmail("userbyid@example.com");
+    user.setPassword("password123");
+    user.setRole(Role.USER);
+    user = userRepository.save(user); // Save and retrieve with ID
+
+    User foundUser = userRepository.findById(user.getId()).orElse(null);
+
+    assertThat(foundUser).isNotNull();
+    assertThat(foundUser.getUsername()).isEqualTo("userbyid");
+  }
 }
