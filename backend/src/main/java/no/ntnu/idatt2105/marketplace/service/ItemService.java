@@ -1,7 +1,9 @@
 package no.ntnu.idatt2105.marketplace.service;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -14,7 +16,10 @@ import no.ntnu.idatt2105.marketplace.repository.ItemRepository;
  * Provides methods to retrieve, save, update, and delete item entities.
  */
 @Service
-@Transactional    // The transactional annotation is used to manage transactions in the service layer. It ensures that all database operations within the method are executed within a single transaction, providing consistency and rollback capabilities in case of errors.
+@Transactional // The transactional annotation is used to manage transactions in the service
+               // layer. It ensures that all database operations within the method are executed
+               // within a single transaction, providing consistency and rollback capabilities
+               // in case of errors.
 @RequiredArgsConstructor
 public class ItemService {
   private final ItemRepository itemRepository;
@@ -42,7 +47,7 @@ public class ItemService {
   /**
    * Updates an existing item entity.
    *
-   * @param id the unique identifier of the item to be updated
+   * @param id          the unique identifier of the item to be updated
    * @param updatedItem the updated item entity
    * @return an {@code Optional} containing the updated item if found, otherwise empty
    */
@@ -65,4 +70,33 @@ public class ItemService {
   public void deleteItem(Long id) {
     itemRepository.deleteById(id);
   }
+
+  /**
+   * Retrieves all items in the database.
+   *
+   * @return a list of all items
+   */
+  public List<Item> getAllItems() {
+    return itemRepository.findAll();
+  }
+
+  public List<Item> getFilteredItems(String categoryName, Double minPrice, Double maxPrice, String status) {
+    Specification<Item> spec = Specification.where(null);
+
+    if (categoryName != null) {
+        spec = spec.and((root, query, cb) -> cb.equal(root.join("category").get("name"), categoryName));
+    }
+    if (minPrice != null) {
+        spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("price"), minPrice));
+    }
+    if (maxPrice != null) {
+        spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("price"), maxPrice));
+    }
+    if (status != null) {
+        spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
+    }
+
+    return itemRepository.findAll(spec);
+  }
+
 }
