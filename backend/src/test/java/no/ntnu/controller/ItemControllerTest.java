@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -74,5 +73,25 @@ public class ItemControllerTest {
     // Perform the GET request and expect a 404 Not Found status
     mockMvc.perform(get("/api/items/1"))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void testCreateItem() throws Exception {
+    Item item = new Item();
+    item.setTitle("New Item");
+    item.setDescription("This is a new item.");
+    item.setPrice(50.0);
+
+    // Mock the service call to return the created item
+    when(itemService.saveItem(any(Item.class))).thenReturn(item);
+
+    // Perform the POST request and expect a 200 OK status
+    mockMvc.perform(post("/api/items")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(item)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.title").value("New Item"))
+        .andExpect(jsonPath("$.description").value("This is a new item."))
+        .andExpect(jsonPath("$.price").value(50.0));
   }
 }
