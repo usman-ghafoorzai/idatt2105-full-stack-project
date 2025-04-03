@@ -1,4 +1,4 @@
-package no.ntnu.controller;
+package no.ntnu.idatt2105.marketplace.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import no.ntnu.idatt2105.marketplace.controller.UserController;
 import no.ntnu.idatt2105.marketplace.model.Role;
 import no.ntnu.idatt2105.marketplace.model.User;
 import no.ntnu.idatt2105.marketplace.service.UserService;
