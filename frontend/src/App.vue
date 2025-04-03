@@ -1,14 +1,14 @@
 <script setup>
-import Header from './components/Header.vue'
-import RegisterUser from './components/RegisterUser.vue'
-import LogInComponent from './components/LogInComponent.vue'
+// No component imports needed here anymore
 </script>
 
 <template>
-  <Header />
-  <RegisterUser />
-  <LogInComponent/>
+  <router-view/>
 </template>
 
-<style scoped>
+<style>
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
 </style>
