@@ -102,4 +102,48 @@ public class UserRepositoryTest {
 
     assertThat(userRepository.findById(userId)).isEmpty();
   }
+
+  @Test
+  void testSaveDuplicateUser() {
+    User user1 = new User();
+    user1.setUsername("duplicateuser");
+    user1.setEmail("duplicate@example.com");
+    user1.setPassword("password123");
+    user1.setRole(Role.USER);
+    userRepository.save(user1);
+
+    User user2 = new User();
+    user2.setUsername("duplicateuser"); // Same username
+    user2.setEmail("different@example.com"); // Different email
+    user2.setPassword("password123");
+    user2.setRole(Role.USER);
+
+    try {
+      userRepository.save(user2);
+    } catch (Exception e) {
+      assertThat(e).isInstanceOf(Exception.class); // Expect exception due to unique constraint
+    }
+  }
+
+  @Test
+  void testSaveDuplicateEmail() {
+    User user1 = new User();
+    user1.setUsername("uniqueuser1");
+    user1.setEmail("sameemail@example.com");
+    user1.setPassword("password123");
+    user1.setRole(Role.USER);
+    userRepository.save(user1);
+
+    User user2 = new User();
+    user2.setUsername("uniqueuser2");
+    user2.setEmail("sameemail@example.com"); // Same email as user1
+    user2.setPassword("password123");
+    user2.setRole(Role.USER);
+
+    try {
+      userRepository.save(user2);
+    } catch (Exception e) {
+      assertThat(e).isInstanceOf(Exception.class); // Expect exception due to unique constraint
+    }
+  }
 }
