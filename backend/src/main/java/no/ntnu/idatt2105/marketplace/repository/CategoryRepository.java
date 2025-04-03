@@ -16,5 +16,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
      * @param name the name of the Category to find
      * @return the Category with the specified name, or null if not found
      */
-    Category findByName(String name);
+    Category findByName(String name); // TODO: Should this be optional? 
 }
