@@ -5,7 +5,7 @@
     let item = ref('clothing');
     let categories = categoryStore.categories;
     let visibility = ref({});
-    let selectedSubcategories = ref([]);
+    const selectedSubcategories = ref([]);
 
     for (let categoryKey in categories) {
         if (categoryKey === item.value) {
@@ -17,6 +17,7 @@
 
     function toggleVisibility(subcategoryKey) {
         visibility.value[subcategoryKey] = !visibility.value[subcategoryKey];
+        console.log(selectedSubcategories.value);
     }
 </script>
 
@@ -28,17 +29,50 @@
             <h3>Place</h3>
         </div>
         <ul v-if="place">
-            <li><input type="checkbox"/>Troms og Finnmark</li>
-            <li><input type="checkbox"/>Nordland</li>
-            <li><input type="checkbox"/>Trøndelag</li>
-            <li><input type="checkbox"/>Møre og Romsdal</li>
-            <li><input type="checkbox"/>Innlandet</li>
-            <li><input type="checkbox"/>Oslo</li>
-            <li><input type="checkbox"/>Viken</li>
-            <li><input type="checkbox"/>Vestlandet</li>
-            <li><input type="checkbox"/>Rogaland</li>
-            <li><input type="checkbox"/>Agder</li>
-            <li><input type="checkbox"/>Vestfold og Telemark</li>
+            <li>
+                <input type="checkbox" value="Troms og Finnmark" v-model="selectedSubcategories" />
+                Troms og Finnmark
+            </li>
+            <li>
+                <input type="checkbox" value="Nordland" v-model="selectedSubcategories" />
+                Nordland
+            </li>
+            <li>
+                <input type="checkbox" value="Trøndelag" v-model="selectedSubcategories" />
+                Trøndelag
+            </li>
+            <li>
+                <input type="checkbox" value="Møre og Romsdal" v-model="selectedSubcategories" />
+                Møre og Romsdal
+            </li>
+            <li>
+                <input type="checkbox" value="Innlandet" v-model="selectedSubcategories" />
+                Innlandet
+            </li>
+            <li>
+                <input type="checkbox" value="Oslo" v-model="selectedSubcategories" />
+                Oslo
+            </li>
+            <li>
+                <input type="checkbox" value="Viken" v-model="selectedSubcategories" />
+                Viken
+            </li>
+            <li>
+                <input type="checkbox" value="Vestlandet" v-model="selectedSubcategories" />
+                Vestlandet
+            </li>
+            <li>
+                <input type="checkbox" value="Rogaland" v-model="selectedSubcategories" />
+                Rogaland
+            </li>
+            <li>
+                <input type="checkbox" value="Agder" v-model="selectedSubcategories" />
+                Agder
+            </li>
+            <li>
+                <input type="checkbox" value="Vestfold og Telemark" v-model="selectedSubcategories" />
+                Vestfold og Telemark
+            </li>
         </ul>
         <div class="category">
             <span></span>
