@@ -1,6 +1,6 @@
 <script setup>
     import Searchbar from './Searchbar.vue';
-    import { ref, computed } from 'vue';
+    import { computed } from 'vue';
 
     // Define props so to pass values to test more easily
     defineProps({
