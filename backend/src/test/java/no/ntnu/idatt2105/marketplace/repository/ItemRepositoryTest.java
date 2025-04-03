@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest // Loads only repository and JPA-related components
@@ -63,6 +65,18 @@ public class ItemRepositoryTest {
     Item updatedItem = itemRepository.findById(item.getId()).orElse(null);
     assertThat(updatedItem).isNotNull();
     assertThat(updatedItem.getPrice()).isEqualTo(250.0);
+  }
+
+  @Test
+  void testDeleteItem() {
+    Item item = createTestItem("Desk", 100.0);
+    item = itemRepository.save(item);
+    Long itemId = item.getId();
+
+    itemRepository.deleteById(itemId);
+
+    Optional<Item> deletedItem = itemRepository.findById(itemId);
+    assertThat(deletedItem).isEmpty();
   }
 
   /**
