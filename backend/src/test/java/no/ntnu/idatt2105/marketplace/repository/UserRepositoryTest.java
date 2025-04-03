@@ -1,5 +1,6 @@
 package no.ntnu.idatt2105.marketplace.repository;
 
+import no.ntnu.idatt2105.marketplace.model.Role;
 import no.ntnu.idatt2105.marketplace.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class UserRepositoryTest {
     User user = new User();
     user.setUsername("testuser");
     user.setEmail("testuser@example.com");
+    user.setPassword("password123");
+    user.setRole(Role.USER);
     userRepository.save(user);
 
     User foundUser = userRepository.findByUsername("testuser");
