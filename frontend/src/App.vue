@@ -1,13 +1,16 @@
 <script setup>
 import Header from './components/Header.vue'
 import RegisterUser from './components/RegisterUser.vue'
-import FilterSidebar from './components/FilterSidebar.vue'
+import LogInComponent from './components/LogInComponent.vue'
 </script>
 
 <template>
-  <Header />
-  <FilterSidebar />
+  <router-view/>
 </template>
 
-<style scoped>
+<style>
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
 </style>

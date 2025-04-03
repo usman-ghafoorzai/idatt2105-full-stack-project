@@ -65,25 +65,30 @@ const register = () => {
 
 <style scoped>
 .create-account {
-  position: absolute;
   width: 400px;
-  height: 425px;
-  left: 900px;
-  top: 239px;
+  height: auto;
+  display: grid;
+  grid-template-areas:
+    "header"
+    "password"
+    "lastname"
+    "email"
+    "firstname"
+    "location"
+    "button";
+  gap: 15px;
 }
 
 .form-header {
+  grid-area: header;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   padding: 10px;
   gap: 10px;
-  position: absolute;
   width: 300px;
   height: 60px;
-  left: 0;
-  top: 0;
 }
 
 .form-header h1 {
@@ -103,34 +108,28 @@ const register = () => {
   align-items: flex-start;
   padding: 0;
   gap: 4px;
-  position: absolute;
   width: 300px;
   height: 60px;
 }
 
 .password {
-  left: 0;
-  top: 73px;
+  grid-area: password;
 }
 
 .last-name {
-  left: 0;
-  top: 146px;
+  grid-area: lastname;
 }
 
 .email {
-  left: 0;
-  top: 219px;
+  grid-area: email;
 }
 
 .first-name {
-  left: 0;
-  top: 292px;
+  grid-area: firstname;
 }
 
 .location {
-  left: 0;
-  top: 365px;
+  grid-area: location;
 }
 
 label {
@@ -174,11 +173,9 @@ input {
 }
 
 .register-button {
-  position: absolute;
+  grid-area: button;
   width: 300px;
   height: 40px;
-  left: 0;
-  top: 440px;
   background: #4D4D4D;
   color: white;
   border: none;
@@ -187,6 +184,7 @@ input {
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
+  margin-top: 5px;
 }
 
 .register-button:hover {
