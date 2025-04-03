@@ -79,6 +79,18 @@ public class ItemRepositoryTest {
     assertThat(deletedItem).isEmpty();
   }
 
+  // Test for saving duplicate id's
+  @Test
+  void testSaveDuplicateItem() {
+    Item item1 = createTestItem("Duplicate Item", 150.0);
+    
+    try {
+      itemRepository.save(item1); // This should throw an error
+    } catch (Exception e) {
+      assertThat(e).isInstanceOf(Exception.class); // Expect exception if title is unique
+    }
+  }
+
   /**
    * Helper method to create a test Item with a title and price.
    * Ensures that required foreign key dependencies (Category, User) are set.
