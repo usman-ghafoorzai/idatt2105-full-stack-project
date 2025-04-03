@@ -26,4 +26,11 @@ public class ItemController {
     Item newItem = itemService.saveItem(item);
     return ResponseEntity.ok(newItem);
   }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item item) {
+    return itemService.updateItem(id, item)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
 }

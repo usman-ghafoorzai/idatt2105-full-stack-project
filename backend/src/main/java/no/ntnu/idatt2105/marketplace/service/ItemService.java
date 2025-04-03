@@ -22,4 +22,15 @@ public class ItemService {
   public Item saveItem(Item item) {
     return itemRepository.save(item);
   }
+
+  public Optional<Item> updateItem(Long id, Item updatedItem) {
+    return itemRepository.findById(id)
+        .map(existingItem -> {
+          existingItem.setTitle(updatedItem.getTitle());
+          existingItem.setDescription(updatedItem.getDescription());
+          existingItem.setPrice(updatedItem.getPrice());
+          existingItem.setCategory(updatedItem.getCategory());
+          return itemRepository.save(existingItem);
+        });
+  }
 }
