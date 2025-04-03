@@ -63,6 +63,16 @@ public class ItemControllerTest {
         .andExpect(jsonPath("$.title").value("Test Item"))
         .andExpect(jsonPath("$.description").value("This is a test item."))
         .andExpect(jsonPath("$.price").value(100.0));
-        // TODO: Add more assertions for seller and category?
+    // TODO: Add more assertions for seller and category?
+  }
+
+  @Test
+  void testGetItemById_ItemNotFound() throws Exception {
+    // Mock the service call to return an empty Optional
+    when(itemService.getItemById(1L)).thenReturn(Optional.empty());
+
+    // Perform the GET request and expect a 404 Not Found status
+    mockMvc.perform(get("/api/items/1"))
+        .andExpect(status().isNotFound());
   }
 }
