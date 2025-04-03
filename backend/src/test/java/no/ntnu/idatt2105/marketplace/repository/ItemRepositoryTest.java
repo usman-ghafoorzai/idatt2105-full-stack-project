@@ -52,6 +52,19 @@ public class ItemRepositoryTest {
     assertThat(foundItem.getTitle()).isEqualTo("Smartphone");
   }
 
+  @Test
+  void testUpdateItem() {
+    Item item = createTestItem("Tablet", 200.0);
+    item = itemRepository.save(item);
+
+    item.setPrice(250.0);
+    item = itemRepository.save(item); // Update existing entry
+
+    Item updatedItem = itemRepository.findById(item.getId()).orElse(null);
+    assertThat(updatedItem).isNotNull();
+    assertThat(updatedItem.getPrice()).isEqualTo(250.0);
+  }
+
   /**
    * Helper method to create a test Item with a title and price.
    * Ensures that required foreign key dependencies (Category, User) are set.
