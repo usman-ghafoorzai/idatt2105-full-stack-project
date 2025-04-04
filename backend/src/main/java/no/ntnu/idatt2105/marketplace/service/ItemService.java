@@ -80,9 +80,12 @@ public class ItemService {
     return itemRepository.findAll();
   }
 
-  public List<Item> getFilteredItems(String categoryName, Double minPrice, Double maxPrice, String status) {
+  public List<Item> getFilteredItems(String title, String categoryName, Double minPrice, Double maxPrice, String status) {
     Specification<Item> spec = Specification.where(null);
 
+    if (title != null) {
+        spec = spec.and((root, query, cb) -> cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%"));
+    }
     if (categoryName != null) {
         spec = spec.and((root, query, cb) -> cb.equal(root.join("category").get("name"), categoryName));
     }
@@ -98,5 +101,4 @@ public class ItemService {
 
     return itemRepository.findAll(spec);
   }
-
 }
