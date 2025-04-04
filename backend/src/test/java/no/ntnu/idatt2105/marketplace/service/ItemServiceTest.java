@@ -6,6 +6,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -13,9 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
 import no.ntnu.idatt2105.marketplace.model.Category;
 import no.ntnu.idatt2105.marketplace.model.Item;
+import no.ntnu.idatt2105.marketplace.model.ItemStatus;
 import no.ntnu.idatt2105.marketplace.repository.ItemRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -104,5 +108,28 @@ public class ItemServiceTest {
 
     // Verify that the deleteById method was called with the correct ID
     verify(itemRepository, times(1)).deleteById(id);
+  }
+
+  @Test
+  void testGetAllItems() {
+    List<Item> mockItems = Arrays.asList(new Item(), new Item());
+    when(itemRepository.findAll()).thenReturn(mockItems);
+
+    List<Item> result = itemService.getAllItems();
+
+    assertThat(result).hasSize(2);
+  }
+
+  @SuppressWarnings("unchecked") // Suppress warning for unchecked cast
+  @Test
+  void testGetFilteredItems() {
+    List<Item> filteredItems = List.of(new Item(), new Item());
+
+    when(itemRepository.findAll((Specification<Item>) any(Specification.class))).thenReturn(filteredItems);
+
+    List<Item> result = itemService.getFilteredItems("Electronics", 100.0, 500.0, ItemStatus.ACTIVE.name());
+
+    assertThat(result).hasSize(2);
+    verify(itemRepository, times(1)).findAll(any(Specification.class));
   }
 }
