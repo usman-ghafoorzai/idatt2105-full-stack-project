@@ -2,6 +2,8 @@ package no.ntnu.idatt2105.marketplace.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -92,5 +94,15 @@ public class ItemServiceTest {
     Optional<Item> result = itemService.updateItem(999L, updated);
 
     assertThat(result).isNotPresent();
+  }
+
+  @Test
+  void testDeleteItem() {
+    Long id = 1L;
+
+    itemService.deleteItem(id);
+
+    // Verify that the deleteById method was called with the correct ID
+    verify(itemRepository, times(1)).deleteById(id);
   }
 }
