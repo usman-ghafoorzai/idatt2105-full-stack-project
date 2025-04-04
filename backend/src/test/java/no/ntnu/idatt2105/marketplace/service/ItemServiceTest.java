@@ -44,4 +44,17 @@ public class ItemServiceTest {
 
     assertThat(result).isNotPresent();
   }
+
+  @Test
+  void testSaveItem() {
+    Item item = new Item();
+    item.setTitle("Laptop");
+
+    when(itemRepository.save(item)).thenReturn(item);
+
+    Item saved = itemService.saveItem(item);
+
+    assertThat(saved).isNotNull();
+    assertThat(saved.getTitle()).isEqualTo("Laptop");
+  }
 }
