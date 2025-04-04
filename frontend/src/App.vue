@@ -1,5 +1,7 @@
 <script setup>
-// No component imports needed here anymore
+import Header from './components/Header.vue'
+import RegisterUser from './components/RegisterUser.vue'
+import LogInComponent from './components/LogInComponent.vue'
 </script>
 
 <template>
