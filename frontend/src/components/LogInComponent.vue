@@ -3,14 +3,37 @@ import { ref } from 'vue';
 
 const username = ref('');
 const password = ref('');
+const errors = ref({
+  username: '',
+  password: '',
+});
 
 const login = () => {
+  errors.value = {
+    username: '',
+    password: '',
+  };
+
+  let valid = true;
+
+  if (!username.value.trim()) {
+    errors.value.username = 'Brukernavn er påkrevd';
+    valid = false;
+  }
+
+  if (!password.value.trim()) {
+    errors.value.password = 'Passord er påkrevd';
+    valid = false;
+  }
+
+  if (!valid) return;
+
   // TODO: implementer API logikk her etterhvert
-  console.log({ //Foreløpig bare logge verdiene for dev og testing
+  console.log({
     username: username.value,
-    password: password.value
+    password: password.value,
   });
-}
+};
 </script>
 
 <template>
