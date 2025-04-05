@@ -30,10 +30,10 @@ public class JwtUtil {
     this.jwtParser = Jwts.parser().verifyWith(key).build();
   }
 
-  public String generateToken(String username, Role role) {
+  public String generateToken(String username, String role) {
     return Jwts.builder()
         .subject(username)
-        .claim("role", role.toString())
+        .claim("role", role)
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expiration))
         .signWith(key, Jwts.SIG.HS256)
