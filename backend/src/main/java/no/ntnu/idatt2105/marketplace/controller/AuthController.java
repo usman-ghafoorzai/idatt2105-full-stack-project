@@ -24,6 +24,7 @@ public class AuthController {
     // Hash the password before saving the user
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     User newUser = userService.saveUser(user);
+    // TODO: validate input?
 
     // Generate a token for the newly registered user
     String token = jwtUtil.generateToken(newUser.getUsername(), newUser.getRole().name());
