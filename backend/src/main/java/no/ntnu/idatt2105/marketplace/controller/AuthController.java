@@ -21,10 +21,15 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody User user) {
+    // Ensure required fields are provided
+    if (user.getUsername() == null || user.getEmail() == null || user.getPassword() == null || user.getRole() == null) {
+      return ResponseEntity.badRequest().body("Username, email, password, and role are required");
+    }
+    // TODO: Should role be set to USER by default?
+
     // Hash the password before saving the user
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     User newUser = userService.saveUser(user);
-    // TODO: validate input?
 
     // Generate a token for the newly registered user
     String token = jwtUtil.generateToken(newUser.getUsername(), newUser.getRole().name());
