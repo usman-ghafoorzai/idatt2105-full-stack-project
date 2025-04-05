@@ -39,4 +39,22 @@ public class UserService {
     return userRepository.save(user);
   }
 
+  /**
+   * Retrieves a user by their username.
+   *
+   * @param username the username of the user
+   * @return the user entity if found, otherwise null
+   */
+  public User getUserByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
+
+  /**
+   * Deletes all users from the database.
+   * This method is intended for testing purposes only.
+   */
+  public void deleteAllUsers() {
+    userRepository.deleteAll();
+  }
+
 }
