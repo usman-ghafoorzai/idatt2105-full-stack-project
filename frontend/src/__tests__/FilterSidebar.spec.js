@@ -17,7 +17,7 @@ describe('FilterSidebar.vue', () => {
 
     it('toggles place visibility when clicked', async () => {
         const wrapper = mount(FilterSidebar);
-        const placeCategory = wrapper.find('.category');
+        const placeCategory = wrapper.find('h3');
         expect(wrapper.find('ul').exists()).toBe(false);
 
         await placeCategory.trigger('click');
@@ -39,7 +39,7 @@ describe('FilterSidebar.vue', () => {
         });
     
         // Find the first subcategory toggle
-        const subcategoryToggle = wrapper.find('.category:nth-of-type(1)');
+        const subcategoryToggle = wrapper.find('h3:nth-of-type(1)');
         expect(subcategoryToggle.exists()).toBe(true); // Ensure the element exists
     
         // Check if the subcategory list is initially hidden
@@ -65,7 +65,7 @@ describe('FilterSidebar.vue', () => {
                 };
             },
         });
-        const subcategoryToggle = wrapper.find('.category:nth-of-type(1)');
+        const subcategoryToggle = wrapper.find('h3:nth-of-type(1)');
         await subcategoryToggle.trigger('click');
 
         // Find the first checkbox
