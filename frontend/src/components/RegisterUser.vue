@@ -24,11 +24,11 @@ const form = computed(() => ({
 const rules = {
   firstName: [
     { required: true, message: 'First name is required', trigger: 'blur' },
-    { pattern: /^[A-Za-z\- ]+$/, message: 'First name can only contain letters and hyphens', trigger: 'blur' }
+    { pattern: /^[A-Za-zÆØÅæøå\- ]+$/, message: 'First name can only contain letters and hyphens', trigger: 'blur' }
   ],
   lastName: [
     { required: true, message: 'Last name is required', trigger: 'blur' },
-    { pattern: /^[A-Za-z\- ]+$/, message: 'Last name can only contain letters and hyphens', trigger: 'blur' }
+    { pattern: /^[A-Za-zÆØÅæøå\- ]+$/, message: 'Last name can only contain letters and hyphens', trigger: 'blur' }
   ],
   location: [
     { required: true, message: 'Location is required', trigger: 'blur' }
