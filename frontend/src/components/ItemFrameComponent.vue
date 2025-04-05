@@ -1,8 +1,19 @@
+<script setup>
+    import { ref } from "vue"
+    const isBookmarked = ref(false);
+
+    function toggleBookmark() {
+        isBookmarked.value = !isBookmarked.value;
+        console.log(isBookmarked.value ? "Added to bookmarks!" : "Removed from bookmarks");
+    }
+</script>
+
 <template>
     <div class="item-frame">
         <div class="item-image">
             <img src="../assets/images/boat.jpg" alt="Item Image" />
             <div class="price-tag">10000 kr</div>
+            <fa :icon="['far','bookmark']" class="bookmark-icon" :class="{ active: isBookmarked }" @click="toggleBookmark"/>
         </div>
         <div class="item-details">
             Bayliner VR 5 Cuddy OB Lite brukt
@@ -37,6 +48,16 @@
         white-space: normal;
         overflow-wrap: break-word;
         text-align: center;
+    }
+    .bookmark-icon {
+        font-size: 20px;
+        position: absolute;
+        z-index: 10;
+        top: 5px;
+        right: 10px;
+    }
+    .bookmark-icon.active {
+        color: yellow;
     }
     .price-tag {
         position: absolute;
