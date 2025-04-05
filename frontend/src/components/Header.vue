@@ -1,25 +1,57 @@
 <script setup>
+    import Searchbar from './Searchbar.vue';
+    import { ref, computed } from 'vue';
+    import { useRouter } from 'vue-router';
 
+    const router = useRouter();
+    // Define props so to pass values to test more easily
+    defineProps({
+        mail: {
+            type: Number,
+            default: 2,
+        }
+    })
+    let userState = {
+        loggedIn: false,
+    }
+    const userName = computed(() => userState.loggedIn ? "Jonas" : "Log in/Sign up")
+
+    const navigateToRegistration = () => {
+      router.push('/register');
+    }
+
+    const navigateToHome = () => {
+      router.push('/');
+    }
 </script>
 
 
 <template>
-    <div id="header">
-        <div>
-            <h2 id="logo">LOGO</h2>
-        </div>
-        <div>
-            <h3 id="home">HOME</h3>
-            <fa icon="home" />
-        </div>
-        <div>
-            <h3 id="categories">CATEGORIES</h3>
-        </div>
-        <div>
-            <h3 id="sell">SELL</h3>
-        </div>
-        <input type="text" id="search"></input>
+  <div id="header">
+    <div id="logo" @click="navigateToHome">
+      <h2 id="logo">LOGO</h2>
     </div>
+    <div class="container">
+      <div id="home" @click="navigateToHome">HOME</div>
+      <fa icon="home" class="icons"></fa>
+    </div>
+    <div class="container">
+      <div id="categories">CATEGORIES</div>
+      <fa icon="icons" class="icons"></fa>
+    </div>
+    <div class="container">
+      <div id="sell">SELL</div>
+      <fa icon="arrow-up-from-bracket" class="icons"></fa>
+    </div>
+    <div id="container">
+      <div id="inbox">Inbox</div>
+      <fa icon="envelope" id="inbox-icon"></fa>
+      <div v-if="mail > 0" id="notification-dot"></div>
+      <div id="username" @click="navigateToRegistration">{{ userName }}</div>
+      <fa icon="user" id="login-icon" @click="navigateToRegistration"></fa>
+      <Searchbar id="searchbar"/>
+    </div>
+  </div>
 
 </template>
 
@@ -31,47 +63,109 @@
         width: 100%;
         display: grid;
         grid-template-areas: 'logo home categories sell search';
-        grid-template-columns: 3fr 1fr 1fr 1fr 3fr;
-        align-content: center;
-    }
-
-    div {
-        display: flex;
-        justify-content: center;
+        grid-template-columns: 2fr 1fr 1fr 1fr 3fr;
         align-items: center;
     }
+
     #logo {
         grid-area: logo;
         font-size: 48px;
-        margin-left: 50px;
-        margin-top: 35px;
         font-weight: bold;
+        padding-left: 40px;
     }
-    #home {
-        grid-area: home;
-        font-size: 20px;
-        margin-top: 66px;
-        margin-bottom: 42px;
+
+    .container {
+        display: flex;
+        padding-top:45px;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
     }
-    #categories {
-        grid-area: categories;
-        font-size: 20px;
-        margin-top: 66px;
-        margin-bottom: 42px;
-    }
-    #sell {
-        grid-area: sell;
-        font-size: 20px;
-        margin-top: 66px;
-        margin-bottom: 42px;
-    }
-    #search {
+    #container {
         grid-area: search;
-        height: 44px;
-        font-size: 20px;
-        margin-top: 55px;
-        margin-right: 29px;
-        margin-bottom: 35px;
-        border-radius: 10px;
+        grid-template-areas: 'inbox inbox-icon user user-icon'
+                             'searchbar searchbar searchbar searchbar';
+        display: grid;
+        grid-template-rows: auto auto;
+        grid-template-columns: 2fr auto 4fr auto;
+        align-items: center;
+        margin-right: 40px;
+        row-gap: 10px;
+
     }
+    #home, #categories, #sell {
+        font-size: 20px;
+    }
+    #inbox {
+        grid-area: inbox;
+        font-size: 20px;
+        justify-self: right;
+    }
+    #inbox-icon {
+        grid-area: inbox-icon;
+        font-size: 25px;
+        justify-self: left;
+        padding-left: 3px;
+    }
+    #username {
+        grid-area: user;
+        font-size: 20px;
+        justify-self: right;
+    }
+    #login-icon {
+        grid-area: user-icon;
+        font-size: 25px;
+        padding-right: 10px;
+        justify-self: right;
+    }
+
+    #searchbar {
+        grid-area: searchbar;
+        align-self: center;
+    }
+
+    .icons {
+        font-size: 25px;
+    }
+    #home:hover, #categories:hover, #sell:hover, #inbox:hover, #username:hover {
+        cursor: pointer;
+        border-bottom: 2px solid #000;
+    }
+
+    #notification-dot {
+        grid-area: inbox-icon;
+        justify-self: right;
+        align-self: start;
+        width: 10px;
+        height: 10px;
+        background-color: red;
+        border-radius: 50%;
+        border: 2px solid white;
+        transform: translate(50%, -30%);
+    }
+
+    @media (max-width:900px) {
+        #home, #categories, #sell {
+            font-size: 15px;
+        }
+        #inbox, #username {
+            font-size: 15px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        #home, #categories, #sell, #inbox, #username {
+            display: none;
+        }
+
+        .icons {
+            font-size: 20px;
+        }
+
+        #logo {
+            font-size: 20px;
+            padding-left: 20px;
+        }
+    }
+
 </style>

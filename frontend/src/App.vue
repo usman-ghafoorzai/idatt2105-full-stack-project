@@ -1,12 +1,16 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 import Header from './components/Header.vue'
+import RegisterUser from './components/RegisterUser.vue'
+import LogInComponent from './components/LogInComponent.vue'
 </script>
 
 <template>
-  <Header />
+  <router-view/>
 </template>
 
-<style scoped>
+<style>
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
 </style>
