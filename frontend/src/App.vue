@@ -9,22 +9,13 @@ import FilterSidebar from './components/FilterSidebar.vue'
 
 <template>
   <Header></Header>
-  <div id="filter">
-    <FilterSidebar></FilterSidebar>
-    <ItemListingComponent></ItemListingComponent>
-  </div>
+  <ItemListingComponent></ItemListingComponent>
 </template>
 
 <style>
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
-}
-#filter {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 100vh;
 }
 
 </style>
