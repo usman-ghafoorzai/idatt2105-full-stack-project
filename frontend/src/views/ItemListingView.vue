@@ -17,4 +17,11 @@
         justify-content: space-between;
         width: 100%;
     }
+
+    @media (max-width: 900px) {
+        #item-listing-view-container {
+            grid-template-columns: auto;
+            justify-content: center;
+        }
+    }
 </style>

@@ -7,7 +7,6 @@ import UploadPicture from '../components/UploadPicture.vue'
 
 <template>
   <div class="page-container">
-    <Header />
     <div class="registration-layout">
       <!-- Left section with darker background -->
       <div class="login-section">

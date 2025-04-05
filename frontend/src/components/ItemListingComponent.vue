@@ -50,4 +50,14 @@
         grid-row: 1;
         color: grey;
     }
+    @media (max-width: 1410px) {
+        #item-listing-container {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    @media (max-width: 570px) {
+        #item-listing-container {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>

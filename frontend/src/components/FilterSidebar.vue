@@ -176,4 +176,15 @@
         margin-bottom:0;
         border-bottom: 2px solid black;
     }
+
+    @media (max-width: 1410px) {
+        .filter-sidebar  {
+            width: 280px;
+        }
+    }
+    @media (max-width: 900px) {
+        .filter-sidebar {
+            display: none;
+        }
+    }
 </style>
