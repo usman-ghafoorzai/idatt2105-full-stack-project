@@ -23,12 +23,11 @@
 
 <template>
     <div class="filter-sidebar">
-        <div class="category" @click="place = !place">
-            <fa icon="chevron-right" v-if="!place"></fa>
-            <fa icon="chevron-down" v-if="place"></fa>
-            <h3>Place</h3>
-        </div>
-        <ul v-if="place">
+        <div class="category">
+            <fa icon="chevron-right" v-if="!place" @click="place = !place"></fa>
+            <fa icon="chevron-down" v-if="place" @click="place = !place"></fa>
+            <h3 @click="place = !place">Place</h3>
+            <ul v-if="place">
             <li>
                 <input type="checkbox" value="Troms og Finnmark" v-model="selectedSubcategories" />
                 Troms og Finnmark
@@ -74,37 +73,38 @@
                 Vestfold og Telemark
             </li>
         </ul>
+        </div>
         <div class="category">
             <span></span>
             <h3>Price range</h3>
-        </div>
-        <div id="price-container">
-            <div id="from-container">
-                <div>From</div>
-                <input type="number" id="from-price"></input>
-            </div>
-            <div id="to-container">
-                <div>To</div>
-                <input type="number" id="to-price"></input>
+            <div id="price-container">
+                <div id="from-container">
+                    <div>From</div>
+                    <input type="number" id="from-price"></input>
+                </div>
+                <div id="to-container">
+                    <div>To</div>
+                    <input type="number" id="to-price"></input>
+                </div>
             </div>
         </div>
 
         <template v-for="(subcategories, subcategoryKey) in categories[item]" :key="subcategoryKey">
-            <div class="category" @click="toggleVisibility(subcategoryKey)">
-                <fa icon="chevron-right" v-if="!visibility[subcategoryKey]"></fa>
-                <fa icon="chevron-down" v-if="visibility[subcategoryKey]"></fa>
-                <h3>{{ subcategoryKey }}</h3>
+            <div class="category">
+                <fa icon="chevron-right" v-if="!visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
+                <fa icon="chevron-down" v-if="visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
+                <h3 @click="toggleVisibility(subcategoryKey)">{{ subcategoryKey }}</h3>
+                <ul v-if="visibility[subcategoryKey]">
+                    <li v-for="(subcategory, index) in subcategories" :key="index">
+                        <input 
+                            type="checkbox"
+                            :value="subcategory"
+                            v-model="selectedSubcategories"
+                        /> 
+                        {{ subcategory }}
+                    </li>
+                </ul>
             </div>
-            <ul v-if="visibility[subcategoryKey]">
-                <li v-for="(subcategory, index) in subcategories" :key="index">
-                    <input 
-                        type="checkbox"
-                        :value="subcategory"
-                        v-model="selectedSubcategories"
-                    /> 
-                    {{ subcategory }}
-                </li>
-            </ul>
         </template>
     </div>
 </template>
@@ -113,6 +113,7 @@
     .filter-sidebar {
         display: flex;
         flex-direction: column;
+        gap: 20px;
         padding: 20px;
         width: 350px;
         min-height: 100%;
@@ -123,8 +124,12 @@
     .category {
         display: grid;
         grid-template-columns: 16px 3fr;
-        grid-template-areas: 'chevron category';
+        grid-template-rows: auto;
+        grid-template-areas: 
+            'chevron category'
+            'chevron list';
         align-items: baseline;
+        min-height: 100px;
         column-gap: 3px;
     }
     .category span {
@@ -147,15 +152,17 @@
         gap: 10px;
     }
     #from-price, #to-price {
+        -moz-appearance: textfield;
         border: none;
         border-bottom: 2px solid black;
         width: 50px;
     }
     #from-price:focus, #to-price:focus {
-        border:none;
+        outline:none;
         border-bottom: 2px solid black;
     }
     ul {
+        grid-area: list;
         list-style-type: none;
         padding-left: 15px;
         
