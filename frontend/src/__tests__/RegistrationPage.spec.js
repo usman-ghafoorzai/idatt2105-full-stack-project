@@ -5,18 +5,26 @@ import Header from '../components/Header.vue'
 import RegisterUser from '../components/RegisterUser.vue'
 import UploadPicture from '../components/UploadPicture.vue'
 import LogInComponent from '../components/LogInComponent.vue'
+import {createRouter, createWebHistory} from "vue-router";
 
 describe('RegistrationPage.vue', () => {
   let wrapper
+  let router
 
   beforeEach(() => {
+    router = createRouter({
+      history: createWebHistory(),
+      routes: []
+    })
     wrapper = mount(RegistrationPage, {
       global: {
+        plugins: [router],
         stubs: {
           Header,
           RegisterUser,
           UploadPicture,
           LogInComponent,
+          fa: true
         }
       }
     })
