@@ -62,4 +62,29 @@ public class UserServiceTest {
     assertThat(savedUser).isNotNull();
     assertThat(savedUser.getUsername()).isEqualTo("newuser");
   }
+
+  @Test
+  void testGetUserByUsername() {
+    User user = new User();
+    user.setId(1L);
+    user.setUsername("testuser");
+    user.setPassword("password123");
+    user.setRole(Role.USER);
+
+    when(userRepository.findByUsername("testuser")).thenReturn(user);
+
+    User result = userService.getUserByUsername("testuser");
+
+    assertThat(result).isNotNull();
+    assertThat(result.getUsername()).isEqualTo("testuser");
+  }
+
+  @Test
+  void testGetUserByUsername_NotFound() {
+    when(userRepository.findByUsername("nonexistent")).thenReturn(null);
+
+    User result = userService.getUserByUsername("nonexistent");
+
+    assertThat(result).isNull();
+  }
 }
