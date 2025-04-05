@@ -127,7 +127,7 @@ public class ItemServiceTest {
 
     when(itemRepository.findAll((Specification<Item>) any(Specification.class))).thenReturn(filteredItems);
 
-    List<Item> result = itemService.getFilteredItems("Electronics", 100.0, 500.0, ItemStatus.ACTIVE.name());
+    List<Item> result = itemService.getFilteredItems("Phone1", "Electronics", 100.0, 500.0, ItemStatus.ACTIVE.name());
 
     assertThat(result).hasSize(2);
     verify(itemRepository, times(1)).findAll(any(Specification.class));
