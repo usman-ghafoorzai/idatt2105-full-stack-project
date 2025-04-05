@@ -152,7 +152,6 @@
         gap: 10px;
     }
     #from-price, #to-price {
-        -moz-appearance: textfield;
         border: none;
         border-bottom: 2px solid black;
         width: 50px;
