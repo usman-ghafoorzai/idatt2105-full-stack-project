@@ -182,9 +182,4 @@
             width: 280px;
         }
     }
-    @media (max-width: 900px) {
-        .filter-sidebar {
-            display: none;
-        }
-    }
 </style>

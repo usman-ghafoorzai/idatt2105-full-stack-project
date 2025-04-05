@@ -5,7 +5,7 @@
 
 <template>
     <div id="item-listing-view-container">
-        <FilterSidebar></FilterSidebar>
+        <FilterSidebar id="filter-sidebar"></FilterSidebar>
         <ItemListingComponent></ItemListingComponent>
     </div>
 </template>
@@ -22,6 +22,9 @@
         #item-listing-view-container {
             grid-template-columns: auto;
             justify-content: center;
+        }
+        #filter-sidebar {
+            display: none;
         }
     }
 </style>
