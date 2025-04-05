@@ -9,7 +9,7 @@ import FilterSidebar from './components/FilterSidebar.vue'
 
 <template>
   <Header></Header>
-  <ItemListingComponent></ItemListingComponent>
+  <router-view></router-view>
 </template>
 
 <style>

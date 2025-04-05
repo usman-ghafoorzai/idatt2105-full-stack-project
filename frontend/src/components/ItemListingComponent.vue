@@ -2,6 +2,8 @@
     import ItemFrameComponent from './ItemFrameComponent.vue';
     import { ref } from 'vue';
 
+    let search = 'boats';
+
     // Byttes ut med data fra API senere
     const items = ref([
         { id: 1, image: 'src/assets/images/boat.jpg', price: '10000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
@@ -20,7 +22,8 @@
 </script>
 
 <template>
-    <div id="container">
+    <div id="item-listing-container">
+        <h2> Finding items for "{{ search }}"</h2>
         <ItemFrameComponent
             v-for="item in items"
             :id="item.id"
@@ -32,11 +35,19 @@
 </template>
 
 <style scoped>
-    #container {
+    #item-listing-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto;
         width: 100%;
         justify-items: center;
         align-items: center;
+    }
+    h2 {
+        text-align: center;
+        margin: 20px 0;
+        grid-column: 1/-1;
+        grid-row: 1;
+        color: grey;
     }
 </style>
