@@ -65,16 +65,17 @@ const register = async () => {
   attempted.value = true;
   const result = await execute();
 
-  if (!result.pass) return;
-
-  // TODO: implement API logic
-  console.log({
+  console.log({ // Foreløpig bare logge verdiene, skal erstattes med API-kall etterhvert
     firstName: firstName.value,
     lastName: lastName.value,
     location: location.value,
     email: email.value,
     password: password.value
   });
+
+  if (!result.pass) return;
+
+  // TODO: implementere API logikk etterhvert
 }
 </script>
 
