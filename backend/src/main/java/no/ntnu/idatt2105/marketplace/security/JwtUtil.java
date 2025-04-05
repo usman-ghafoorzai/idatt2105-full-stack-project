@@ -4,7 +4,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import no.ntnu.idatt2105.marketplace.model.Role;
 
 import org.springframework.stereotype.Component;
 
