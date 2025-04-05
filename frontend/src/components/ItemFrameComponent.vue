@@ -13,7 +13,8 @@
         <div class="item-image">
             <img src="../assets/images/boat.jpg" alt="Item Image" />
             <div class="price-tag">10000 kr</div>
-            <fa :icon="['far','bookmark']" class="bookmark-icon" :class="{ active: isBookmarked }" @click="toggleBookmark"/>
+            <fa :icon="['far','bookmark']" class="bookmark-icon" :class="{ active: isBookmarked }" @click="toggleBookmark" v-if="!isBookmarked"/>
+            <fa :icon="['fas','bookmark']" class="bookmark-icon" :class="{ active: isBookmarked }" @click="toggleBookmark" v-if="isBookmarked" style="color: yellow;"/>
         </div>
         <div class="item-details">
             Bayliner VR 5 Cuddy OB Lite brukt
@@ -56,7 +57,8 @@
         top: 5px;
         right: 10px;
     }
-    .bookmark-icon.active {
+    .bookmark-icon:hover {
+        cursor: pointer;
         color: yellow;
     }
     .price-tag {
