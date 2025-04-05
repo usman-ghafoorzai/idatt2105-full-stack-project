@@ -11,7 +11,14 @@ describe('ItemFrameComponent.vue', () => {
     });
 
     it('renders the image with the correct src and alt attributes', () => {
-        const wrapper = mount(ItemFrameComponent);
+        const wrapper = mount(ItemFrameComponent, {
+            props: {
+                id: '1',
+                image: '/src/assets/images/boat.jpg',
+                price: '10000',
+                details: 'Bayliner VR 5 Cuddy OB Lite brukt',
+            },
+        });
 
         const img = wrapper.find('img');
         expect(img.exists()).toBe(true);
@@ -20,7 +27,14 @@ describe('ItemFrameComponent.vue', () => {
     });
 
     it('renders the price tag with the correct text', () => {
-        const wrapper = mount(ItemFrameComponent);
+        const wrapper = mount(ItemFrameComponent, {
+            props: {
+                id: '1',
+                image: '/src/assets/images/boat.jpg',
+                price: '10000',
+                details: 'Bayliner VR 5 Cuddy OB Lite brukt',
+            },
+        });
 
         const priceTag = wrapper.find('.price-tag');
         expect(priceTag.exists()).toBe(true);
@@ -28,7 +42,14 @@ describe('ItemFrameComponent.vue', () => {
     });
 
     it('renders the item details with the correct text', () => {
-        const wrapper = mount(ItemFrameComponent);
+        const wrapper = mount(ItemFrameComponent, {
+            props: {
+                id: '1',
+                image: '/src/assets/images/boat.jpg',
+                price: '10000',
+                details: 'Bayliner VR 5 Cuddy OB Lite brukt',
+            },
+        });
 
         const itemDetails = wrapper.find('.item-details');
         expect(itemDetails.exists()).toBe(true);

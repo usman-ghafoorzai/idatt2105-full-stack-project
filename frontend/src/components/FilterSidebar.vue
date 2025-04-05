@@ -114,8 +114,8 @@
         display: flex;
         flex-direction: column;
         padding: 20px;
-        width: 300px;
-        height: 100vh;
+        width: 350px;
+        min-height: 100%;
         border-right: 2px solid black;
         align-content: center;
         overflow-y: scroll;

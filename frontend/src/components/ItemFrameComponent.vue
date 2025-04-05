@@ -1,6 +1,13 @@
 <script setup>
     import { ref } from "vue"
     const isBookmarked = ref(false);
+    defineProps ({
+        id: Number,
+        image: String,
+        price: String,
+        details: String,
+    });
+
 
     function toggleBookmark() {
         isBookmarked.value = !isBookmarked.value;
@@ -11,13 +18,13 @@
 <template>
     <div class="item-frame">
         <div class="item-image">
-            <img src="../assets/images/boat.jpg" alt="Item Image" />
-            <div class="price-tag">10000 kr</div>
+            <img :src="image" alt="Item Image" />
+            <div class="price-tag">{{price}} kr</div>
             <fa :icon="['far','bookmark']" class="bookmark-icon" :class="{ active: isBookmarked }" @click="toggleBookmark" v-if="!isBookmarked"/>
             <fa :icon="['fas','bookmark']" class="bookmark-icon" :class="{ active: isBookmarked }" @click="toggleBookmark" v-if="isBookmarked" style="color: yellow;"/>
         </div>
         <div class="item-details">
-            Bayliner VR 5 Cuddy OB Lite brukt
+            {{details}}
         </div>
     </div>
 </template>
@@ -25,7 +32,6 @@
     .item-frame {
         display: grid;
         grid-template-rows: 4fr auto;
-
         width: 300px;
         height: 400px;
         border-radius: 10px;
