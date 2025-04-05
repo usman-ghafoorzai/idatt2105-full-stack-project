@@ -1,39 +1,44 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue'
+import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
 
-const username = ref('');
-const password = ref('');
-const errors = ref({
-  username: '',
-  password: '',
-});
+const username = ref('')
+const password = ref('')
+const attempted = ref(false) // Track if validation has been attempted
 
-const login = () => {
-  errors.value = {
-    username: '',
-    password: '',
-  };
+// Values that should be validated
+const form = computed(() => ({
+  username: username.value,
+  password: password.value
+}))
 
-  let valid = true;
+// Rules for validation
+const rules = {
+  username: [
+    { required: true, message: 'Username is required', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: 'Password is required', trigger: 'blur' }
+  ]
+}
 
-  if (!username.value.trim()) {
-    errors.value.username = 'Brukernavn er påkrevd';
-    valid = false;
-  }
+// Configure useAsyncValidator to be manual, so it does not immediate:true as soon as mount
+const { errorFields, execute } = useAsyncValidator(form, rules, {
+  immediate: false,
+  manual: true
+})
 
-  if (!password.value.trim()) {
-    errors.value.password = 'Passord er påkrevd';
-    valid = false;
-  }
+const login = async () => {
+  attempted.value = true // Set flag to show validation message
+  const result = await execute()
+  if (!result.pass) return
 
-  if (!valid) return;
-
-  // TODO: implementer API logikk her etterhvert
+  // TODO: API-kall – f.eks. sjekke bruker/autentisering
   console.log({
     username: username.value,
-    password: password.value,
-  });
-};
+    password: password.value
+  })
+}
 </script>
 
 <template>
@@ -43,19 +48,24 @@ const login = () => {
     <form class="login-form" @submit.prevent="login">
       <div class="form-group">
         <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username">
+        <input type="text" id="username" v-model="username" />
+        <span class="error-message" v-if="attempted && errorFields?.username?.[0]?.message">
+          {{ errorFields.username[0].message }}
+        </span>
       </div>
 
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password">
+        <input type="password" id="password" v-model="password" />
+        <span class="error-message" v-if="attempted && errorFields?.password?.[0]?.message">
+          {{ errorFields.password[0].message }}
+        </span>
       </div>
 
       <button type="submit" class="login-button">Login!</button>
     </form>
   </div>
 </template>
-
 <style scoped>
 .login-container {
   width: 100%;
@@ -128,6 +138,11 @@ const login = () => {
 
 .login-button:hover {
   background: #3D3D3D;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
 }
 
 @media (max-width: 600px) {
