@@ -49,4 +49,12 @@ public class UserService {
     return userRepository.findByUsername(username);
   }
 
+  /**
+   * Deletes all users from the database.
+   * This method is intended for testing purposes only.
+   */
+  public void deleteAllUsers() {
+    userRepository.deleteAll();
+  }
+
 }
