@@ -46,8 +46,10 @@ public class CategoryController {
     try {
       Category createdCategory = categoryService.createCategory(category, parentCategoryName);
       return ResponseEntity.ok(createdCategory);
-    } catch (Exception e) {
+    } catch (IllegalAccessException e) {
       return ResponseEntity.badRequest().header("Error-Message", e.getMessage()).body(null);
+    } catch (Exception e) {
+      return ResponseEntity.status(500).header("Error-Message", "An unexpected error occurred while creating the category.").body(null);
     }
   }
   
