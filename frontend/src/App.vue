@@ -6,11 +6,12 @@ import ItemFrameComponent from './components/ItemFrameComponent.vue'
 import ItemListingComponent from './components/ItemListingComponent.vue'
 import FilterSidebar from './components/FilterSidebar.vue'
 import ItemDescription from './components/ItemDescription.vue'
+import SellerInfo from './components/SellerInfo.vue'
 </script>
 
 <template>
   <Header></Header>
-  <router-view/>
+  <router-view></router-view>
 </template>
 
 <style>
