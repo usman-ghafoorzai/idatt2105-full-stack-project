@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
+import { register as registerAPI } from '@/api/authAPI.js';
 
 const firstName = ref('');
 const lastName = ref('');
@@ -9,6 +10,7 @@ const email = ref('');
 const password = ref('');
 const confirmPassword = ref(''); // Fixed variable name
 const attempted = ref(false);
+const registerError = ref('');
 
 // Form object for validation
 const form = computed(() => ({
@@ -63,19 +65,27 @@ const { errorFields, execute } = useAsyncValidator(form, rules, {
 
 const register = async () => {
   attempted.value = true;
+  registerError.value = "";
+
   const result = await execute();
-
-  console.log({ // Foreløpig bare logge verdiene, skal erstattes med API-kall etterhvert
-    firstName: firstName.value,
-    lastName: lastName.value,
-    location: location.value,
-    email: email.value,
-    password: password.value
-  });
-
   if (!result.pass) return;
 
-  // TODO: implementere API logikk etterhvert
+  try {
+    const res = await registerAPI({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      username: location.value, // TODO: change to username, and implement location
+      email: email.value,
+      password: password.value,
+    });
+
+    console.log("Registration successful:", res);
+    // Optional: redirect to dashboard or login page
+
+  } catch (error) {
+    console.error("Registration failed:", error.message);
+    registerError.value = error.message;
+  }
 }
 </script>
 
@@ -143,6 +153,7 @@ const register = async () => {
       <span class="error-message" v-if="attempted && errorFields?.confirmPassword?.[0]?.message">
         {{ errorFields.confirmPassword[0].message }}
       </span>
+      <p class="error-message" v-if="registerError">{{ registerError }}</p>
     </div>
 
     <button class="register-button" @click="register">Register</button>

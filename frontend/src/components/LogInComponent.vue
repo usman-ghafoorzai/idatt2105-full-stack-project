@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
+import { login as loginAPI } from '@/api/authAPI.js'
 
 const username = ref('')
 const password = ref('')
 const attempted = ref(false) // Track if validation has been attempted
+const loginError = ref("")
 
 // Values that should be validated
 const form = computed(() => ({
@@ -30,20 +32,27 @@ const { errorFields, execute } = useAsyncValidator(form, rules, {
 
 const login = async () => {
   attempted.value = true // Set flag to show validation message
+  loginError.value = "" // Reset error message
   const result = await execute()
   if (!result.pass) return
 
-  // TODO: API-kall – f.eks. sjekke bruker/autentisering
-  console.log({
-    username: username.value,
-    password: password.value
-  })
+  try {
+    const res = await loginAPI(username.value, password.value);
+    console.log("Login successful!", res);
+
+  } catch (error) {
+    console.error("Login failed:", error.message);
+    // Redirect
+    loginError.value = error.message;
+  }
 }
 </script>
 
 <template>
   <div class="login-container">
     <h2 class="login-header">Login to have more access to other features!</h2>
+
+    <p class="error-message" v-if="loginError">{{ loginError }}</p>
 
     <form class="login-form" @submit.prevent="login">
       <div class="form-group">
@@ -162,4 +171,11 @@ const login = async () => {
     font-size: 18px;
   }
 }
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
 </style>
