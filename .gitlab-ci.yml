@@ -1,4 +1,7 @@
-image: maven:3.9-eclipse-temurin-21
+default:
+  image: maven:3.9-eclipse-temurin-21
+  git:
+    depth: 0
 
 stages:
   - build
