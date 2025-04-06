@@ -1,6 +1,7 @@
 package no.ntnu.idatt2105.marketplace.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -54,5 +55,20 @@ public class CategoryService {
   public List<Category> getAllCategories() {
     return categoryRepository.findAll();
   }
+
+  /**
+   * Updates an existing category in the database.
+   * @param category the category to update
+   * @return the updated category
+   */
+  public Optional<Category> updateCategory(Long id, Category updatedCategory) {
+    return categoryRepository.findById(id).map(existingCategory -> {
+      existingCategory.setName(updatedCategory.getName());
+      existingCategory.setParentCategory(updatedCategory.getParentCategory());
+      return categoryRepository.save(existingCategory);
+    });
+  }
+
+  
   
 }

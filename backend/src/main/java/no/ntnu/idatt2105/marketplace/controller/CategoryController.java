@@ -39,7 +39,7 @@ public class CategoryController {
    * Creates a new category with the specified name and parent category name.
    * @param category the category to create
    * @param parentCategoryName the name of the parent category, or null if no parent
-   * @return the created category
+   * @return the created category, status 400 if the parent category does not exist, or status 500 if an unexpected error occurs
    */
   @GetMapping("/create")
   public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam (required = false) String parentCategoryName) {
@@ -55,11 +55,27 @@ public class CategoryController {
   
   /**
    * Retrieves all the categories
-   * @return a list categories
+   * @return a list categories or status 204 if no categories are found
    */
   @GetMapping
   public ResponseEntity<List<Category>> getAllCategories() {
     List<Category> categories = categoryService.getAllCategories();
+    if (categories.isEmpty()) {
+      return ResponseEntity.noContent().build();
+    }
     return ResponseEntity.ok(categories);
+  }
+
+  /**
+   * Updates an existing category with the specified ID.
+   * @param id the ID of the category to update
+   * @param category the updated category data
+   * @return the updated category, or status 404 if the given category ID does not exist
+   */
+  @GetMapping("/update/{id}")
+  public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+    return categoryService.updateCategory(id, category)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 }
