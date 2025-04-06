@@ -36,6 +36,11 @@ const login = async () => {
   const result = await execute()
   if (!result.pass) return
 
+  console.log({
+    username: username.value,
+    password: password.value
+  })
+
   try {
     const res = await loginAPI(username.value, password.value);
     console.log("Login successful!", res);
