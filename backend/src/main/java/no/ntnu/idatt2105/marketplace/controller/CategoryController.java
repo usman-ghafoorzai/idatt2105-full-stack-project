@@ -1,5 +1,7 @@
 package no.ntnu.idatt2105.marketplace.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,5 +49,15 @@ public class CategoryController {
     } catch (Exception e) {
       return ResponseEntity.badRequest().header("Error-Message", e.getMessage()).body(null);
     }
+  }
+  
+  /**
+   * Gets all the categories
+   * @return a list categories
+   */
+  @GetMapping
+  public ResponseEntity<List<Category>> getAllCategories() {
+    List<Category> categories = categoryService.getAllCategories();
+    return ResponseEntity.ok(categories);
   }
 }

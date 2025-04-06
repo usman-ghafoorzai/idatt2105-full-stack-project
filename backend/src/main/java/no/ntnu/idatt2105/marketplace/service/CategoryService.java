@@ -1,5 +1,7 @@
 package no.ntnu.idatt2105.marketplace.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,13 @@ public class CategoryService {
     return categoryRepository.findByName(name);
   }
 
+  /**
+   * Creates a new Category and saves it to the database.
+   * @param category the Category to create
+   * @param parentCategoryName the name of the parent category (can be null if no parent)
+   * @return the created Category
+   * @throws Exception if the parent category does not exist
+   */
   public Category createCategory(Category category, String parentCategoryName) throws Exception {
       // Check if the category already exists
       Category existingCategory = categoryRepository.findByName(category.getName());
@@ -36,6 +45,14 @@ public class CategoryService {
       }
       // Save the new category to the database
       return categoryRepository.save(category);
+  }
+
+  /**
+   * Get all the stored categories in the database.
+   * @return a list of all categories
+   */
+  public List<Category> getAllCategories() {
+    return categoryRepository.findAll();
   }
   
 }
