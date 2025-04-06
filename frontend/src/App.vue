@@ -10,14 +10,7 @@ import ItemDescription from './components/ItemDescription.vue'
 
 <template>
   <Header></Header>
-  <ItemDescription
-    title="Bayliner VR 5 Cuddy OB Lite brukt"
-    price="10000"
-    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-    image="src/assets/images/boat.jpg"
-    location="Oslo"
-    :categories="['Boat', 'Used']"
-  ></ItemDescription>
+  <router-view/>
 </template>
 
 <style>
