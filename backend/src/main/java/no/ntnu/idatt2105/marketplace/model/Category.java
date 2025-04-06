@@ -2,6 +2,9 @@ package no.ntnu.idatt2105.marketplace.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,9 +42,11 @@ public class Category {
    */
   @ManyToOne
   @JoinColumn(name = "parent_id")
+  @JsonBackReference  // prevents recursion by not serializing this field in the forward direction
   private Category parentCategory;
 
   @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference  // manages the serialization of subCategories
   private List<Category> subcategories;
   
 }

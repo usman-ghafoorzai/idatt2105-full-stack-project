@@ -3,8 +3,11 @@ package no.ntnu.idatt2105.marketplace.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +44,7 @@ public class CategoryController {
    * @param parentCategoryName the name of the parent category, or null if no parent
    * @return the created category, status 400 if the parent category does not exist, or status 500 if an unexpected error occurs
    */
-  @GetMapping("/create")
+  @PostMapping("/create")
   public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam (required = false) String parentCategoryName) {
     try {
       Category createdCategory = categoryService.createCategory(category, parentCategoryName);
@@ -72,7 +75,7 @@ public class CategoryController {
    * @param category the updated category data
    * @return the updated category, or status 404 if the given category ID does not exist
    */
-  @GetMapping("/update/{id}")
+  @PutMapping("/update/{id}")
   public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
     return categoryService.updateCategory(id, category)
         .map(ResponseEntity::ok)
@@ -84,13 +87,13 @@ public class CategoryController {
    * @param id the ID of the category to delete
    * @return status 204 if the category is deleted successfully, or status 500 if an unexpected error occurs
    */
-  @GetMapping("/delete/{id}")
+  @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
     try {
       categoryService.deleteCategory(id);
       return ResponseEntity.noContent().build();
     } catch (Exception e) {
-      return ResponseEntity.status(500).header("Error-Message", "An unexpected error occurred while deleting the category.").build();
+      return ResponseEntity.status(500).header("Error-Message", "An unexpected error occurred while deleting the category.").body(null);
     }
   }
 }
