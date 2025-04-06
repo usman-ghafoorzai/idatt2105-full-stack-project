@@ -82,6 +82,22 @@ public class CategoryController {
         .orElse(ResponseEntity.notFound().build());
   }
 
+  @DeleteMapping("/{parentId}/subcategories/{subCategoryName}")
+  public ResponseEntity<Void> removeSubCategory(@PathVariable String parentName, @PathVariable String subCategoryName) {
+    Category parent = categoryService.findByName(parentName);
+    Category subCategory = categoryService.findByName(subCategoryName);
+
+    // Check if both categories exist and if the sub-category belongs to the parent
+    if (subCategory.getParentCategory() == null || !subCategory.getParentCategory().getId().equals(parent.getId())) {
+      return ResponseEntity.badRequest().build();
+    }
+
+    // Remove the sub-category from the parent category
+    parent.getSubcategories().remove(subCategory);
+    categoryService.updateCategory(parent.getId(), parent); // Update the parent category in the database
+    return ResponseEntity.noContent().build();
+  }
+
   /**
    * Deletes a category by its ID.
    * @param id the ID of the category to delete
