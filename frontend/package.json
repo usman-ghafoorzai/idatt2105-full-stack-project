@@ -18,6 +18,8 @@
     "@vueuse/core": "^13.0.0",
     "@vueuse/integrations": "^13.0.0",
     "async-validator": "^4.2.5",
+    "axios": "^1.8.4",
+    "frontend": "file:",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
