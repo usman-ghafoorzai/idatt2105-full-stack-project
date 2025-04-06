@@ -20,7 +20,7 @@ public class CategoryService {
     return categoryRepository.findByName(name);
   }
 
-  public Category createCategory(Category category, String parentCategoryName) {
+  public Category createCategory(Category category, String parentCategoryName) throws Exception {
       // Check if the category already exists
       Category existingCategory = categoryRepository.findByName(category.getName());
       if (existingCategory != null) {

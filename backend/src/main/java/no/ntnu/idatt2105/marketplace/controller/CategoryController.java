@@ -41,7 +41,11 @@ public class CategoryController {
    */
   @GetMapping("/create")
   public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam (required = false) String parentCategoryName) {
-    Category createdCategory = categoryService.createCategory(category, parentCategoryName);
-    return ResponseEntity.ok(createdCategory);
+    try {
+      Category createdCategory = categoryService.createCategory(category, parentCategoryName);
+      return ResponseEntity.ok(createdCategory);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().header("Error-Message", e.getMessage()).body(null);
+    }
   }
 }
