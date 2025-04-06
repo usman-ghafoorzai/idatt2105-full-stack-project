@@ -1,7 +1,4 @@
-default:
-  image: maven:3.9-eclipse-temurin-21
-  git:
-    depth: 0
+image: maven:3.9-eclipse-temurin-21
 
 stages:
   - build
@@ -12,6 +9,7 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "--batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  GIT_DEPTH: 0
 
 cache:
   paths:
