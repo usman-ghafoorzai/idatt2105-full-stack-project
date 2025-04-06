@@ -52,7 +52,7 @@ public class CategoryController {
   }
   
   /**
-   * Gets all the categories
+   * Retrieves all the categories
    * @return a list categories
    */
   @GetMapping
