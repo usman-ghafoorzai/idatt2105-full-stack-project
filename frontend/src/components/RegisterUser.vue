@@ -68,8 +68,6 @@ const register = async () => {
   registerError.value = "";
 
   const result = await execute();
-  if (!result.pass) return;
-
   console.log({ // Foreløpig bare logge verdiene, skal erstattes med API-kall etterhvert
     firstName: firstName.value,
     lastName: lastName.value,
@@ -77,6 +75,8 @@ const register = async () => {
     email: email.value,
     password: password.value
   });
+  if (!result.pass) return;
+  
 
   try {
     const res = await registerAPI({
