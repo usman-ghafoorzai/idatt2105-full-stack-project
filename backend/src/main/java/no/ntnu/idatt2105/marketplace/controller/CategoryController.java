@@ -40,7 +40,7 @@ public class CategoryController {
    * @return the created category
    */
   @GetMapping("/create")
-  public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam String parentCategoryName) {
+  public ResponseEntity<Category> createCategory(@RequestBody Category category, @RequestParam (required = false) String parentCategoryName) {
     Category createdCategory = categoryService.createCategory(category, parentCategoryName);
     return ResponseEntity.ok(createdCategory);
   }
