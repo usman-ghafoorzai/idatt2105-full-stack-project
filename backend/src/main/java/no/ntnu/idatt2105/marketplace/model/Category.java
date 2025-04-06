@@ -1,5 +1,7 @@
 package no.ntnu.idatt2105.marketplace.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,4 +32,16 @@ public class Category {
    */
   @Column(nullable = false, unique = true, length = 100)
   private String name;
+
+  /**
+   * Self referencing relationship to represent the parent category.
+   * This allows for a hierarchical structure of categories.
+   */
+  @ManyToOne
+  @JoinColumn(name = "parent_id")
+  private Category parentCategory;
+
+  @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Category> subcategories;
+  
 }
