@@ -82,7 +82,7 @@ public class CategoryController {
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @DeleteMapping("/{parentId}/subcategories/{subCategoryName}")
+  @DeleteMapping("/{parentName}/subcategories/{subCategoryName}")
   public ResponseEntity<Void> removeSubCategory(@PathVariable String parentName, @PathVariable String subCategoryName) {
     Category parent = categoryService.findByName(parentName);
     Category subCategory = categoryService.findByName(subCategoryName);
@@ -97,6 +97,26 @@ public class CategoryController {
     categoryService.updateCategory(parent.getId(), parent); // Update the parent category in the database
     return ResponseEntity.noContent().build();
   }
+
+  @PostMapping("/{parentName}/subcategories")
+  public ResponseEntity<Category> addSubCategory(@PathVariable String parentName, @RequestBody Category subCategory) {
+    Category parent = categoryService.findByName(parentName);
+    if (parent == null) {
+      return ResponseEntity.notFound().build(); // Parent category not found
+    }
+    // Set parent for the new sub-category
+    subCategory.setParentCategory(parent);
+
+    try {
+      // Save the new sub-category to the database
+      Category savedSubCategory = categoryService.createCategory(subCategory, parentName);
+      return ResponseEntity.ok(savedSubCategory);
+    } catch (Exception e) {
+      return ResponseEntity.status(500)
+          .header("Error-Message", "An unexpected error occurred while creating the sub-category.").body(null);
+    }
+  }
+
 
   /**
    * Deletes a category by its ID.
