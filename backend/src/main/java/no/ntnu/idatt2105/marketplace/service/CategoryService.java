@@ -69,6 +69,12 @@ public class CategoryService {
     });
   }
 
-  
+  /**
+   * Deletes a category by its ID.
+   * @param id the ID of the category to delete
+   */
+  public void deleteCategory(Long id) throws Exception {
+    categoryRepository.deleteById(id);
+  }
   
 }

@@ -63,7 +63,7 @@ public class ItemController {
    * Deletes an item by its unique identifier.
    *
    * @param id the unique identifier of the item to be deleted
-   * @return {@code ResponseEntity} with a 204 No Content status if the item was successfully deleted, otherwise returns a 404 Not Found response
+   * @return {@code ResponseEntity} with a 204 No Content status if the item was successfully deleted
    */
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteItem(@PathVariable Long id) {

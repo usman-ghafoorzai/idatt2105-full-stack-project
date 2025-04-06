@@ -78,4 +78,19 @@ public class CategoryController {
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
+
+  /**
+   * Deletes a category by its ID.
+   * @param id the ID of the category to delete
+   * @return status 204 if the category is deleted successfully, or status 500 if an unexpected error occurs
+   */
+  @GetMapping("/delete/{id}")
+  public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    try {
+      categoryService.deleteCategory(id);
+      return ResponseEntity.noContent().build();
+    } catch (Exception e) {
+      return ResponseEntity.status(500).header("Error-Message", "An unexpected error occurred while deleting the category.").build();
+    }
+  }
 }
