@@ -27,7 +27,7 @@ backend-test:
   stage: test
   script:
     - cd backend
-    - mvn $MAVEN_CLI_OPTS clean test
+    - mvn $MAVEN_CLI_OPTS clean test -Dspring.profiles.active=test
   artifacts:
     paths:
       - backend/target/surefire-reports/
