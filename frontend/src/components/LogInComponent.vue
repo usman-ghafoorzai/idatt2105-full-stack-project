@@ -139,14 +139,6 @@ const login = async () => {
   width: 100%;
   max-width: 300px;
   height: 40px;
-  background: #4D4D4D;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
   transition: background-color 0.3s;
 }
 

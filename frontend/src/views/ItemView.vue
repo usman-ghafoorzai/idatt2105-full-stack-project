@@ -35,8 +35,8 @@
                 ></ItemDescription>
                 
                 <div id="buttons-container">
-                    <ReserveButton></ReserveButton>
                     <BuyNowButton></BuyNowButton>
+                    <ReserveButton></ReserveButton>
                 </div>
             </div>
         </div>
