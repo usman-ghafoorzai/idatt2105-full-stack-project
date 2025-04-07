@@ -26,7 +26,6 @@ const user = {
           <p class="user-location">{{ user.location }}</p>
         </div>
       </div>
-      <div class="bottom-box"></div>
     </div>
   </div>
 </template>
@@ -35,17 +34,20 @@ const user = {
 .user-profile-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   height: 100%;
 }
 
 .account-box {
   position: relative;
-  width: 600px;
+  width: 100%;
+  max-width: 600px;
   height: 600px;
   background: #E2E5F6;
   border-radius: 10px;
+
+
 }
 
 .account-content {
@@ -109,26 +111,19 @@ const user = {
   margin: 0 0 8px 0;
 }
 
-.bottom-box {
-  box-sizing: border-box;
-  position: absolute;
-  width: 597px;
-  height: 153px;
-  left: 3px;
-  bottom: 0;
-  background: #88A6E6;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
-}
 
 @media (max-width: 768px) {
   .account-box {
-    width: 100%;
-    max-width: 600px;
+    height: auto;
+    min-height: 500px;
+  }
+
+  .account-content {
+    padding: 25px;
   }
 
   .bottom-box {
-    width: calc(100% - 6px);
+    height: 120px;
   }
 }
 </style>

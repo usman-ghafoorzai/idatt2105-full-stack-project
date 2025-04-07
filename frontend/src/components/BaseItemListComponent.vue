@@ -15,7 +15,7 @@ const props = defineProps({
   },
   containerHeight: {
     type: Number,
-    default: 250
+    default: 290
   },
   scrollbarColor: {
     type: String,
@@ -34,7 +34,8 @@ const scrollbarThumb = ref(null);
 
 // Computed styles
 const containerStyle = computed(() => ({
-  height: `${props.containerHeight}px`
+  height: `${props.containerHeight}px`,
+  background: props.bgColor
 }));
 
 const scrollbarStyle = computed(() => ({
@@ -47,7 +48,7 @@ const thumbStyle = computed(() => ({
 
 // Calculate scrollbar height based on container height
 const scrollbarHeight = computed(() => {
-  return props.containerHeight - 80; // Subtract header and margins
+  return props.containerHeight - 80;
 });
 
 // Use VueUse's useScroll
@@ -70,15 +71,12 @@ const updateScrollbarPosition = () => {
 
   const maxScroll = container.scrollHeight - container.clientHeight;
   const scrollPercentage = maxScroll > 0 ? y.value / maxScroll : 0;
-
-  // Use computed scrollbarHeight instead of hardcoded value
   const thumbPosition = scrollPercentage * (scrollbarHeight.value - thumb.clientHeight);
 
   thumb.style.top = `${thumbPosition + SCROLLBAR_THUMB_OFFSET}px`;
 
   emit('scroll', { scrollPercentage });
 
-  // Emit when scrolled to the end
   if (scrollPercentage > 0.95) {
     emit('scroll-end');
   }
@@ -87,33 +85,24 @@ const updateScrollbarPosition = () => {
 // Watch for scroll changes
 watch(y, updateScrollbarPosition);
 
-// Watch for arrivedState.bottom
 watch(() => arrivedState.bottom, (isAtBottom) => {
   if (isAtBottom) {
     emit('scroll-end');
   }
 });
 
-onMounted(() => {
-  // Initial position
-  updateScrollbarPosition();
-});
+onMounted(updateScrollbarPosition);
 </script>
 
 <template>
   <div class="base-section" :style="containerStyle">
-    <div class="base-header" :style="{ background: bgColor }">
-      <h1 class="base-title">{{ title }}</h1>
-    </div>
-
+    <h1 class="base-title">{{ title }}</h1>
     <div class="items-container">
       <div class="items" ref="itemsContainer">
         <div class="items-row">
           <slot></slot>
         </div>
       </div>
-
-      <!-- Custom scrollbar with dynamic height -->
       <div class="scrollbar" :style="[scrollbarStyle, { height: scrollbarHeight + 'px' }]">
         <div class="scrollbar-thumb" ref="scrollbarThumb" :style="thumbStyle"></div>
       </div>
@@ -124,34 +113,16 @@ onMounted(() => {
 <style scoped>
 .base-section {
   position: relative;
-  width: 600px;
-  background: #FFFFFF;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   overflow: hidden;
 }
 
-.base-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 5px 6px;
-  gap: 10px;
-  width: 280px;
-  height: 45px;
-  margin: 8px 0 0 28px;
-  border-radius: 10px;
-}
-
 .base-title {
   font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 38px;
-  line-height: 46px;
+  font-weight: 600;
+  font-size: 20px;
   color: #4D4D4D;
-  margin: 0;
+  margin: 10px 0 0 20px;
 }
 
 .items-container {
@@ -164,23 +135,22 @@ onMounted(() => {
 .items {
   height: 100%;
   overflow-y: auto;
-  padding: 0 28px 0 28px;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  padding: 0 28px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .items::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 .items-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 36px;
+  gap: 40px;
   padding-bottom: 10px;
 }
 
-/* Custom scrollbar styling */
 .scrollbar {
   position: absolute;
   right: 10px;
@@ -188,13 +158,12 @@ onMounted(() => {
   width: 8px;
   border-radius: 10px;
   opacity: 0.8;
-  /* Height is now set dynamically in the template */
 }
 
 .scrollbar-thumb {
   position: absolute;
   width: 8px;
-  height: 40px; /* Slightly taller thumb */
+  height: 40px;
   right: 0;
   top: 5px;
   border-radius: 10px;
@@ -207,7 +176,6 @@ onMounted(() => {
   opacity: 1;
 }
 
-/* Common item styling that can be used by child components */
 :deep(.item-base) {
   flex: 0 0 auto;
 }
@@ -234,10 +202,6 @@ onMounted(() => {
   .base-section {
     width: 90%;
     margin: 0 auto;
-  }
-
-  .base-header {
-    width: 50%;
   }
 
   .base-title {
