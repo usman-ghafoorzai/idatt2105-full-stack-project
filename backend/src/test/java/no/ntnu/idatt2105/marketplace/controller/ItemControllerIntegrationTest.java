@@ -82,13 +82,13 @@ public class ItemControllerIntegrationTest {
 
   @Test
   public void testAccessWithoutToken() throws Exception {
-    mockMvc.perform(get("/api/items"))
+    mockMvc.perform(post("/api/items"))
         .andExpect(status().isForbidden());
   }
 
   @Test
   public void testAccessWithInvalidToken() throws Exception {
-    mockMvc.perform(get("/api/items")
+    mockMvc.perform(post("/api/items")
         .header("Authorization", "Bearer invalid.token.here"))
         .andExpect(status().isUnauthorized());
   }
