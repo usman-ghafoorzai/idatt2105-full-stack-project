@@ -23,11 +23,10 @@ const removeBookmark = (itemId) => {
 </script>
 
 <template>
-  <BaseItemListComponent title="Bookmarked" bgColor="var(--color-coral)" class="elegant-card">
+  <BaseItemListComponent title="Bookmarked" bgColor="var(--color-light-bg)" class="elegant-card">
     <div v-for="item in bookmarkedItems" :key="item.id" class="bookmarked-item item-base">
       <div class="image-container">
         <img :src="item.imageUrl" alt="Bookmarked item">
-        <div class="price-tag">{{ item.price }} kr</div>
         <fa :icon="['fas','bookmark']" class="bookmark-icon" @click="removeBookmark(item.id)"/>
       </div>
     </div>
@@ -36,7 +35,7 @@ const removeBookmark = (itemId) => {
 
 <style scoped>
 .bookmark-icon {
-  color: yellow;
+  color: var(--color-red);
   font-size: 20px;
   position: absolute;
   z-index: 10;

@@ -43,7 +43,7 @@ import UserProfileComponent from "@/components/UserProfileComponent.vue";
 
 .items-section {
   width: 66.67%;
-  background-color: var(--color-medium-bg);
+  background-color: var(--color-white);
   display: flex;
   justify-content: center;
   padding: 40px 20px;

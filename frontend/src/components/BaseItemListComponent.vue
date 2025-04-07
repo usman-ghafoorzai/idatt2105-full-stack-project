@@ -186,17 +186,6 @@ onMounted(updateScrollbarPosition);
   margin-bottom: 10px;
 }
 
-:deep(.price-tag) {
-  position: absolute;
-  z-index: 10;
-  bottom: 0;
-  width: fit-content;
-  background-color: black;
-  opacity: 60%;
-  color: aliceblue;
-  font-size: 18px;
-}
-
 @media (max-width: 768px) {
   .base-section {
     width: 90%;

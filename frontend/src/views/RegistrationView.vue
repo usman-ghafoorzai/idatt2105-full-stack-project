@@ -53,7 +53,7 @@ import UploadPicture from '../components/UploadPicture.vue'
 
 .registration-section {
   width: 66.67%;
-  background-color: var(--color-medium-bg);
+  background-color: var(--color-white);
   display: flex;
   justify-content: center;
   align-items: center;
