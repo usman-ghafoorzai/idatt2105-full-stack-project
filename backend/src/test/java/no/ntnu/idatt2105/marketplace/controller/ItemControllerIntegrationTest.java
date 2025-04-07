@@ -42,6 +42,8 @@ public class ItemControllerIntegrationTest {
     user.setPassword(passwordEncoder.encode("password123"));
     user.setRole(Role.USER);
     user.setEmail("itemuser@example.com");
+    user.setFirstName("Item");
+    user.setLastName("User");
     userService.saveUser(user);
 
     // Login and retrieve JWT token

@@ -44,6 +44,8 @@ public class AuthControllerIntegrationTest {
         "  \"username\": \"testuser\",\n" +
         "  \"email\": \"testuser@example.com\",\n" +
         "  \"password\": \"password123\",\n" +
+        "  \"firstName\": \"Test\",\n" +
+        "  \"lastName\": \"User\",\n" +
         "  \"role\": \"USER\"\n" +
         "}";
 
@@ -65,6 +67,8 @@ public class AuthControllerIntegrationTest {
     newUser.setPassword(passwordEncoder.encode("password123"));
     newUser.setRole(Role.USER);
     newUser.setEmail("test@example.com");
+    newUser.setFirstName("Test");
+    newUser.setLastName("User");
     userService.saveUser(newUser);
 
     // Prepare login request with correct credentials
