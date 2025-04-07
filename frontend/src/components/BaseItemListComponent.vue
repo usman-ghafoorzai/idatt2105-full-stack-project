@@ -2,8 +2,6 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useScroll } from '@vueuse/core';
 
-// Constants for scrollbar
-const SCROLLBAR_HEIGHT = 170;
 const SCROLLBAR_THUMB_OFFSET = 5;
 
 const props = defineProps({
@@ -47,6 +45,11 @@ const thumbStyle = computed(() => ({
   background: props.scrollbarColor
 }));
 
+// Calculate scrollbar height based on container height
+const scrollbarHeight = computed(() => {
+  return props.containerHeight - 80; // Subtract header and margins
+});
+
 // Use VueUse's useScroll
 const { y, arrivedState } = useScroll(itemsContainer);
 
@@ -67,7 +70,9 @@ const updateScrollbarPosition = () => {
 
   const maxScroll = container.scrollHeight - container.clientHeight;
   const scrollPercentage = maxScroll > 0 ? y.value / maxScroll : 0;
-  const thumbPosition = scrollPercentage * (SCROLLBAR_HEIGHT - thumb.clientHeight);
+
+  // Use computed scrollbarHeight instead of hardcoded value
+  const thumbPosition = scrollPercentage * (scrollbarHeight.value - thumb.clientHeight);
 
   thumb.style.top = `${thumbPosition + SCROLLBAR_THUMB_OFFSET}px`;
 
@@ -108,8 +113,8 @@ onMounted(() => {
         </div>
       </div>
 
-      <!-- Custom scrollbar -->
-      <div class="scrollbar" :style="scrollbarStyle">
+      <!-- Custom scrollbar with dynamic height -->
+      <div class="scrollbar" :style="[scrollbarStyle, { height: scrollbarHeight + 'px' }]">
         <div class="scrollbar-thumb" ref="scrollbarThumb" :style="thumbStyle"></div>
       </div>
     </div>
@@ -181,9 +186,9 @@ onMounted(() => {
   right: 10px;
   top: 5px;
   width: 8px;
-  height: 170px;
   border-radius: 10px;
   opacity: 0.8;
+  /* Height is now set dynamically in the template */
 }
 
 .scrollbar-thumb {
