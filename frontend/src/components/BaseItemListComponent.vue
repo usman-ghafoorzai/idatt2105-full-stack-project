@@ -113,7 +113,6 @@ onMounted(updateScrollbarPosition);
 <style scoped>
 .base-section {
   position: relative;
-  border-radius: 10px;
   overflow: hidden;
 }
 

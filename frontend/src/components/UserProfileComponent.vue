@@ -13,7 +13,7 @@ const user = {
 
 <template>
   <div class="user-profile-container">
-    <div class="account-box">
+    <div class="account-box elegant-card">
       <div class="account-content">
         <div class="profile-picture-wrapper">
           <UploadPicture />
@@ -44,10 +44,7 @@ const user = {
   width: 100%;
   max-width: 600px;
   height: 600px;
-  background: #E2E5F6;
-  border-radius: 10px;
-
-
+  background: var(--color-salmon);;
 }
 
 .account-content {
