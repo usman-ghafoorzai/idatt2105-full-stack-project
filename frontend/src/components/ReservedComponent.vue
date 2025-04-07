@@ -28,7 +28,7 @@ const updateScrollbarPosition = () => {
   const thumb = scrollbarThumb.value;
 
   const scrollPercentage = container.scrollTop / (container.scrollHeight - container.clientHeight);
-  const scrollbarHeight = 200;
+  const scrollbarHeight = 100;
   const thumbPosition = scrollPercentage * (scrollbarHeight - thumb.clientHeight);
 
   thumb.style.top = `${thumbPosition + 5}px`;
@@ -77,5 +77,166 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.reserved-section {
+  position: relative;
+  width: 600px;
+  height: 250px;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  overflow: hidden;
+}
 
+.reserved-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 6px;
+  gap: 10px;
+  width: 280px;
+  height: 45px;
+  margin: 8px 0 0 28px;
+  background: #E2E5F6;
+  border-radius: 10px;
+}
+
+.reserved-title {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 46px;
+  color: #4D4D4D;
+  margin: 0;
+}
+
+.reserved-items-container {
+  position: relative;
+  height: 180px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.reserved-items {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 28px 0 28px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.reserved-items::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.reserved-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+  padding-bottom: 10px;
+}
+
+.reserved-item {
+  flex: 0 0 auto;
+}
+
+.image-container {
+  position: relative;
+  width: 150px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1px solid #000000;
+}
+
+.price-tag {
+  position: absolute;
+  z-index: 10;
+  bottom: 0;
+  width: fit-content;
+  background-color: black;
+  opacity: 60%;
+  color: aliceblue;
+  font-size: 18px;
+}
+
+.reserved-badge {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 7px 29px;
+  gap: 10px;
+  position: absolute;
+  width: 62px;
+  height: 20px;
+  bottom: -20px;
+  left: calc(50% - 31px);
+  background: #87CF2F;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.cancel-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 3px 8px;
+  font-size: 12px;
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.cancel-button:hover {
+  background-color: rgba(255, 0, 0, 0.9);
+}
+
+.scrollbar {
+  position: absolute;
+  width: 14px;
+  height: 170px;
+  right: 10px;
+  top: 5px;
+  background: #D9D9D9;
+  border-radius: 15px;
+}
+
+.scrollbar-thumb {
+  position: absolute;
+  width: 14px;
+  height: 30px;
+  right: 0;
+  top: 5px;
+  background: #000000;
+  border-radius: 15px;
+}
+
+@media (max-width: 768px) {
+  .reserved-section {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .reserved-header {
+    width: 50%;
+  }
+
+  .reserved-title {
+    font-size: 42px;
+  }
+}
 </style>
