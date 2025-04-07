@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import genericAvatar from '../assets/generic-avatar.png';
 
 const props = defineProps({
-  modelValue: File // v-model binds this to the parent component
+  imageFile: File // v-model binds this to the parent component
 });
 const emit = defineEmits(['update:modelValue']); // Emit the updated file when changed
 
@@ -11,7 +11,7 @@ const profilePicSrc = ref(genericAvatar);
 
 
 // Watch the prop value for changes
-watch(() => props.modelValue, (newFile) => {
+watch(() => props.imageFile, (newFile) => {
   if (newFile) {
     profilePicSrc.value = URL.createObjectURL(newFile);
   } else {
