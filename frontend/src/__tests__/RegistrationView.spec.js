@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import RegistrationPage from '../views/RegistrationPage.vue'
+import RegistrationView from '../views/RegistrationView.vue'
 import Header from '../components/Header.vue'
 import RegisterUser from '../components/RegisterUser.vue'
 import UploadPicture from '../components/UploadPicture.vue'
 import LogInComponent from '../components/LogInComponent.vue'
 import {createRouter, createWebHistory} from "vue-router";
 
-describe('RegistrationPage.vue', () => {
+describe('RegistrationView.vue', () => {
   let wrapper
   let router
 
@@ -16,7 +16,7 @@ describe('RegistrationPage.vue', () => {
       history: createWebHistory(),
       routes: []
     })
-    wrapper = mount(RegistrationPage, {
+    wrapper = mount(RegistrationView, {
       global: {
         plugins: [router],
         stubs: {
