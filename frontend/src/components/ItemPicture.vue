@@ -34,8 +34,6 @@ function prevImage() {
 .image-gallery {
     position: relative;
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
     overflow: hidden;
 }
 
