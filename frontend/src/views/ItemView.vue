@@ -11,7 +11,7 @@
         <div id="left-section">
             <div id="image-seller-information">
                <ItemPicture
-                :images="['src/assets/images/boat.jpg', 'src/assets/images/Thor.png', 'src/assets/images/Myfavoritepokemons.png','src/assets/images/boat.jpg']"
+                :images="['src/assets/images/boat.jpg', 'src/assets/images/Thor.png']"
                 id="item-picture"
                 />
                 <SellerInfo
