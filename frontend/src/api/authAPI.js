@@ -38,3 +38,20 @@ export async function register({firstName, lastName, username, email, password})
     throw new Error(errorMessage);
   }
 }
+
+export async function uploadProfilePicture(image, userId) {
+  const formData = new FormData();
+  formData.append('image', image);
+
+  try {
+    const response = await apiClient.post(`/users/${userId}/image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Set content type to multipart/form-data for file upload
+      },
+    });
+    return response.data
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Image upload failed';
+    throw new Error(errorMessage);
+  }
+}
