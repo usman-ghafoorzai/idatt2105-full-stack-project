@@ -27,7 +27,6 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        padding: 20px;
         background-color: #FFFBFB;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -36,6 +35,7 @@
         display: grid;
         grid-template-rows: auto auto auto;
         gap: 5px;
+        margin-left: 20px;
         width: 100%;
     }
 
@@ -45,8 +45,7 @@
         align-self: flex-end;
         background-color: #88A6E6;
         width: 40%;
-        padding: 10px 0;
-        margin-top: 10px;
+        margin: 20px 10px;
     }
 
     button:hover {

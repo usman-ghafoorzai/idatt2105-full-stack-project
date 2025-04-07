@@ -50,10 +50,10 @@
         flex-direction: row;
         justify-content: space-between;
         align-items: flex-start;
-        gap: 150px; /* Space between left and right sections */
+        gap: 150px;
         width: 100%;
-        max-width: 1500px; /* Limit the maximum width of the container */
-        margin: 0 auto; /* Center the container horizontally */
+        max-width: 1500px;
+        margin: 0 auto;
         padding: 20px;
         box-sizing: border-box;
     }
@@ -84,7 +84,17 @@
     #buttons-container {
         display: flex;
         flex-direction: row;
-        gap: 20px; /* Space between the buttons */
-        justify-content: flex-start; /* Align buttons to the left */
+        gap: 20px;
+        justify-content: flex-start;
     }
+
+    @media (max-width: 768px) {
+    #item-view-container {
+        flex-direction: column; /* Stack components vertically */
+        gap: 20px;
+        align-items: center;;
+    }
+
+
+}
 </style>
