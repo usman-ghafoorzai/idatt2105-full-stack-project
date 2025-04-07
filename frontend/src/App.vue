@@ -6,12 +6,20 @@ import ItemFrameComponent from './components/ItemFrameComponent.vue'
 import ItemListingComponent from './components/ItemListingComponent.vue'
 import FilterSidebar from './components/FilterSidebar.vue'
 import ItemDescription from './components/ItemDescription.vue'
-import SellerInfo from './components/SellerInfo.vue'
+import { RouterView } from 'vue-router';
 </script>
 
 <template>
   <Header></Header>
-  <router-view></router-view>
+  <!-- <ItemDescription
+    title="Bayliner VR 5 Cuddy OB Lite brukt"
+    price="10000"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    image="src/assets/images/boat.jpg"
+    location="Oslo"
+    :categories="['Boat', 'Used']"
+  ></ItemDescription> -->
+  <RouterView/>
 </template>
 
 <style>

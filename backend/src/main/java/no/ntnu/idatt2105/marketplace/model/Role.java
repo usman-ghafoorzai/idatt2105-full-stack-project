@@ -1,5 +1,7 @@
 package no.ntnu.idatt2105.marketplace.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 /**
  * Enum representing the roles of a user in the marketplace.
  * <p>
@@ -12,5 +14,10 @@ package no.ntnu.idatt2105.marketplace.model;
  */
 public enum Role {
   USER,
-  ADMIN
+  ADMIN;
+
+  @JsonCreator
+  public static Role fromString(String role) {
+    return Role.valueOf(role.toUpperCase());
+  }
 }
