@@ -23,7 +23,7 @@ const removeBookmark = (itemId) => {
 </script>
 
 <template>
-  <BaseItemListComponent title="Bookmarked" bgColor="var(--color-salmon)" class="elegant-card">
+  <BaseItemListComponent title="Bookmarked" bgColor="var(--color-coral)" class="elegant-card">
     <div v-for="item in bookmarkedItems" :key="item.id" class="bookmarked-item item-base">
       <div class="image-container">
         <img :src="item.imageUrl" alt="Bookmarked item">

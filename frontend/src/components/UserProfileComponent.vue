@@ -44,7 +44,7 @@ const user = {
   width: 100%;
   max-width: 600px;
   height: 600px;
-  background: var(--color-salmon);;
+  background: var(--color-salmon);
 }
 
 .account-content {

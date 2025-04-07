@@ -37,13 +37,13 @@ import UserProfileComponent from "@/components/UserProfileComponent.vue";
 
 .profile-section {
   width: 33.33%;
-  background-color: var(--color-medium-bg);
+  background-color: var(--color-light-bg);
   padding: 40px 20px;
 }
 
 .items-section {
   width: 66.67%;
-  background-color: var(--color-light-bg);
+  background-color: var(--color-medium-bg);
   display: flex;
   justify-content: center;
   padding: 40px 20px;

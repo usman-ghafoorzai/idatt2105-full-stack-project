@@ -22,7 +22,7 @@ const cancelReservation = (itemId) => {
 </script>
 
 <template>
-  <BaseItemListComponent title="Reserved" bgColor="var(--color-salmon)" class="elegant-card">
+  <BaseItemListComponent title="Reserved" bgColor="var(--color-coral)" class="elegant-card">
     <div v-for="item in reservedItems" :key="item.id" class="reserved-item item-base">
       <div class="image-container">
         <img :src="item.imageUrl" alt="Reserved item">
