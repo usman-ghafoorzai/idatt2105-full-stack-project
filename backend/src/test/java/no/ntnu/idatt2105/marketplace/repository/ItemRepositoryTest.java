@@ -104,6 +104,8 @@ public class ItemRepositoryTest {
     seller.setUsername("testuser");
     seller.setEmail("testuser@example.com");
     seller.setPassword("password123");
+    seller.setFirstName("Test");
+    seller.setLastName("User");
     seller.setRole(Role.USER);
     seller = userRepository.save(seller); // Save user first
 

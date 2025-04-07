@@ -287,14 +287,6 @@ input {
   grid-area: button;
   width: 300px;
   height: 40px;
-  background: #4D4D4D;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
   margin-top: 5px;
 }
 

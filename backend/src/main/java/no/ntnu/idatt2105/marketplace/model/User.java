@@ -42,11 +42,25 @@ public class User {
   private String email;
 
   /**
+   * First name of the User.
+   * This field cannot be null and has a maximum length of 50 characters.
+   */
+  @Column(nullable = false, length = 50)
+  private String firstName;
+
+  /**
+   * Last name of the User.
+   * This field cannot be null and has a maximum length of 50 characters.
+   */
+  @Column(nullable = false, length = 50)
+  private String lastName;
+
+  /**
    * Password of the User.
-   * This field cannot be null and has a maximum length of x characters.
+   * This field cannot be null.
    */
   @Column(nullable = false)
-  private String password; // TODO: define max length, should be hashed?
+  private String password;
 
   /**
    * Role of the User.
