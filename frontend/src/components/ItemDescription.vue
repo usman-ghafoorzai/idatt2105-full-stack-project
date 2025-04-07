@@ -42,7 +42,7 @@
         justify-content: center;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         border-radius: 10px;
-        width: 550px;
+        width: 100%;
         gap: 15px;
     }
     hr {
@@ -75,7 +75,9 @@
         padding: 5px 10px;
     }
     #description {
+        height: 250px;
         margin: 5% 15%;
+        overflow-y: scroll;
     }
     @media (max-width: 900px) {
         #item-description-container {

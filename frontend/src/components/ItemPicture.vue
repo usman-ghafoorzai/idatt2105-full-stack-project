@@ -22,7 +22,9 @@ function prevImage() {
 
 <template>
     <div class="image-gallery">
-        <div class="image-container">
+        <div 
+        class="image-container"
+        :style="{ backgroundImage: `url(${currentImage})`}">
             <img :src="currentImage" alt="Gallery Image" />
             <button class="prev" @click="prevImage"><</button>
             <button class="next" @click="nextImage">></button>
@@ -34,32 +36,47 @@ function prevImage() {
 .image-gallery {
     position: relative;
     width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
     overflow: hidden;
 }
 
 .image-container {
     position: relative;
     width: 100%;
-    /* endre størrelse på bildet*/
     height: 400px;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
+.image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-image: inherit; 
+    filter: blur(10px); 
+    z-index: 1;
+}
+
+/* Actual image */
 .image-container img {
-    max-width: 100%; 
+    max-width: 100%;
     max-height: 100%;
-    /* skalerer bildet dersom bildet er større enn .image-container */
-    object-fit: contain;
+    object-fit: contain; /* Maintain aspect ratio */
     display: block;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 2; /* Place the image above the blurred background */
 }
 
-
+/* Navigation buttons */
 .prev, .next {
     position: absolute;
     top: 50%;
@@ -73,7 +90,7 @@ function prevImage() {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    z-index: 10;
+    z-index: 3; /* Ensure buttons are above the image */
     opacity: 0;
     transition: opacity 0.3s ease;
 }
