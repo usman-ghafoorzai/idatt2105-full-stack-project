@@ -1,7 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
-import { register as registerAPI } from '@/api/authAPI.js';
+import { register as registerAPI, uploadProfilePicture } from '@/api/authAPI.js';
+
+const props = defineProps({
+  profileImage: File // v-model binds this to the parent component
+});
 
 const firstName = ref('');
 const lastName = ref('');
@@ -76,7 +80,8 @@ const register = async () => {
     password: password.value
   });
   if (!result.pass) return;
-  
+
+  console.log("Profile Image:", props.profileImage); // Check if the profile image is correctly passed
 
   try {
     const res = await registerAPI({
@@ -86,6 +91,15 @@ const register = async () => {
       email: email.value,
       password: password.value,
     });
+
+    const userId = res.user.id; // Assuming the API returns userId
+    console.log("User ID:", userId);
+
+    if (props.profileImage) {
+      console.log("Uploading profile picture for user ID:", userId);
+      await uploadProfilePicture(props.profileImage, userId); // Upload image
+    }
+
 
     console.log("Registration successful:", res);
     // Optional: redirect to dashboard or login page

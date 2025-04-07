@@ -1,16 +1,33 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import genericAvatar from '../assets/generic-avatar.png';
 
+const props = defineProps({
+  modelValue: File // v-model binds this to the parent component
+});
+const emit = defineEmits(['update:modelValue']); // Emit the updated file when changed
+
 const profilePicSrc = ref(genericAvatar);
-const fileInput = ref(null);
+
+
+// Watch the prop value for changes
+watch(() => props.modelValue, (newFile) => {
+  if (newFile) {
+    profilePicSrc.value = URL.createObjectURL(newFile);
+  } else {
+    profilePicSrc.value = genericAvatar;
+  }
+});
+
 
 function handleFileChange(event) {
   const file = event.target.files[0];
   if (file) {
-    profilePicSrc.value = URL.createObjectURL(file);
+    emit('update:modelValue', file); // Emit the new file to the parent component
   }
 }
+
+const fileInput = ref(null);
 
 function triggerFileInput() {
   fileInput.value.click();
