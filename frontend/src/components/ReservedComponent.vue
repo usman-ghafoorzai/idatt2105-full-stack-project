@@ -8,6 +8,9 @@ const reservedItems = ref([
   { id: 2, title: 'Item 2', imageUrl: 'https://via.placeholder.com/150x100', price: '350', details: 'Item details here' },
   { id: 3, title: 'Item 3', imageUrl: 'https://via.placeholder.com/150x100', price: '175', details: 'Item details here' },
   { id: 4, title: 'Item 4', imageUrl: 'https://via.placeholder.com/150x100', price: '420', details: 'Item details here' },
+  { id: 5, title: 'Item 5', imageUrl: 'https://via.placeholder.com/150x100', price: '280', details: 'Item details here' },
+  { id: 6, title: 'Item 6', imageUrl: 'https://via.placeholder.com/150x100', price: '310', details: 'Item details here' },
+  { id: 7, title: 'Item 7', imageUrl: 'https://via.placeholder.com/150x100', price: '195', details: 'Item details here' },
 ]);
 
 // Function to cancel reservation
@@ -19,7 +22,7 @@ const cancelReservation = (itemId) => {
 </script>
 
 <template>
-  <BaseItemListComponent title="Reserved" bgColor="#E2E5F6" class="elegant-card">
+  <BaseItemListComponent title="Reserved" bgColor="var(--color-salmon)" class="elegant-card">
     <div v-for="item in reservedItems" :key="item.id" class="reserved-item item-base">
       <div class="image-container">
         <img :src="item.imageUrl" alt="Reserved item">
