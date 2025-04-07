@@ -1,5 +1,4 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
     import ItemPicture from '../components/ItemPicture.vue';
     import ItemDescription from '../components/ItemDescription.vue';
     import SellerInfo from '../components/SellerInfo.vue';
@@ -18,7 +17,7 @@
                 <SellerInfo
                     :name="'John Doe'"
                     :phoneNumber="'12345678'"
-                    :email="'makhmadfranav@gmail.com'"
+                    :email="'test@gmail.com'"
                 /> 
             </div>
             
