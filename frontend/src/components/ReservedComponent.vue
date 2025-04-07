@@ -50,7 +50,30 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <div class="reserved-section">
+    <div class="reserved-header">
+      <h1 class="reserved-title">Reserved</h1>
+    </div>
 
+    <div class="reserved-items-container">
+      <div class="reserved-items" ref="itemsContainer">
+        <div class="reserved-row">
+          <div v-for="item in reservedItems" :key="item.id" class="reserved-item">
+            <div class="image-container">
+              <img :src="item.imageUrl" alt="Reserved item">
+              <div class="price-tag">{{ item.price }} kr</div>
+              <div class="reserved-badge">Reserved</div>
+              <button class="cancel-button" @click="cancelReservation(item.id)">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scrollbar">
+        <div class="scrollbar-thumb" ref="scrollbarThumb"></div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
