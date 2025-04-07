@@ -40,17 +40,10 @@
     }
 
     button {
-        border-radius: 10px;
         font-size: 20px;
         align-self: flex-end;
-        background-color: #88A6E6;
         width: 40%;
         margin: 20px 10px;
-    }
-
-    button:hover {
-        background-color: #5272a1;
-        cursor: pointer;
     }
 
 </style>
