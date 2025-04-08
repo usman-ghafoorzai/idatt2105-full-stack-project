@@ -11,6 +11,12 @@ import no.ntnu.idatt2105.marketplace.dto.CategoryResponseDTO;
 import no.ntnu.idatt2105.marketplace.dto.CategoryUpdateDTO;
 import no.ntnu.idatt2105.marketplace.service.CategoryService;
 
+/**
+ * Controller for managing categories in the marketplace.
+ * This controller provides endpoints for creating, updating, deleting, and retrieving categories.
+ * Only the administrator can perform these operations, except for the retrieval of categories,
+ * which is available to all users.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
@@ -19,6 +25,10 @@ public class CategoryController {
 
   /**
    * Finds a category by its name.
+   * @param name the name of the category to find
+   * @return a {@code ResponseEntity} with:
+   *         - status 200 OK and the {@link CategoryResponseDTO} containing the category details if found,
+   *         - status 404 Not Found if the category name does not exist in the database
    */
   @GetMapping("/findByName/{name}")
   public ResponseEntity<CategoryResponseDTO> findByName(@PathVariable String name) {
@@ -31,7 +41,12 @@ public class CategoryController {
   }
 
   /**
-   * Creates a new category.
+   * Creates a new category based on the provided {@link CategoryCreateDTO}.
+   * The new category is saved to the database.
+   * @param createDTO the DTO {@link CategoryCreateDTO} containing the details of the category to create
+   * @return a {@code ResponseEntity} with:
+   *        - status 200 OK and the {@link CategoryResponseDTO} containing the created category details,
+   *        - status 400 Bad Request with error message in the header if the category already exists or if the parent category is not found
    */
   @PostMapping("/create")
   public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryCreateDTO createDTO) {
@@ -44,7 +59,10 @@ public class CategoryController {
   }
 
   /**
-   * Retrieves all categories.
+   * Retrieves all categories from the database.
+   * @return a {@code ResponseEntity} with:
+   *         - status 200 OK and a list of {@link CategoryResponseDTO} containing all categories,
+   *         - status 204 No Content if no categories are found in the database
    */
   @GetMapping
   public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
@@ -59,6 +77,16 @@ public class CategoryController {
    * Returns 200 Ok if the category is updated successfully, or 404 Not Found if the category does not exist, 
    * or status 404 with the exception message in the header when parent/subcategory is not found.
    */
+  /**
+   * Updates an existing category based on the provided {@link CategoryUpdateDTO}.
+   * The update includes changing the name, parent category, and subcategories.
+   * The updated category is saved to the database.
+   * @param id the ID of the category to update
+   * @param updateDTO the DTO {@link CategoryUpdateDTO} containing the updated details of the category.
+   * @return a {@code ResponseEntity} with:
+   *        - status 200 OK if the category is updated successfully and the {@link CategoryResponseDTO} containing the updated category details,
+   *        - status 404 Not Found if the category does not exist or if the parent/subcategory is not found
+   */
   @PutMapping("/update/{id}")
   public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryUpdateDTO updateDTO) {
     try {
@@ -72,7 +100,11 @@ public class CategoryController {
   }
 
   /**
-   * Deletes a category.
+   * Deletes a category by its ID.
+   * @param id the ID of the category to delete
+   * @return a {@code ResponseEntity} with:
+   *        - status 204 No Content if the category is deleted successfully,
+   *        - status 404 Not Found with error message in the header if the category does not exist
    */
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
