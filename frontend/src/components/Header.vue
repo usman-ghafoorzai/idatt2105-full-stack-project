@@ -2,6 +2,7 @@
     import Searchbar from './Searchbar.vue';
     import { ref, computed } from 'vue';
     import { useRouter } from 'vue-router';
+    import { isLoggedIn } from '../utils/authService.js';
 
     const router = useRouter();
     // Define props so to pass values to test more easily
@@ -23,6 +24,15 @@
     const navigateToHome = () => {
       router.push('/');
     }
+
+    const navigateToSell = () => {
+        if (isLoggedIn()) {
+            router.push('/sell');
+        } else {
+            alert('Please log in to sell an item.');
+            router.push('/register');
+        }
+    }
 </script>
 
 
@@ -40,7 +50,7 @@
       <fa icon="icons" class="icons"></fa>
     </div>
     <div class="container">
-      <div id="sell">SELL</div>
+      <div id="sell" @click="navigateToSell">SELL</div>
       <fa icon="arrow-up-from-bracket" class="icons"></fa>
     </div>
     <div id="container">

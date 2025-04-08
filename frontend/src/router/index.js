@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import RegistrationPage from '../views/RegistrationPage.vue'
 import ItemListingView from '../views/ItemListingView.vue';
 import ItemView from '../views/ItemView.vue';
+import SellerView from '../views/SellerView.vue';
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/item',
     name: 'Item',
     component: ItemView
+  },
+  {
+    path: '/sell',
+    name: 'Sell',
+    component: SellerView
   }
 ]
 
