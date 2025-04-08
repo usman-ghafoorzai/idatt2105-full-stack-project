@@ -1,18 +1,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { isLoggedIn } from '@/utils/authService';
-import apiClient from '@/api/apiClient';
+// Remove the unused apiClient import
 import UploadPicture from './UploadPicture.vue';
-import { getLoggedInUser} from '@/api/userAPI';
-import { getUserImage } from '@/api/userAPI';
+import { getLoggedInUser, getUserImage } from '@/api/userAPI';
 
 // Reactive variables for user info and image
 const user = ref({
   name: '',
   username: '',
   email: '',
-  phone: '',
-  location: ''
+  // Removed phone and location properties
 });
 const profileImage = ref(null); // To hold the user image
 
@@ -24,10 +22,6 @@ const fetchUserData = async () => {
     user.value = await getLoggedInUser();
 
     // Fetch the user image
-    
-    // const imageResponse = await getUserImage(user.value.id);
-    // console.log(imageResponse.data);
-    // profileImage.value = URL.createObjectURL(imageResponse.data);
     const imageDataUrl = await getUserImage(user.value.id);
     profileImage.value = imageDataUrl;
   } catch (error) {
@@ -56,8 +50,8 @@ onMounted(() => {
           <h3 class="user-name" v-if="isLoggedIn()">{{ user.name || 'User Name' }}</h3>
           <h2 class="username" v-if="isLoggedIn()">{{ user.username || 'Username' }}</h2>
           <p class="user-email" v-if="isLoggedIn()">{{ user.email || 'Email' }}</p>
-          <p class="user-phone" v-if="isLoggedIn()">{{ user.phone || 'Phone' }}</p>
-          <p class="user-location" v-if="isLoggedIn()">{{ user.location || 'Location' }}</p>
+          <!-- Removed phone and location paragraphs -->
+
           <!-- Display a message when the user is not logged in -->
           <div v-else>
             <p>Please log in to view your profile.</p>
@@ -143,9 +137,7 @@ onMounted(() => {
   margin: 0 0 35px 0;
 }
 
-.user-email,
-.user-phone,
-.user-location {
+.user-email {
   font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -155,6 +147,7 @@ onMounted(() => {
   margin: 0 0 8px 0;
 }
 
+/* Removed user-phone and user-location styles from the combined selector */
 
 @media (max-width: 768px) {
   .account-box {
