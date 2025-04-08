@@ -10,6 +10,8 @@
   --color-black: #000000;
   --color-light-bg: #FDE8E9;
   --color-medium-bg:#f7cac9;
+
+  font-family: 'Roboto', sans-serif;
 }
 
 .elegant-card {
@@ -41,4 +43,11 @@
 
   button:hover {
     background-color: #3D3D3D;
+  }
+
+  /* removes the arrows from number inputs */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
   }
