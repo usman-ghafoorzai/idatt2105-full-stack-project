@@ -32,4 +32,30 @@ public class BookmarkController {
     List<Item> items = bookmarkService.getBookmarkedItemsByUserId(userId);
     return ResponseEntity.ok(items);
   }
+
+  /**
+   * Creates a new bookmark for the specified user and item.
+   *
+   * @param userId the unique identifier of the user
+   * @param itemId the unique identifier of the item
+   * @return {@code ResponseEntity} containing the created bookmark
+   */
+  @PostMapping("/{userId}/{itemId}")
+  public ResponseEntity<Void> bookmarkItem(@PathVariable Long userId, @PathVariable Long itemId) {
+    bookmarkService.saveBookmark(userId, itemId);
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * Deletes a bookmark for the specified user and item.
+   *
+   * @param userId the unique identifier of the user
+   * @param itemId the unique identifier of the item
+   * @return {@code ResponseEntity} indicating the result of the deletion
+   */
+  @DeleteMapping("/{userId}/{itemId}")
+  public ResponseEntity<Void> deleteBookmark(@PathVariable Long userId, @PathVariable Long itemId) {
+    bookmarkService.deleteBookmark(userId, itemId);
+    return ResponseEntity.noContent().build();
+  }
 }
