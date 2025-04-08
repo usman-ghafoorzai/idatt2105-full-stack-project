@@ -14,11 +14,23 @@ import no.ntnu.idatt2105.marketplace.dto.CategoryUpdateDTO;
 import no.ntnu.idatt2105.marketplace.model.Category;
 import no.ntnu.idatt2105.marketplace.repository.CategoryRepository;
 
+/**
+ * Service class for managing categories in the marketplace.
+ * This class provides methods to create, update, delete, and retrieve categories.
+ * Only the administrator can perform these operations, except for the retrieval of categories,
+ * which is available to all users.
+ */
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
   private final CategoryRepository categoryRepository;
 
+  /**
+   * Private method to map a Category entity to a CategoryResponseDTO for API response purposes.
+   * It also sets the parent category and subcategories if they exist.
+   * @param category the Category entity to convert
+   * @return the converted CategoryResponseDTO
+   */
     private CategoryResponseDTO convertToResponse(Category category) {
     CategoryResponseDTO response = new CategoryResponseDTO();
     response.setId(category.getId());
@@ -46,7 +58,13 @@ public class CategoryService {
     return response;
   }
 
-  public CategoryResponseDTO findByName(String name) {
+  /**
+   * Finds a category by its name and converts it to a response DTO.
+   * @param name the name of the category to find
+   * @return the CategoryResponseDTO containing the category details
+   * @throws IllegalArgumentException if the category is not found
+   */
+  public CategoryResponseDTO findByName(String name) throws IllegalArgumentException {
     Category category = categoryRepository.findByName(name);
     if (category == null) {
       throw new IllegalArgumentException("Category not found: " + name);
@@ -54,12 +72,21 @@ public class CategoryService {
     return convertToResponse(category);
   }
 
+  /**
+   * Creates a new category based on the provided CategoryCreateDTO.
+   * The new category is saved to the database.
+   * @param createDTO the DTO containing the details of the category to create
+   * @return the created CategoryResponseDTO
+   * @throws Exception if the category already exists or if the parent category is not found
+   */
   public CategoryResponseDTO createCategory(CategoryCreateDTO createDTO) throws Exception {
     // Check if category already exists (based on unique name)
     Category existingCategory = categoryRepository.findByName(createDTO.getName());
     if (existingCategory != null) {
       throw new IllegalArgumentException("Category already exists: " + createDTO.getName());
     }
+
+    // Create new category
     Category category = new Category();
     category.setName(createDTO.getName());
 
@@ -75,6 +102,10 @@ public class CategoryService {
     return convertToResponse(savedCategory);
   }
 
+  /**
+   * Retrieves all categories from the database and converts them to a list of CategoryResponseDTOs.
+   * @return a list of CategoryResponseDTOs containing all categories
+   */
   public List<CategoryResponseDTO> getAllCategories() {
     return categoryRepository.findAll()
         .stream()
@@ -82,6 +113,17 @@ public class CategoryService {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Updates an existing category based on the provided CategoryUpdateDTO.
+   * The update includes changing the name, parent category, and subcategories.
+   * The updated category is saved to the database.
+   * @param id the ID of the category to update
+   * @param updateDTO the {link CategoryUpdateDTO} containing the updated details of the category. 
+   * The updateDTO contains the new name, the ID of the new parent category (if any),
+   * and a list of subcategory IDs to remain associated with the category.
+   * @return the updated {@link CategoryResponseDTO} containing the updated category details
+   * @throws Exception if any provided category is not found or if there are issues with the update
+   */
   @Transactional
   public Optional<CategoryResponseDTO> updateCategory(Long id, CategoryUpdateDTO updateDTO) throws Exception {
     return categoryRepository.findById(id).map(existingCategory -> {
@@ -121,6 +163,11 @@ public class CategoryService {
     });
   }
 
+  /**
+   * Deletes a category by its ID.
+   * @param id the ID of the category to delete
+   * @throws Exception if the category is not found or if there are issues with deletion
+   */
   public void deleteCategory(Long id) throws Exception {
     if (!categoryRepository.existsById(id)) {
       throw new IllegalArgumentException("Category not found with id: " + id);
@@ -130,6 +177,13 @@ public class CategoryService {
 
   // Additional Methods for Subcategory Operations
   
+  /**
+   * Adds a subcategory to a parent category.
+   * @param parentName the name of the parent category
+   * @param subDTO the DTO containing the details of the subcategory to add
+   * @return the created CategoryResponseDTO for the subcategory
+   * @throws Exception if the parent category is not found or if the subcategory already exists
+   */
   public CategoryResponseDTO addSubCategory(String parentName, CategoryCreateDTO subDTO) throws Exception {
     Category parent = categoryRepository.findByName(parentName);
     if (parent == null) {
@@ -150,6 +204,12 @@ public class CategoryService {
     return convertToResponse(savedSub);
   }
 
+  /**
+   * Removes a subcategory from a parent category.
+   * @param parentName the name of the parent category
+   * @param subCategoryName the name of the subcategory to remove
+   * @throws Exception if the parent or subcategory is not found or if they are not linked correctly
+   */
   public void removeSubCategory(String parentName, String subCategoryName) throws Exception {
     Category parent = categoryRepository.findByName(parentName);
     Category subCategory = categoryRepository.findByName(subCategoryName);
