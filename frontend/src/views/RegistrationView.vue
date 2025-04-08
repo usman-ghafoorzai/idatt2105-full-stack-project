@@ -46,7 +46,7 @@ const selecedImage = ref(null) // Shared state for the image
 
 .login-section {
   width: 33.33%;
-  background-color: #D9D9D9;
+  background-color: var(--color-light-bg);
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -56,10 +56,11 @@ const selecedImage = ref(null) // Shared state for the image
 
 .registration-section {
   width: 66.67%;
-  background-color: #F3F3F3;
+  background-color: var(--color-white);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: 150px;
 }
 
 .registration-content {

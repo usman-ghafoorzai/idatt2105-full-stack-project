@@ -58,7 +58,7 @@
 
 <style scoped>
     #header {
-        background-color: #E2E5F6;
+        background-color: var(--color-coral);
         height: 133px;
         width: 100%;
         display: grid;

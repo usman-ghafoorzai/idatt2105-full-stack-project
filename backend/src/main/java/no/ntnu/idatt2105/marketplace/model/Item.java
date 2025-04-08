@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Entity class representing an Item in the marketplace.
  * This class is mapped to the "listings" table in the database.
@@ -75,11 +78,32 @@ public class Item {
 
   /**
    * The user who is selling the Item.
-   * This field is a foreign key reference to the {@link User} entity.
+   * <p>
+   * This field is a foreign key reference to the {@link User} entity and is used
+   * internally for database mapping.
+   * It is marked as {@code @JsonIgnore}, so it is not included in the JSON
+   * representation of the Item.
+   * Instead, only the seller's ID is exposed in the JSON via the
+   * {@link #getSellerId()} method.
    */
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "seller_id")
+  @JsonIgnore // Prevent full User Object from being serialized
   private User seller;
+
+  /**
+   * Gets the ID of the seller.
+   * <p>
+   * This value is included in the JSON serialization of the Item object under the
+   * property {@code sellerId}.
+   *
+   * @return the ID of the seller, or {@code null} if no seller is set.
+   */
+  @JsonProperty("sellerId")
+  public Long getSellerId() {
+    return seller != null ? seller.getId() : null;
+  }
 
   /**
    * The timestamp when the Item was created.
