@@ -19,7 +19,7 @@ describe('RegisterUser.vue', () => {
 
   // Test that all required form input fields are present in the DOM
   it('renders all input fields', () => {
-    const fields = ['firstName', 'lastName', 'email', 'location', 'password'];
+    const fields = ['firstName', 'lastName', 'email', 'username', 'password'];
     fields.forEach(field => {
       const input = wrapper.find(`input#${field}`);
       expect(input.exists()).toBe(true);
@@ -31,13 +31,13 @@ describe('RegisterUser.vue', () => {
     await wrapper.find('#firstName').setValue('Ada');
     await wrapper.find('#lastName').setValue('Lovelace');
     await wrapper.find('#email').setValue('ada@example.com');
-    await wrapper.find('#location').setValue('London');
+    await wrapper.find('#username').setValue('London');
     await wrapper.find('#password').setValue('securepass123');
 
     expect(wrapper.find('#firstName').element.value).toBe('Ada');
     expect(wrapper.find('#lastName').element.value).toBe('Lovelace');
     expect(wrapper.find('#email').element.value).toBe('ada@example.com');
-    expect(wrapper.find('#location').element.value).toBe('London');
+    expect(wrapper.find('#username').element.value).toBe('London');
     expect(wrapper.find('#password').element.value).toBe('securepass123');
   });
 
@@ -48,7 +48,7 @@ describe('RegisterUser.vue', () => {
     await wrapper.find('#firstName').setValue('Grace');
     await wrapper.find('#lastName').setValue('Hopper');
     await wrapper.find('#email').setValue('grace@navy.mil');
-    await wrapper.find('#location').setValue('New York');
+    await wrapper.find('#username').setValue('New York');
     await wrapper.find('#password').setValue('COBOL4life');
 
     await wrapper.find('.register-button').trigger('click');
@@ -59,7 +59,7 @@ describe('RegisterUser.vue', () => {
       email: 'grace@navy.mil',
       firstName: 'Grace',
       lastName: 'Hopper',
-      location: 'New York'
+      username: 'New York'
     });
 
     consoleSpy.mockRestore();
