@@ -117,7 +117,12 @@ public class CategoryController {
   }
 
   /**
-   * Adds a new sub-category under the given parent.
+   * Adds a sub-category to the specified parent category.
+   * @param parentName the name of the parent category
+   * @param createDTO the DTO {@link CategoryCreateDTO} containing the details of the sub-category to add
+   * @return a {@code ResponseEntity} with:
+   *         - status 200 OK and the {@link CategoryResponseDTO} containing the created sub-category details,
+   *         - status 500 if something goes wrong (e.g., parent category not found, sub-category already exists)
    */
   @PostMapping("/{parentName}/subcategories")
   public ResponseEntity<CategoryResponseDTO> addSubCategory(@PathVariable String parentName, @RequestBody CategoryCreateDTO createDTO) {
@@ -130,7 +135,12 @@ public class CategoryController {
   }
 
   /**
-   * Removes a sub-category from the specified parent.
+   * Removes a sub-category from the specified parent category.
+   * @param parentName the name of the parent category
+   * @param subCategoryName the name of the sub-category to remove
+   * @return a {@code ResponseEntity} with:
+   *        - status 204 No Content if the sub-category is removed and deleted successfully,
+   *        - status 400 Bad Request with error message in the header if the parent or sub-category is not found or if parent/sub-category are not linked correctly
    */
   @DeleteMapping("/{parentName}/subcategories/{subCategoryName}")
   public ResponseEntity<Void> removeSubCategory(@PathVariable String parentName, @PathVariable String subCategoryName) {
