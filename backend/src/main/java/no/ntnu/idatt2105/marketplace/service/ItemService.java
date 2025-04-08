@@ -57,6 +57,7 @@ public class ItemService {
     ItemResponseDTO.SellerDTO sellerDTO = new ItemResponseDTO.SellerDTO();
     sellerDTO.setId(item.getSeller().getId());
     sellerDTO.setUsername(item.getSeller().getUsername());
+    sellerDTO.setEmail(item.getSeller().getEmail());
     response.setSeller(sellerDTO);
 
     response.setCreatedAt(item.getCreatedAt());

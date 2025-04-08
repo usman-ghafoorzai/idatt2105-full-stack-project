@@ -126,6 +126,7 @@ public class ItemResponseDTO {
   public static class SellerDTO {
     private Long id;
     private String username;
+    private String email;
     // Getters and setters
 
     public Long getId() {
@@ -142,6 +143,14 @@ public class ItemResponseDTO {
 
     public void setUsername(String username) {
       this.username = username;
+    }
+
+    public String getEmail() {
+      return email;
+    }
+
+    public void setEmail(String email) {
+      this.email = email;
     }
   }
 }
