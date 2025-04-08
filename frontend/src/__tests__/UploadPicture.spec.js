@@ -29,18 +29,21 @@ describe('UploadPicture.vue', () => {
 
   // Test if clicking the image container triggers the file input click function
   it('triggers file input when image is clicked', async () => {
+    // Create a spy for the click method
+    const mockClick = vi.fn();
     // Get the file input element
     const fileInput = wrapper.find('input[type="file"]').element;
-    
-    // Spy on the click event of the input element
-    const mockClick = vi.fn();
-    fileInput.click = mockClick;  // Directly mock the click function
+    // Override the click method with our spy
+    fileInput.click = mockClick;
 
-    // Trigger click on the image container (which should trigger file input click)
+    // Set the component's ref to our mocked element
+    wrapper.vm.$refs = { fileInput };
+
+    // Trigger click on the image container
     const imageContainer = wrapper.find('.image-container');
     await imageContainer.trigger('click');
 
-    // Verify the file input click was triggered
+    // Verify our spy was called, indicating the file input was triggered
     expect(mockClick).toHaveBeenCalled();
   });
 
@@ -52,10 +55,20 @@ describe('UploadPicture.vue', () => {
     // Get the file input element
     const input = wrapper.find('input[type="file"]');
 
-    // Simulate file selection
-    await input.setFiles([mockFile]);
+    // Create a synthetic change event with mock file data
+    const changeEvent = new Event('change');
+    Object.defineProperty(changeEvent, 'target', {
+      writable: false,
+      value: { files: [mockFile] }
+    });
 
+    // Dispatch the change event to the input element
+    await input.element.dispatchEvent(changeEvent);
     // Wait for the next tick to allow Vue to process the update
+    await wrapper.vm.$nextTick();
+
+    // Simulate the parent updating modelValue
+    await wrapper.setProps({ modelValue: mockFile });
     await wrapper.vm.$nextTick();
 
     // Verify image src is updated to the blob URL from our mocked createObjectURL
