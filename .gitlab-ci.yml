@@ -9,6 +9,7 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "--batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  GIT_DEPTH: 0
 
 cache:
   paths:
@@ -26,7 +27,7 @@ backend-test:
   stage: test
   script:
     - cd backend
-    - mvn $MAVEN_CLI_OPTS clean test
+    - mvn $MAVEN_CLI_OPTS clean test -Dspring.profiles.active=test
   artifacts:
     paths:
       - backend/target/surefire-reports/

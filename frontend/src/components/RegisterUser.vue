@@ -1,21 +1,99 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
+import { register as registerAPI } from '@/api/authAPI.js';
 
-const password = ref('');
-const email = ref('');
 const firstName = ref('');
 const lastName = ref('');
 const location = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref(''); // Fixed variable name
+const attempted = ref(false);
+const registerError = ref('');
 
-const register = () => {
-  // TODO: implementere API logikk etterhvert
-  console.log({   // Foreløpig bare logge verdiene, skal erstattes med API-kall
-    password: password.value,
-    email: email.value,
+// Form object for validation
+const form = computed(() => ({
+  firstName: firstName.value,
+  lastName: lastName.value,
+  location: location.value,
+  email: email.value,
+  password: password.value,
+  confirmPassword: confirmPassword.value
+}));
+
+// Validation rules
+const rules = {
+  firstName: [
+    { required: true, message: 'First name is required', trigger: 'blur' },
+    { pattern: /^[A-Za-zÆØÅæøå\- ]+$/, message: 'First name can only contain letters and hyphens', trigger: 'blur' }
+  ],
+  lastName: [
+    { required: true, message: 'Last name is required', trigger: 'blur' },
+    { pattern: /^[A-Za-zÆØÅæøå\- ]+$/, message: 'Last name can only contain letters and hyphens', trigger: 'blur' }
+  ],
+  location: [
+    { required: true, message: 'Location is required', trigger: 'blur' }
+  ],
+  email: [
+    { required: true, message: 'Email is required', trigger: 'blur' },
+    { pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, message: 'Invalid email address', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: 'Password is required', trigger: 'blur' },
+    { min: 6, message: 'Password must be at least 6 characters', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    {
+      validator: (rule, value, callback) => {
+        if (value !== password.value) {
+          callback(new Error('Passwords do not match'));
+        } else {
+          callback();
+        }
+      },
+      trigger: 'blur'
+    }
+  ]
+};
+
+// Set up validator
+const { errorFields, execute } = useAsyncValidator(form, rules, {
+  immediate: false,
+  manual: true
+});
+
+const register = async () => {
+  attempted.value = true;
+  registerError.value = "";
+
+  const result = await execute();
+  console.log({ // Foreløpig bare logge verdiene, skal erstattes med API-kall etterhvert
     firstName: firstName.value,
     lastName: lastName.value,
-    location: location.value
+    location: location.value,
+    email: email.value,
+    password: password.value
   });
+  if (!result.pass) return;
+  
+
+  try {
+    const res = await registerAPI({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      username: location.value, // TODO: change to username, and implement location
+      email: email.value,
+      password: password.value,
+    });
+
+    console.log("Registration successful:", res);
+    // Optional: redirect to dashboard or login page
+
+  } catch (error) {
+    console.error("Registration failed:", error.message);
+    registerError.value = error.message;
+  }
 }
 </script>
 
@@ -30,6 +108,9 @@ const register = () => {
       <div class="textbox">
         <input id="firstName" type="text" v-model="firstName" placeholder="Enter first name">
       </div>
+      <span class="error-message" v-if="attempted && errorFields?.firstName?.[0]?.message">
+        {{ errorFields.firstName[0].message }}
+      </span>
     </div>
 
     <div class="form-field last-name">
@@ -37,13 +118,9 @@ const register = () => {
       <div class="textbox">
         <input id="lastName" type="text" v-model="lastName" placeholder="Enter last name">
       </div>
-    </div>
-
-    <div class="form-field email">
-      <label for="email">EMAIL</label>
-      <div class="textbox">
-        <input id="email" type="email" v-model="email" placeholder="Enter email">
-      </div>
+      <span class="error-message" v-if="attempted && errorFields?.lastName?.[0]?.message">
+        {{ errorFields.lastName[0].message }}
+      </span>
     </div>
 
     <div class="form-field location">
@@ -51,6 +128,19 @@ const register = () => {
       <div class="textbox">
         <input id="location" type="text" v-model="location" placeholder="Enter location">
       </div>
+      <span class="error-message" v-if="attempted && errorFields?.location?.[0]?.message">
+        {{ errorFields.location[0].message }}
+      </span>
+    </div>
+
+    <div class="form-field email">
+      <label for="email">EMAIL</label>
+      <div class="textbox">
+        <input id="email" type="email" v-model="email" placeholder="Enter email">
+      </div>
+      <span class="error-message" v-if="attempted && errorFields?.email?.[0]?.message">
+        {{ errorFields.email[0].message }}
+      </span>
     </div>
 
     <div class="form-field password">
@@ -58,7 +148,22 @@ const register = () => {
       <div class="textbox">
         <input id="password" type="password" v-model="password" placeholder="Enter password">
       </div>
+      <span class="error-message" v-if="attempted && errorFields?.password?.[0]?.message">
+        {{ errorFields.password[0].message }}
+      </span>
     </div>
+
+    <div class="form-field confirm-password">
+      <label for="confirmPassword">CONFIRM PASSWORD</label>
+      <div class="textbox">
+        <input id="confirmPassword" type="password" v-model="confirmPassword" placeholder="Confirm password">
+      </div>
+      <span class="error-message" v-if="attempted && errorFields?.confirmPassword?.[0]?.message">
+        {{ errorFields.confirmPassword[0].message }}
+      </span>
+      <p class="error-message" v-if="registerError">{{ registerError }}</p>
+    </div>
+
     <button class="register-button" @click="register">Register</button>
   </div>
 </template>
@@ -70,11 +175,12 @@ const register = () => {
   display: grid;
   grid-template-areas:
     "header"
-    "password"
-    "lastname"
-    "email"
     "firstname"
+    "lastname"
     "location"
+    "email"
+    "password"
+    "confirmpassword"
     "button";
   gap: 15px;
 }
@@ -112,24 +218,28 @@ const register = () => {
   height: 60px;
 }
 
-.password {
-  grid-area: password;
+.first-name {
+  grid-area: firstname;
 }
 
 .last-name {
   grid-area: lastname;
 }
 
+.location {
+  grid-area: location;
+}
+
 .email {
   grid-area: email;
 }
 
-.first-name {
-  grid-area: firstname;
+.password {
+  grid-area: password;
 }
 
-.location {
-  grid-area: location;
+.confirm-password {
+  grid-area: confirmpassword;
 }
 
 label {
@@ -156,6 +266,7 @@ label {
   background: #FFFFFF;
   border: 1px solid #A6A6A6;
   border-radius: 4px;
+  margin-bottom: 10px;
 }
 
 input {
@@ -176,18 +287,17 @@ input {
   grid-area: button;
   width: 300px;
   height: 40px;
-  background: #4D4D4D;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
   margin-top: 5px;
 }
 
 .register-button:hover {
   background: #3D3D3D;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+  text-align: center;
+  margin-top: -10px;
 }
 </style>

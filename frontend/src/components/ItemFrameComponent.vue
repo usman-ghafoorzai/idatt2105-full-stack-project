@@ -77,4 +77,11 @@
         color: aliceblue;
         font-size: 30px;
     }
+
+    @media (max-width: 1000px) {
+        .item-frame {
+            width: 250px;
+            height: 350px;
+        }
+    }
 </style>
