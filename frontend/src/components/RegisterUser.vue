@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
-import { register as registerAPI, uploadProfilePicture } from '@/api/authAPI.js';
+import { register as registerAPI } from '@/api/authAPI.js';
+import { uploadProfilePicture } from '@/api/userAPI';
 
 const props = defineProps({
   profileImage: File // v-model binds this to the parent component
