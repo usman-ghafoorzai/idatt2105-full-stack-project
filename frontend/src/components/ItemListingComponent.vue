@@ -1,5 +1,10 @@
 <script setup>
     import ItemFrameComponent from './ItemFrameComponent.vue';
+    import { useRouter } from 'vue-router';
+    import { useItemStore } from '../stores/ItemStore.js';
+
+    const itemStore = useItemStore();
+    const router = useRouter();
 
     defineProps({
         items: {
@@ -11,6 +16,11 @@
             required: true,
         },
     });
+
+    function handleItemClick(item) {
+        itemStore.setSelectedItem(item);
+        router.push('/item');
+    }
 </script>
 
 <template>
@@ -22,6 +32,7 @@
             :image="item.image"
             :price=item.price
             :details="item.title"
+            @click="handleItemClick(item)"
         />
     </div>
 </template>

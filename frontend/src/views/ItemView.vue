@@ -4,6 +4,11 @@
     import SellerInfo from '../components/SellerInfo.vue';
     import ReserveButton from '../components/ReserveButton.vue';
     import BuyNowButton from '../components/BuyNowButton.vue';
+    import { useItemStore } from '../stores/ItemStore.js';
+
+    const itemStore = useItemStore();
+    const item = itemStore.selectedItem;
+
 </script>
 
 <template>
@@ -15,7 +20,7 @@
                 id="item-picture"
                 />
                 <SellerInfo
-                    :name="'John Doe'"
+                    :name="'John Pork'"
                     :phoneNumber="'12345678'"
                     :email="'test@gmail.com'"
                 /> 
@@ -26,11 +31,11 @@
         <div id="right-section">
             <div id="item-description-buttons">
                 <ItemDescription
-                    title="Bayliner VR 5 Cuddy OB Lite brukt"
-                    price="10000"
-                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-                    image="src/assets/images/boat.jpg"
-                    location="Oslo"
+                    :title="item.title"
+                    :price=item.price
+                    :description="item.description"
+                    :image="'src/assets/images/boat.jpg'"
+                    :location="'Oslo'"
                     :categories="['Boat', 'Used']"
                 ></ItemDescription>
                 
