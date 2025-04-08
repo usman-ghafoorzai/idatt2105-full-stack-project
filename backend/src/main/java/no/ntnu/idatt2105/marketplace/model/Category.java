@@ -1,5 +1,10 @@
 package no.ntnu.idatt2105.marketplace.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +31,26 @@ public class Category {
 
   /**
    * Name of the Category.
-   * This value must be unique and cannot be null.
+   * This value must be unique and cannot be null. Max length is 100 characters.
    */
   @Column(nullable = false, unique = true, length = 100)
   private String name;
+
+  /**
+   * Self referencing relationship to represent the parent category.
+   * This allows for a hierarchical structure of categories.
+   */
+  @ManyToOne
+  @JoinColumn(name = "parent_id")
+  @JsonBackReference  // prevents recursion by not serializing this field in the forward direction
+  private Category parentCategory;
+
+  /**
+   * List of subcategories that belong to this category.
+   * This is a self-referencing relationship to allow for nested categories.
+   */
+  @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference  // manages the serialization of subCategories
+  private List<Category> subcategories;
+  
 }

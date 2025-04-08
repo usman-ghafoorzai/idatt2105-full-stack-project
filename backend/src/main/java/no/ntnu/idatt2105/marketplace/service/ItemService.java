@@ -16,10 +16,7 @@ import no.ntnu.idatt2105.marketplace.repository.ItemRepository;
  * Provides methods to retrieve, save, update, and delete item entities.
  */
 @Service
-@Transactional // The transactional annotation is used to manage transactions in the service
-               // layer. It ensures that all database operations within the method are executed
-               // within a single transaction, providing consistency and rollback capabilities
-               // in case of errors.
+@Transactional 
 @RequiredArgsConstructor
 public class ItemService {
   private final ItemRepository itemRepository;
@@ -80,6 +77,8 @@ public class ItemService {
     return itemRepository.findAll();
   }
 
+  // TODO: Implement pagination and sorting for the getAllItems method
+  // TODO: Category filtering and user filtering
   public List<Item> getFilteredItems(String title, String categoryName, Double minPrice, Double maxPrice, String status) {
     Specification<Item> spec = Specification.where(null);
 
