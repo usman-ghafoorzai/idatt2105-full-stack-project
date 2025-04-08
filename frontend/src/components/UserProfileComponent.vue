@@ -47,7 +47,9 @@ onMounted(() => {
         </div>
         <div class="user-details">
           <!-- Display the user data only if logged in -->
-          <h3 class="user-name" v-if="isLoggedIn()">{{ user.name || 'User Name' }}</h3>
+          <h3 class="user-name" v-if="isLoggedIn()">
+            {{ `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User Name' }}
+          </h3>
           <h2 class="username" v-if="isLoggedIn()">{{ user.username || 'Username' }}</h2>
           <p class="user-email" v-if="isLoggedIn()">{{ user.email || 'Email' }}</p>
           <!-- Removed phone and location paragraphs -->
