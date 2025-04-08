@@ -48,4 +48,15 @@ public class Bookmark {
    */
   @Column(nullable = false, updatable = false)
   private LocalDateTime bookmarkedAt = LocalDateTime.now();
+
+  /**
+   * Constructor to create a new bookmark with the specified user and item.
+   *
+   * @param user the user who bookmarked the item
+   * @param item the item that was bookmarked
+   */
+  public Bookmark(User user, Item item) {
+    this.user = user;
+    this.item = item;
+  }
 }
