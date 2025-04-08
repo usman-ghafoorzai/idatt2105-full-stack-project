@@ -20,7 +20,7 @@ const selecedImage = ref(null) // Shared state for the image
       <div class="registration-section">
         <div class="registration-content">
           <div class="upload-section">
-            <UploadPicture imageFile="selecedImage" />
+            <UploadPicture v-model="selecedImage" />
           </div>
           <div class="register-section">
             <RegisterUser :profileImage="selecedImage" />

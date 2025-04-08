@@ -3,15 +3,14 @@ import { ref, watch } from 'vue';
 import genericAvatar from '../assets/generic-avatar.png';
 
 const props = defineProps({
-  imageFile: File // v-model binds this to the parent component
+  modelValue: File // v-model binding
 });
-const emit = defineEmits(['update:modelValue']); // Emit the updated file when changed
+const emit = defineEmits(['update:modelValue']);
 
 const profilePicSrc = ref(genericAvatar);
 
-
-// Watch the prop value for changes
-watch(() => props.imageFile, (newFile) => {
+// Update image preview when modelValue changes
+watch(() => props.modelValue, (newFile) => {
   if (newFile) {
     profilePicSrc.value = URL.createObjectURL(newFile);
   } else {
@@ -19,25 +18,24 @@ watch(() => props.imageFile, (newFile) => {
   }
 });
 
-
-function handleFileChange(event) {
-  const file = event.target.files[0];
-  if (file) {
-    emit('update:modelValue', file); // Emit the new file to the parent component
-  }
-}
-
 const fileInput = ref(null);
 
 function triggerFileInput() {
   fileInput.value.click();
+}
+
+function handleFileChange(event) {
+  const file = event.target.files[0];
+  if (file) {
+    emit('update:modelValue', file); // Let parent know
+  }
 }
 </script>
 
 <template>
   <div class="upload-picture-container">
     <div class="image-container" @click="triggerFileInput">
-      <img :src="profilePicSrc" alt="Profile picture" id="profile-pic">
+      <img :src="profilePicSrc" alt="Profile picture" id="profile-pic" />
       <div class="hover-overlay">
         <span>Change picture</span>
       </div>
@@ -48,7 +46,8 @@ function triggerFileInput() {
       type="file"
       accept="image/jpeg, image/png, image/jpg"
       id="input-file"
-      @change="handleFileChange">
+      @change="handleFileChange"
+    />
   </div>
 </template>
 
