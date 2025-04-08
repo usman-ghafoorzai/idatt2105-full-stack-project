@@ -27,6 +27,28 @@ import no.ntnu.idatt2105.marketplace.service.UserService;
 public class UserController {
   private final UserService userService;
 
+    /**
+   * Retrieves the currently logged-in user.
+   *
+   * @param authentication the authentication object containing user details
+   * @return {@code ResponseEntity} containing the logged-in user if found,
+   *         otherwise returns a 401 Unauthorized response
+   */
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/me")
+  public ResponseEntity<User> getLoggedInUser(Authentication authentication) {
+    if (authentication == null || !authentication.isAuthenticated()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Unauthorized
+    }
+
+    String username = authentication.getName();
+    User user = userService.getUserByUsername(username);
+    if (user == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
+    }
+    return ResponseEntity.ok(user); // OK
+  }
+  
   /**
    * Retrieves a user by their unique identifier.
    *
@@ -54,26 +76,6 @@ public class UserController {
   }
 
 
-  /**
-   * Retrieves the currently logged-in user.
-   *
-   * @param authentication the authentication object containing user details
-   * @return {@code ResponseEntity} containing the logged-in user if found,
-   *         otherwise returns a 401 Unauthorized response
-   */
-  @PreAuthorize("isAuthenticated()")
-  @GetMapping("/me")
-  public ResponseEntity<User> getLoggedInUser(Authentication authentication) {
-    if (authentication == null || !authentication.isAuthenticated()) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Unauthorized
-    }
 
-    String username = authentication.getName();
-    User user = userService.getUserByUsername(username);
-    if (user == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Not Found
-    }
-    return ResponseEntity.ok(user); // OK
-  }
 
 }
