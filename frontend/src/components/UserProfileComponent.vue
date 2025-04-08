@@ -1,14 +1,46 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+import { isLoggedIn } from '@/utils/authService';
+import apiClient from '@/api/apiClient';
 import UploadPicture from './UploadPicture.vue';
+import { getLoggedInUser} from '@/api/userAPI';
+import { getUserImage } from '@/api/userAPI';
 
-// Example user data - replace with actual data later
-const user = {
-  name: 'Usman Ghafoorzai',
-  username: 'usmangha',
-  email: 'usmangha@hotmail.com',
-  phone: '96803483',
-  location: 'Trondheim, Norway'
+// Reactive variables for user info and image
+const user = ref({
+  name: '',
+  username: '',
+  email: '',
+  phone: '',
+  location: ''
+});
+const profileImage = ref(null); // To hold the user image
+
+
+// Function to fetch user data
+const fetchUserData = async () => {
+  try {
+    // Fetch user data
+    user.value = await getLoggedInUser();
+
+    // Fetch the user image
+    
+    // const imageResponse = await getUserImage(user.value.id);
+    // console.log(imageResponse.data);
+    // profileImage.value = URL.createObjectURL(imageResponse.data);
+    const imageDataUrl = await getUserImage(user.value.id);
+    profileImage.value = imageDataUrl;
+  } catch (error) {
+    console.error('Error fetching user data or image:', error);
+  }
 };
+
+// Check if user is logged in
+onMounted(() => {
+  if (isLoggedIn()) {
+    fetchUserData();
+  }
+});
 </script>
 
 <template>
@@ -16,14 +48,20 @@ const user = {
     <div class="account-box elegant-card">
       <div class="account-content">
         <div class="profile-picture-wrapper">
-          <UploadPicture />
+          <img v-if="profileImage" :src="profileImage" alt="Profile Picture" class="profile-picture" />
+          <UploadPicture v-else />
         </div>
         <div class="user-details">
-          <h3 class="user-name">{{ user.name }}</h3>
-          <h2 class="username">{{ user.username }}</h2>
-          <p class="user-email">{{ user.email }}</p>
-          <p class="user-phone">{{ user.phone }}</p>
-          <p class="user-location">{{ user.location }}</p>
+          <!-- Display the user data only if logged in -->
+          <h3 class="user-name" v-if="isLoggedIn()">{{ user.name || 'User Name' }}</h3>
+          <h2 class="username" v-if="isLoggedIn()">{{ user.username || 'Username' }}</h2>
+          <p class="user-email" v-if="isLoggedIn()">{{ user.email || 'Email' }}</p>
+          <p class="user-phone" v-if="isLoggedIn()">{{ user.phone || 'Phone' }}</p>
+          <p class="user-location" v-if="isLoggedIn()">{{ user.location || 'Location' }}</p>
+          <!-- Display a message when the user is not logged in -->
+          <div v-else>
+            <p>Please log in to view your profile.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -74,6 +112,13 @@ const user = {
   margin-bottom: 0;
 }
 
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .user-details {
   margin-top: 30px;
 }
@@ -98,7 +143,9 @@ const user = {
   margin: 0 0 35px 0;
 }
 
-.user-email, .user-phone, .user-location {
+.user-email,
+.user-phone,
+.user-location {
   font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: 500;
