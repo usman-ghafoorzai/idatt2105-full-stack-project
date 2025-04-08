@@ -4,9 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,7 +29,6 @@ import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
 import no.ntnu.idatt2105.marketplace.dto.ItemUpdateDTO;
 import no.ntnu.idatt2105.marketplace.model.Category;
 import no.ntnu.idatt2105.marketplace.model.Item;
-import no.ntnu.idatt2105.marketplace.model.ItemStatus;
 import no.ntnu.idatt2105.marketplace.model.User;
 import no.ntnu.idatt2105.marketplace.repository.CategoryRepository;
 import no.ntnu.idatt2105.marketplace.repository.ItemRepository;
@@ -185,6 +181,7 @@ public class ItemServiceTest {
       assertThat(result.get(1).getId()).isEqualTo(300L);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testGetFilteredItems() {
     List<Item> filteredItems = Collections.singletonList(item);
