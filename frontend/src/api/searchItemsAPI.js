@@ -1,6 +1,4 @@
-import axios from 'axios';
 import apiClient from "./apiClient";
-import { saveToken, getToken, removeToken } from "@/utils/authService";
 
 export async function fetchSearchResults(searchTerm) {
     try {
