@@ -66,3 +66,15 @@ export async function getUserImage(userId) {
     throw new Error(errorMessage);
   }
 }
+
+// Function to update a user with any combination of fields
+export async function updateUser(userId, updatedFields) {
+  try {
+    const response = await apiClient.put(`/users/${userId}`, updatedFields);
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Failed to update user';
+    throw new Error(errorMessage);
+  }
+}
+
