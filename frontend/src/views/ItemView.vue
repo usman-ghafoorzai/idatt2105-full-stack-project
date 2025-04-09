@@ -1,5 +1,5 @@
 <script setup>
-    import { onBeforeMount } from 'vue';
+    import { ref , onMounted } from 'vue';
     import ItemPicture from '../components/ItemPicture.vue';
     import ItemDescription from '../components/ItemDescription.vue';
     import SellerInfo from '../components/SellerInfo.vue';
@@ -7,11 +7,18 @@
     import BuyNowButton from '../components/BuyNowButton.vue';
     import { useItemStore } from '../stores/ItemStore.js';
     import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
+    import { getAddress } from '@/utils/reverseGeoLocation';
 
     const itemStore = useItemStore();
     const sellerStore = useSellerInformationStore();
     const item = itemStore.selectedItem;
     const sellerInformation = sellerStore.sellerInformation;
+
+    const address = ref('');
+
+    onMounted(async () => {
+        address.value = await getAddress(item.locationLatitude, item.locationLongitude);
+    })
 </script>
 
 <template>
@@ -38,7 +45,7 @@
                     :price=item.price
                     :description="item.description"
                     :image="'src/assets/images/boat.jpg'"
-                    :location="'Oslo'"
+                    :location="address"
                     :categories="[item.category]"
                 ></ItemDescription>
                 
