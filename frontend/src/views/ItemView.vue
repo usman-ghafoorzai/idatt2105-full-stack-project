@@ -1,9 +1,24 @@
 <script setup>
+    import { ref , onMounted } from 'vue';
     import ItemPicture from '../components/ItemPicture.vue';
     import ItemDescription from '../components/ItemDescription.vue';
     import SellerInfo from '../components/SellerInfo.vue';
     import ReserveButton from '../components/ReserveButton.vue';
     import BuyNowButton from '../components/BuyNowButton.vue';
+    import { useItemStore } from '../stores/ItemStore.js';
+    import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
+    import { getAddress } from '@/utils/reverseGeoLocation';
+
+    const itemStore = useItemStore();
+    const sellerStore = useSellerInformationStore();
+    const item = itemStore.selectedItem;
+    const sellerInformation = sellerStore.sellerInformation;
+
+    const address = ref('');
+
+    onMounted(async () => {
+        address.value = await getAddress(item.locationLatitude, item.locationLongitude);
+    })
 </script>
 
 <template>
@@ -15,9 +30,9 @@
                 id="item-picture"
                 />
                 <SellerInfo
-                    :name="'John Doe'"
+                    :name="sellerStore.sellerInformation.firstName + ' ' + sellerStore.sellerInformation.lastName + ' (' + sellerStore.sellerInformation.username + ')'"
                     :phoneNumber="'12345678'"
-                    :email="'test@gmail.com'"
+                    :email="sellerInformation.email"
                 /> 
             </div>
             
@@ -26,12 +41,12 @@
         <div id="right-section">
             <div id="item-description-buttons">
                 <ItemDescription
-                    title="Bayliner VR 5 Cuddy OB Lite brukt"
-                    price="10000"
-                    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-                    image="src/assets/images/boat.jpg"
-                    location="Oslo"
-                    :categories="['Boat', 'Used']"
+                    :title="item.title"
+                    :price=item.price
+                    :description="item.description"
+                    :image="'src/assets/images/boat.jpg'"
+                    :location="address"
+                    :categories="[item.category]"
                 ></ItemDescription>
                 
                 <div id="buttons-container">

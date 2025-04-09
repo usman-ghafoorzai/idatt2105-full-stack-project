@@ -9,7 +9,7 @@ const router = useRouter();
 defineProps({
   mail: {
     type: Number,
-    default: 2,
+    default: 5,
   }
 });
 
