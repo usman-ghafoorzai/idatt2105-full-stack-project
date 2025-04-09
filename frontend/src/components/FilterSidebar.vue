@@ -17,7 +17,6 @@
 
     function toggleVisibility(subcategoryKey) {
         visibility.value[subcategoryKey] = !visibility.value[subcategoryKey];
-        console.log(selectedSubcategories.value);
     }
 </script>
 
@@ -113,13 +112,14 @@
     .filter-sidebar {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 10px;
         padding: 20px;
         width: 350px;
-        min-height: 100%;
+        height: 100vh;
+        background-color: var(--color-light-bg);
         border-right: 2px solid black;
         align-content: center;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
     .category {
         display: grid;
@@ -129,8 +129,9 @@
             'chevron category'
             'chevron list';
         align-items: baseline;
-        min-height: 100px;
+        min-height: auto;
         column-gap: 3px;
+        margin: 10px;
     }
     .category span {
         grid-area: chevron;
@@ -164,7 +165,7 @@
         grid-area: list;
         list-style-type: none;
         padding-left: 15px;
-        
+        margin: 10px 0;
     }
     li {
         margin-bottom: 10px;
@@ -174,6 +175,7 @@
         grid-area: category;
         font-size: 24px;
         margin-bottom:0;
+        margin-top: 10px;
         border-bottom: 2px solid black;
     }
 
