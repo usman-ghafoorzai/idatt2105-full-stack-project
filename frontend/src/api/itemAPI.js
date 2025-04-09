@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-
+import { blobToDataUrl } from "@/utils/imageUtils";
 
 // Get item by ID
 export async function getItemById(id) {
@@ -71,7 +71,17 @@ export async function uploadItemImages(itemId, images) {
 export async function getItemImages(itemId) {
   try {
     const response = await apiClient.get(`/items/${itemId}/images`);
-    return response.data;
+
+    const images = await Promise.all(
+      response.data.map(async (image) => {
+        const blob = new Blob([new Uint8Array(image.data)], { type: image.contentType });
+        return await blobToDataUrl(blob);
+      })
+    );
+
+    return images;
+
+
   } catch (error) {
     throw new Error("Failed to fetch item images");
   }
@@ -84,7 +94,7 @@ export async function getItemImage(itemId, imageId) {
       responseType: "blob",
     });
 
-    return URL.createObjectURL(response.data);
+    return await blobToDataUrl(response.data);
   } catch (error) {
     throw new Error("Failed to fetch item image");
   }
@@ -96,7 +106,8 @@ export async function getFirstImage(itemId) {
     const response = await apiClient.get(`/items/${itemId}/images/first`, {
       responseType: "blob",
     });
-    return URL.createObjectURL(response.data);
+
+    return await blobToDataUrl(response.data);
   } catch (error) {
     throw new Error("Failed to fetch first item image");
   }
