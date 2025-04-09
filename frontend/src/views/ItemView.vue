@@ -5,10 +5,12 @@
     import ReserveButton from '../components/ReserveButton.vue';
     import BuyNowButton from '../components/BuyNowButton.vue';
     import { useItemStore } from '../stores/ItemStore.js';
+    import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
 
     const itemStore = useItemStore();
+    const sellerStore = useSellerInformationStore();
     const item = itemStore.selectedItem;
-
+    const sellerInformation = sellerStore.sellerInformation;
 </script>
 
 <template>
@@ -20,9 +22,9 @@
                 id="item-picture"
                 />
                 <SellerInfo
-                    :name="'John Pork'"
+                    :name="sellerStore.sellerInformation.firstName + ' ' + sellerStore.sellerInformation.lastName + ' (' + sellerStore.sellerInformation.username + ')'"
                     :phoneNumber="'12345678'"
-                    :email="'test@gmail.com'"
+                    :email=sellerInformation.email
                 /> 
             </div>
             

@@ -2,8 +2,10 @@
     import ItemFrameComponent from './ItemFrameComponent.vue';
     import { useRouter } from 'vue-router';
     import { useItemStore } from '../stores/ItemStore.js';
+    import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
 
     const itemStore = useItemStore();
+    const sellerStore = useSellerInformationStore();
     const router = useRouter();
 
     defineProps({
@@ -19,6 +21,8 @@
 
     function handleItemClick(item) {
         itemStore.setSelectedItem(item);
+        sellerStore.setSellerId(item.seller.id);
+        sellerStore.getSellerInformation();
         router.push('/item');
     }
 </script>

@@ -77,7 +77,8 @@
     #description {
         height: 250px;
         margin: 5% 15%;
-        overflow-y: scroll;
+        width: 80%;
+        overflow-y: auto;
     }
     @media (max-width: 900px) {
         #item-description-container {
