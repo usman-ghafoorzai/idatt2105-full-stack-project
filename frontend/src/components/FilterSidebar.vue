@@ -80,11 +80,11 @@
             <div id="price-container">
                 <div id="from-container">
                     <div>From</div>
-                    <input type="number" id="from-price"></input>
+                    <input type="number" id="from-price" min="0"></input>
                 </div>
                 <div id="to-container">
                     <div>To</div>
-                    <input type="number" id="to-price"></input>
+                    <input type="number" id="to-price" min="0"></input>
                 </div>
             </div>
         </div>
