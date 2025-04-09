@@ -25,7 +25,7 @@
         <hr>
         <div id="categories">
             <div id="category" v-for="category in categories" :style="{backgroundColor: randomColor()}">
-                 {{ category }}
+                 {{ category.name }}
             </div>
         </div>
         <div id="location"> {{ location }} </div>

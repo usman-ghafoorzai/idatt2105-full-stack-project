@@ -1,4 +1,5 @@
 <script setup>
+    import { onBeforeMount } from 'vue';
     import ItemPicture from '../components/ItemPicture.vue';
     import ItemDescription from '../components/ItemDescription.vue';
     import SellerInfo from '../components/SellerInfo.vue';
@@ -24,7 +25,7 @@
                 <SellerInfo
                     :name="sellerStore.sellerInformation.firstName + ' ' + sellerStore.sellerInformation.lastName + ' (' + sellerStore.sellerInformation.username + ')'"
                     :phoneNumber="'12345678'"
-                    :email=sellerInformation.email
+                    :email="sellerInformation.email"
                 /> 
             </div>
             
@@ -38,7 +39,7 @@
                     :description="item.description"
                     :image="'src/assets/images/boat.jpg'"
                     :location="'Oslo'"
-                    :categories="['Boat', 'Used']"
+                    :categories="[item.category]"
                 ></ItemDescription>
                 
                 <div id="buttons-container">

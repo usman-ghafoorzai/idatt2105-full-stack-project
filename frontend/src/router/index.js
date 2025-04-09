@@ -6,6 +6,7 @@ import ItemListingView from '../views/ItemListingView.vue';
 import ItemView from '../views/ItemView.vue';
 import SellerView from '../views/SellerView.vue';
 import UserProfileView from "@/views/UserProfileView.vue";
+import { useSellerInformationStore } from '@/stores/SellerInformationStore';
 
 const routes = [
   {
@@ -26,7 +27,17 @@ const routes = [
   {
     path: '/item',
     name: 'Item',
-    component: ItemView
+    component: ItemView,
+    beforeEnter: async (to, from, next) => {
+      const sellerStore = useSellerInformationStore();
+      try {
+        await sellerStore.getSellerInformation();
+        next();
+      } catch (error) {
+        console.error('Error fetching seller information:', error);
+        next(false);
+      }
+    },
   },
   {
     path: '/sell',
