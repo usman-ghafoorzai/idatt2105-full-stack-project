@@ -2,10 +2,15 @@
 import { ref, computed } from 'vue';
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
 import { register as registerAPI } from '@/api/authAPI.js';
+import { uploadProfilePicture } from '@/api/userAPI';
+
+const props = defineProps({
+  profileImage: File // v-model binds this to the parent component
+});
 
 const firstName = ref('');
 const lastName = ref('');
-const location = ref('');
+const username = ref('');
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref(''); // Fixed variable name
@@ -16,7 +21,7 @@ const registerError = ref('');
 const form = computed(() => ({
   firstName: firstName.value,
   lastName: lastName.value,
-  location: location.value,
+  username: username.value,
   email: email.value,
   password: password.value,
   confirmPassword: confirmPassword.value
@@ -32,8 +37,8 @@ const rules = {
     { required: true, message: 'Last name is required', trigger: 'blur' },
     { pattern: /^[A-Za-zÆØÅæøå\- ]+$/, message: 'Last name can only contain letters and hyphens', trigger: 'blur' }
   ],
-  location: [
-    { required: true, message: 'Location is required', trigger: 'blur' }
+  username: [
+    { required: true, message: 'Username is required', trigger: 'blur' }
   ],
   email: [
     { required: true, message: 'Email is required', trigger: 'blur' },
@@ -71,21 +76,31 @@ const register = async () => {
   console.log({ // Foreløpig bare logge verdiene, skal erstattes med API-kall etterhvert
     firstName: firstName.value,
     lastName: lastName.value,
-    location: location.value,
+    username: username.value,
     email: email.value,
     password: password.value
   });
   if (!result.pass) return;
-  
+
+  console.log("Profile Image:", props.profileImage); // Check if the profile image is correctly passed
 
   try {
     const res = await registerAPI({
       firstName: firstName.value,
       lastName: lastName.value,
-      username: location.value, // TODO: change to username, and implement location
+      username: username.value, // TODO: change to username, and implement username
       email: email.value,
       password: password.value,
     });
+
+    const userId = res.user.id; // Assuming the API returns userId
+    console.log("User ID:", userId);
+
+    if (props.profileImage) {
+      console.log("Uploading profile picture for user ID:", userId);
+      await uploadProfilePicture(props.profileImage, userId); // Upload image
+    }
+
 
     console.log("Registration successful:", res);
     // Optional: redirect to dashboard or login page
@@ -123,13 +138,13 @@ const register = async () => {
       </span>
     </div>
 
-    <div class="form-field location">
-      <label for="location">LOCATION</label>
+    <div class="form-field username">
+      <label for="username">username</label>
       <div class="textbox">
-        <input id="location" type="text" v-model="location" placeholder="Enter location">
+        <input id="username" type="text" v-model="username" placeholder="Enter username">
       </div>
-      <span class="error-message" v-if="attempted && errorFields?.location?.[0]?.message">
-        {{ errorFields.location[0].message }}
+      <span class="error-message" v-if="attempted && errorFields?.username?.[0]?.message">
+        {{ errorFields.username[0].message }}
       </span>
     </div>
 
@@ -177,7 +192,7 @@ const register = async () => {
     "header"
     "firstname"
     "lastname"
-    "location"
+    "username"
     "email"
     "password"
     "confirmpassword"
@@ -226,8 +241,8 @@ const register = async () => {
   grid-area: lastname;
 }
 
-.location {
-  grid-area: location;
+.username {
+  grid-area: username;
 }
 
 .email {

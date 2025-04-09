@@ -1,8 +1,11 @@
 <script setup>
+import { ref } from 'vue'
 import Header from '../components/Header.vue'
 import RegisterUser from '../components/RegisterUser.vue'
 import LogInComponent from '../components/LogInComponent.vue'
 import UploadPicture from '../components/UploadPicture.vue'
+
+const selecedImage = ref(null) // Shared state for the image
 </script>
 
 <template>
@@ -17,10 +20,10 @@ import UploadPicture from '../components/UploadPicture.vue'
       <div class="registration-section">
         <div class="registration-content">
           <div class="upload-section">
-            <UploadPicture />
+            <UploadPicture v-model="selecedImage" />
           </div>
           <div class="register-section">
-            <RegisterUser />
+            <RegisterUser :profileImage="selecedImage" />
           </div>
         </div>
       </div>
@@ -43,7 +46,7 @@ import UploadPicture from '../components/UploadPicture.vue'
 
 .login-section {
   width: 33.33%;
-  background-color: #D9D9D9;
+  background-color: var(--color-light-bg);
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -53,10 +56,11 @@ import UploadPicture from '../components/UploadPicture.vue'
 
 .registration-section {
   width: 66.67%;
-  background-color: #F3F3F3;
+  background-color: var(--color-white);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: 150px;
 }
 
 .registration-content {
