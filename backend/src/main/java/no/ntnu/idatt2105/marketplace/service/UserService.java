@@ -2,6 +2,7 @@ package no.ntnu.idatt2105.marketplace.service;
 
 import java.util.Optional;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -18,6 +19,7 @@ import no.ntnu.idatt2105.marketplace.repository.UserRepository;
 @RequiredArgsConstructor
 public class UserService {
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   /**
    * Retrieves a user by their unique identifier.
@@ -55,6 +57,41 @@ public class UserService {
    */
   public void deleteAllUsers() {
     userRepository.deleteAll();
+  }
+
+  /**
+   * Updates an existing user.
+   *
+   * @param id          the ID of the user to update
+   * @param updatedUser the user object with updated fields
+   * @return the updated user entity
+   * @throws IllegalArgumentException if user with given ID doesn't exist
+   */
+  public User updateUser(Long id, User updatedUser) {
+    return userRepository.findById(id).map(existingUser -> {
+      // Update fields based on the values in the updatedUser object
+      if (updatedUser.getUsername() != null) {
+        existingUser.setUsername(updatedUser.getUsername());
+      }
+      if (updatedUser.getEmail() != null) {
+        existingUser.setEmail(updatedUser.getEmail());
+      }
+      if (updatedUser.getFirstName() != null) {
+        existingUser.setFirstName(updatedUser.getFirstName());
+      }
+      if (updatedUser.getLastName() != null) {
+        existingUser.setLastName(updatedUser.getLastName());
+      }
+      if (updatedUser.getPassword() != null) {
+        existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword())); // Hash the password before saving
+      }
+      if (updatedUser.getRole() != null) {
+        existingUser.setRole(updatedUser.getRole());
+      }
+
+      // Save the updated user entity
+      return userRepository.save(existingUser);
+    }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
   }
 
 }
