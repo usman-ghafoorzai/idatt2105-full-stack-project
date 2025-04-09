@@ -4,6 +4,7 @@ import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
 import { register as registerAPI } from '@/api/authAPI.js';
 import { uploadProfilePicture } from '@/api/userAPI';
 import { useRouter } from 'vue-router';
+import { saveToken, saveUser } from '../utils/authService.js'
 
 const router = useRouter();
 const props = defineProps({
@@ -105,6 +106,9 @@ const register = async () => {
 
 
     console.log("Registration successful:", res);
+
+    saveToken(res.token);
+    saveUser(res.user);
 
     router.push('/user-profile'); // Redirect to user profile page
 

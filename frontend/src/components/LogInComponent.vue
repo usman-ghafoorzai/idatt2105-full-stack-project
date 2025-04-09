@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
 import { login as loginAPI } from '@/api/authAPI.js'
 import { useRouter } from 'vue-router'
+import { saveToken, saveUser } from '../utils/authService.js'
 
 const router = useRouter()
 const username = ref('')
@@ -46,6 +47,10 @@ const login = async () => {
   try {
     const res = await loginAPI(username.value, password.value);
     console.log("Login successful!", res);
+
+    // Store token and user information
+    saveToken(res.token);
+    saveUser(res.user);
 
     router.push('/user-profile')
 
