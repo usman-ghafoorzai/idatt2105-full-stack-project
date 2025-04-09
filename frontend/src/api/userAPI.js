@@ -78,3 +78,14 @@ export async function updateUser(userId, updatedFields) {
   }
 }
 
+
+export async function getSellerInformation(sellerId) {
+  try {
+    const response = await apiClient.get(`/users/${sellerId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || "Failed to fetch seller information";
+    throw new Error(errorMessage);
+  }
+} 

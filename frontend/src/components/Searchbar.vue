@@ -1,7 +1,24 @@
+<script setup>
+    import { useSearchStore } from '../stores/SearchStore.js';
+    import {useRouter} from 'vue-router';
+
+    const searchStore = useSearchStore();
+    const router = useRouter();
+
+    function handleSearch(event) {
+        if (event.key === 'Enter') {
+            console.log("Search term:", event.target.value);
+            searchStore.setSearchTerm(event.target.value); 
+            searchStore.fetchSearchResults(); 
+            router.push('/search');
+        }
+    }
+</script>
+
 
 <template>
     <div class="searchbar-container">
-        <input type="search" id="search" placeholder="Search..."></input>
+        <input type="search" id="search" placeholder="Search..." @keyup="handleSearch"></input>
         <fa icon="fas fa-magnifying-glass" id="search-icon"></fa>
     </div>
 </template>

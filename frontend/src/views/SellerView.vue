@@ -44,8 +44,7 @@
     import { onMounted, ref } from 'vue';
     import 'leaflet/dist/leaflet.css';
     import L from 'leaflet';
-    import { useGeolocation } from '@vueuse/core';
-    import axios from 'axios';
+    import { getAddress } from '../utils/reverseGeoLocation.js';
 
     let map;
     let marker;
@@ -69,7 +68,7 @@
         map.on('click', setLocation);
         marker = L.marker([63.427029, 10.396700]).addTo(map);
     });
-    function setLocation(e) {
+    async function setLocation(e) {
 
         if (!map) {
             console.error('Map is not initialized');
@@ -82,20 +81,14 @@
         console.log(`Latitude: ${lat}, Longitude: ${lng}`);
         formData.value.latitude = lat;
         formData.value.longitude = lng;
-        getAddress(lat, lng);
-    }
 
-    async function getAddress(lat, lng) {
-        const response = await axios.get(
-            // Gratis API for reverse geocoding, men grunnet derfor har vi ingen garanti for at den alltid fungerer
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-        );
-        if (response.data && response.data.display_name) {
-            address.value = response.data.display_name;
-            console.log(`Address: ${address.value}`);
-        } else {
-            console.error('No address found');
+        try {
+            address.value = await getAddress(lat, lng);
+        } catch (error) {
+            console.error('Error fetching address:', error);
+            address.value = 'Unable to fetch address';
         }
+        
     }
 
     function imageUpload(event) {

@@ -4,7 +4,7 @@
     defineProps ({
         id: Number,
         image: String,
-        price: String,
+        price: Number,
         details: String,
     });
 
