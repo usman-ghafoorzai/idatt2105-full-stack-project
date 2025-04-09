@@ -4,6 +4,7 @@ import { saveToken, getToken, removeToken } from "@/utils/authService";
 
 export async function fetchSearchResults(searchTerm) {
     try {
+        console.log('Fetching search results for:', searchTerm);
         const response = await apiClient.get('/items', {
             params: { title: searchTerm }
         });

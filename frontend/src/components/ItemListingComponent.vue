@@ -41,7 +41,7 @@
     #item-listing-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: repeat(auto);
         width: 100%;
         justify-items: center;
         align-items: center;
