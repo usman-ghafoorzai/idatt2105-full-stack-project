@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { isLoggedIn } from '@/utils/authService';
 import UploadPicture from './UploadPicture.vue';
-import { getLoggedInUser, getUserImage, updateUserProfile } from '@/api/userAPI';
+import { getLoggedInUser, getUserImage, updateUser} from '@/api/userAPI';
 
 // Reactive variables for user info and image
 const user = ref({
@@ -50,10 +50,18 @@ const saveUserProfile = async () => {
     isSubmitting.value = true;
     errorMessage.value = '';
 
-    await updateUserProfile(user.value.id, editForm.value);
+    // Only send fields that have been modified
+    const fieldsToUpdate = {};
+    if (editForm.value.firstName) fieldsToUpdate.firstName = editForm.value.firstName;
+    if (editForm.value.lastName) fieldsToUpdate.lastName = editForm.value.lastName;
+    if (editForm.value.username) fieldsToUpdate.username = editForm.value.username;
+    if (editForm.value.email) fieldsToUpdate.email = editForm.value.email;
 
-    // Update the local user data
-    user.value = { ...editForm.value };
+    // Use the updateUser function with the user ID
+    const updatedUser = await updateUser(user.value.id, fieldsToUpdate);
+
+    // Update the local user data with the response
+    user.value = updatedUser;
     successMessage.value = 'Profile updated successfully!';
 
     // Close modal after successful update
@@ -61,7 +69,6 @@ const saveUserProfile = async () => {
       closeEditModal();
       successMessage.value = '';
     }, 2000);
-
   } catch (error) {
     errorMessage.value = error.message || 'Failed to update profile';
   } finally {
