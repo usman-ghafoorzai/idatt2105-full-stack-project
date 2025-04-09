@@ -74,7 +74,7 @@ public class Item {
    */
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
-  private Category category;
+  private Category category;          // TODO: set nullable = false, or does an item not need to have a category?
 
   /**
    * The user who is selling the Item.
@@ -89,8 +89,7 @@ public class Item {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "seller_id")
-  @JsonIgnore // Prevent full User Object from being serialized
-  private User seller;
+  private User seller;                // TODO: set nullable = false
 
   /**
    * Gets the ID of the seller.

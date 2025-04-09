@@ -74,10 +74,6 @@ public class CategoryController {
   }
 
   /**
-   * Returns 200 Ok if the category is updated successfully, or 404 Not Found if the category does not exist, 
-   * or status 404 with the exception message in the header when parent/subcategory is not found.
-   */
-  /**
    * Updates an existing category based on the provided {@link CategoryUpdateDTO}.
    * The update includes changing the name, parent category, and subcategories.
    * The updated category is saved to the database.

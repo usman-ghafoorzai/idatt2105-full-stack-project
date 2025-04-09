@@ -77,7 +77,7 @@ public class BookmarkServiceTest {
     bookmark.setItem(item);
 
     when(userService.getUserById(userId)).thenReturn(Optional.of(user));
-    when(itemService.getItemById(itemId)).thenReturn(Optional.of(item));
+    when(itemService.getItemEntityById(itemId)).thenReturn(Optional.of(item));
     when(bookmarkRepository.save(any(Bookmark.class))).thenReturn(bookmark);
 
     Bookmark savedBookmark = bookmarkService.saveBookmark(userId, itemId);
@@ -86,7 +86,7 @@ public class BookmarkServiceTest {
     assertThat(savedBookmark.getUser().getId()).isEqualTo(userId);
     assertThat(savedBookmark.getItem().getId()).isEqualTo(itemId);
     verify(userService, times(1)).getUserById(userId);
-    verify(itemService, times(1)).getItemById(itemId);
+    verify(itemService, times(1)).getItemEntityById(itemId);
     verify(bookmarkRepository, times(1)).save(any(Bookmark.class));
   }
 
@@ -105,7 +105,7 @@ public class BookmarkServiceTest {
 
     assertThat(exception.getMessage()).isEqualTo("User not found with ID: " + userId);
     verify(userService, times(1)).getUserById(userId);
-    verify(itemService, times(0)).getItemById(itemId);
+    verify(itemService, times(0)).getItemEntityById(itemId);
     verify(bookmarkRepository, times(0)).save(any(Bookmark.class));
   }
 
@@ -118,7 +118,7 @@ public class BookmarkServiceTest {
     user.setId(userId);
 
     when(userService.getUserById(userId)).thenReturn(Optional.of(user));
-    when(itemService.getItemById(itemId)).thenReturn(Optional.empty());
+    when(itemService.getItemEntityById(itemId)).thenReturn(Optional.empty());
 
     IllegalArgumentException exception = org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,
         () -> {
@@ -127,7 +127,7 @@ public class BookmarkServiceTest {
 
     assertThat(exception.getMessage()).isEqualTo("Item not found with ID: " + itemId);
     verify(userService, times(1)).getUserById(userId);
-    verify(itemService, times(1)).getItemById(itemId);
+    verify(itemService, times(1)).getItemEntityById(itemId);
     verify(bookmarkRepository, times(0)).save(any(Bookmark.class));
   }
 

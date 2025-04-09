@@ -63,7 +63,7 @@ public class ReservationServiceTest {
     item.setStatus(ItemStatus.ACTIVE);
 
     when(userService.getUserById(userId)).thenReturn(Optional.of(user));
-    when(itemService.getItemById(itemId)).thenReturn(Optional.of(item));
+    when(itemService.getItemEntityById(itemId)).thenReturn(Optional.of(item));
     when(reservationRepository.save(any(Reservation.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -74,8 +74,8 @@ public class ReservationServiceTest {
     assertThat(item.getStatus()).isEqualTo(ItemStatus.RESERVED);
 
     verify(userService).getUserById(userId);
-    verify(itemService).getItemById(itemId);
-    verify(itemService).saveItem(item);
+    verify(itemService).getItemEntityById(itemId);
+    verify(itemService).saveItemEntity(item);
     verify(reservationRepository).save(any(Reservation.class));
   }
 
@@ -92,7 +92,7 @@ public class ReservationServiceTest {
     assertThat(exception.getMessage()).isEqualTo("User not found with ID: " + userId);
 
     verify(userService).getUserById(userId);
-    verify(itemService, never()).getItemById(anyLong());
+    verify(itemService, never()).getItemEntityById(anyLong());
     verify(reservationRepository, never()).save(any());
   }
 
@@ -104,7 +104,7 @@ public class ReservationServiceTest {
     user.setId(userId);
 
     when(userService.getUserById(userId)).thenReturn(Optional.of(user));
-    when(itemService.getItemById(itemId)).thenReturn(Optional.empty());
+    when(itemService.getItemEntityById(itemId)).thenReturn(Optional.empty());
 
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
         () -> reservationService.saveReservation(userId, itemId));
@@ -112,7 +112,7 @@ public class ReservationServiceTest {
     assertThat(exception.getMessage()).isEqualTo("Item not found with ID: " + itemId);
 
     verify(userService).getUserById(userId);
-    verify(itemService).getItemById(itemId);
+    verify(itemService).getItemEntityById(itemId);
     verify(reservationRepository, never()).save(any());
   }
 
@@ -129,7 +129,7 @@ public class ReservationServiceTest {
     item.setStatus(ItemStatus.RESERVED);
 
     when(userService.getUserById(userId)).thenReturn(Optional.of(user));
-    when(itemService.getItemById(itemId)).thenReturn(Optional.of(item));
+    when(itemService.getItemEntityById(itemId)).thenReturn(Optional.of(item));
 
     IllegalStateException exception = assertThrows(IllegalStateException.class,
         () -> reservationService.saveReservation(userId, itemId));
@@ -137,7 +137,7 @@ public class ReservationServiceTest {
     assertThat(exception.getMessage()).isEqualTo("Item is already reserved.");
 
     verify(userService).getUserById(userId);
-    verify(itemService).getItemById(itemId);
+    verify(itemService).getItemEntityById(itemId);
     verify(reservationRepository, never()).save(any());
   }
 
@@ -160,7 +160,7 @@ public class ReservationServiceTest {
     reservationService.deleteReservation(userId, itemId);
 
     assertThat(item.getStatus()).isEqualTo(ItemStatus.ACTIVE);
-    verify(itemService).saveItem(item);
+    verify(itemService).saveItemEntity(item);
     verify(reservationRepository).delete(reservation);
   }
 
