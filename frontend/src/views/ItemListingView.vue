@@ -1,12 +1,16 @@
 <script setup>
     import FilterSidebar from '../components/FilterSidebar.vue';
     import ItemListingComponent from '../components/ItemListingComponent.vue';
+    import { useSearchStore } from '../stores/SearchStore.js';
+
+    const searchStore = useSearchStore();
+
 </script>
 
 <template>
     <div id="item-listing-view-container">
         <FilterSidebar id="filter-sidebar"></FilterSidebar>
-        <ItemListingComponent></ItemListingComponent>
+        <ItemListingComponent :items="searchStore.searchResults" :searchTerm="searchStore.searchTerm"></ItemListingComponent>
     </div>
 </template>
 
