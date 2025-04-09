@@ -202,4 +202,12 @@ public class ItemService {
         .map(this::convertToResponse)
         .collect(Collectors.toList());
   }
+
+  /**
+   * Deletes all items from the database.
+   * This method is intended for testing purposes only.
+   */
+  public void deleteAllItems() {
+    itemRepository.deleteAll();
+  }
 }
