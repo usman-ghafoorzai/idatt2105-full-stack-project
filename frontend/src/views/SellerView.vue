@@ -122,6 +122,8 @@
             alert('Please fill in all required fields.');
             return;
         }
+
+        /* TODO legge til API kall mot backend for å legge til et item */
         console.log('Form submitted:', formData.value);
     }
 </script>
