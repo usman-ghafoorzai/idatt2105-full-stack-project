@@ -9,6 +9,7 @@ function handleFileChange(event) {
   const file = event.target.files[0];
   if (file) {
     profilePicSrc.value = URL.createObjectURL(file);
+    console.log(profilePicSrc.value);
   }
 }
 
