@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -103,4 +104,37 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.role").value("ADMIN"));
   }
 
+  @Test
+  void testUpdateUser_Success() throws Exception {
+    Long userId = 1L;
+
+    User updateRequest = new User();
+    updateRequest.setUsername("updated_user");
+    updateRequest.setEmail("updated@example.com");
+    updateRequest.setFirstName("Updated");
+    updateRequest.setLastName("User");
+    updateRequest.setPassword("updatedPassword");
+    updateRequest.setRole(Role.ADMIN);
+
+    User updatedUser = new User();
+    updatedUser.setId(userId);
+    updatedUser.setUsername("updated_user");
+    updatedUser.setEmail("updated@example.com");
+    updatedUser.setFirstName("Updated");
+    updatedUser.setLastName("User");
+    updatedUser.setPassword("encodedPassword");
+    updatedUser.setRole(Role.ADMIN);
+    updatedUser.setCreatedAt(LocalDateTime.now());
+
+    when(userService.updateUser(any(Long.class), any(User.class))).thenReturn(updatedUser);
+
+    mockMvc.perform(put("/api/users/{id}", userId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(updateRequest)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(userId))
+        .andExpect(jsonPath("$.username").value("updated_user"))
+        .andExpect(jsonPath("$.email").value("updated@example.com"))
+        .andExpect(jsonPath("$.role").value("ADMIN"));
+  }
 }
