@@ -1,24 +1,25 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
 import Header from '../components/Header.vue';
 
 describe('Header', () => {
   it('renders properly', () => {
-    const wrapper = mount(Header);
+    const wrapper = mount(Header, {
+      global: {
+        plugins: [createTestingPinia({
+          createSpy: vi.fn,
+        })],
+      },
+    });
 
-    // Check if the logo is rendered
+
     expect(wrapper.find('#logo').text()).toBe('LOGO');
-
-    // Check if navigation items are rendered
     expect(wrapper.find('#home').text()).toBe('HOME');
     expect(wrapper.find('#categories').text()).toBe('CATEGORIES');
     expect(wrapper.find('#sell').text()).toBe('SELL');
-
-    // Check if the inbox and username are rendered
     expect(wrapper.find('#inbox').text()).toBe('Inbox');
     expect(wrapper.find('#username').text()).toBe('Log in/Sign up');
-
-    // Check if the search bar is rendered
     expect(wrapper.find('#searchbar').exists()).toBe(true);
   });
 
@@ -27,9 +28,14 @@ describe('Header', () => {
       props: {
         mail: 0,
       },
+      global: {
+        plugins: [createTestingPinia({
+          createSpy: vi.fn,
+        })],
+      },
     });
 
-    // Check if the notification dot is not rendered
+
     expect(wrapper.find('#notification-dot').exists()).toBe(false);
   });
 
@@ -38,9 +44,14 @@ describe('Header', () => {
       props: {
         mail: 5,
       },
+      global: {
+        plugins: [createTestingPinia({
+          createSpy: vi.fn,
+        })],
+      },
     });
 
-    // Check if the notification dot is rendered
+
     expect(wrapper.find('#notification-dot').exists()).toBe(true);
   });
 });
