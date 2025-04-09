@@ -76,6 +76,16 @@ public class ItemService {
   }
 
   /**
+   * Retrieves an item entity by its unique identifier.
+   * @param id the unique identifier of the item
+   * @return an {@code Optional} containing the item entity if found, otherwise empty
+   */
+  public Optional<Item> getItemEntityById(Long id) {
+    return itemRepository.findById(id);
+  }
+
+
+  /**
    * Saves a new item entity to the database.
    *
    * @param createDTO the item entity as a {@link ItemCreateDTO} object
@@ -107,6 +117,16 @@ public class ItemService {
     Item saved = itemRepository.save(item);
     return convertToResponse(saved);
   }
+
+  /**
+   * Saves an item entity to the database.
+   * @param item the item entity to be saved
+   * @return the saved item entity
+   */
+  public Item saveItemEntity(Item item) {
+    return itemRepository.save(item);
+  }
+
 
   /**
    * Updates an existing item entity.

@@ -53,7 +53,7 @@ public class ReservationService {
     User user = userService.getUserById(userId)
         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-    Item item = itemService.getItemById(itemId)
+    Item item = itemService.getItemEntityById(itemId)
         .orElseThrow(() -> new IllegalArgumentException("Item not found with ID: " + itemId));
 
     // Check if the item is already reserved
@@ -63,7 +63,7 @@ public class ReservationService {
 
     // Set the item's status to RESERVED
     item.setStatus(ItemStatus.RESERVED);
-    itemService.saveItem(item); // Save the item status update
+    itemService.saveItemEntity(item); // Save the item status update
 
     // Create and save the reservation
     Reservation reservation = new Reservation(user, item);
@@ -89,7 +89,7 @@ public class ReservationService {
     // Set the item's status back to ACTIVE when reservation is deleted
     Item item = reservation.getItem();
     item.setStatus(ItemStatus.ACTIVE);
-    itemService.saveItem(item); // Save the item status update
+    itemService.saveItemEntity(item); // Save the item status update
 
     // Delete the reservation
     reservationRepository.delete(reservation);
