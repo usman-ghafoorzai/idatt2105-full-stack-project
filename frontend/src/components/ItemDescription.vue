@@ -4,9 +4,8 @@
     let c = ref(0);
     defineProps({
         title: String,
-        price: String,
+        price: Number,
         description: String,
-        image: String,
         location: String,
         categories: Array
     })
