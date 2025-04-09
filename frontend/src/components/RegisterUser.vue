@@ -3,7 +3,9 @@ import { ref, computed } from 'vue';
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
 import { register as registerAPI } from '@/api/authAPI.js';
 import { uploadProfilePicture } from '@/api/userAPI';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const props = defineProps({
   profileImage: File // v-model binds this to the parent component
 });
@@ -88,7 +90,7 @@ const register = async () => {
     const res = await registerAPI({
       firstName: firstName.value,
       lastName: lastName.value,
-      username: username.value, // TODO: change to username, and implement username
+      username: username.value,
       email: email.value,
       password: password.value,
     });
@@ -103,7 +105,8 @@ const register = async () => {
 
 
     console.log("Registration successful:", res);
-    // Optional: redirect to dashboard or login page
+
+    router.push('/user-profile'); // Redirect to user profile page
 
   } catch (error) {
     console.error("Registration failed:", error.message);
