@@ -2,7 +2,9 @@
 import { ref, computed } from 'vue'
 import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator'
 import { login as loginAPI } from '@/api/authAPI.js'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const username = ref('')
 const password = ref('')
 const attempted = ref(false) // Track if validation has been attempted
@@ -44,6 +46,8 @@ const login = async () => {
   try {
     const res = await loginAPI(username.value, password.value);
     console.log("Login successful!", res);
+
+    router.push('/user-profile')
 
   } catch (error) {
     console.error("Login failed:", error.message);
