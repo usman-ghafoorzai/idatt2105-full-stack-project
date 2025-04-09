@@ -41,10 +41,10 @@
     #item-listing-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: repeat(auto);
+        grid-template-rows: 40px auto;
         width: 100%;
         justify-items: center;
-        align-items: center;
+        align-items: baseline;
     }
     h2 {
         text-align: center;
