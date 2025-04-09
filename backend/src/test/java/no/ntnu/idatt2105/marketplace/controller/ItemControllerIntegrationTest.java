@@ -4,8 +4,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import no.ntnu.idatt2105.marketplace.dto.CategoryCreateDTO;
+import no.ntnu.idatt2105.marketplace.dto.CategoryResponseDTO;
 import no.ntnu.idatt2105.marketplace.model.Role;
 import no.ntnu.idatt2105.marketplace.model.User;
+import no.ntnu.idatt2105.marketplace.service.CategoryService;
+import no.ntnu.idatt2105.marketplace.service.ItemService;
 import no.ntnu.idatt2105.marketplace.service.UserService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,14 +34,25 @@ public class ItemControllerIntegrationTest {
   private UserService userService;
 
   @Autowired
+  private CategoryService categoryService;
+
+  @Autowired
   private PasswordEncoder passwordEncoder;
 
+  @Autowired
+  private ItemService itemService;
+
   private String jwtToken;
+  private Long userId;
+  private Long categoryId;
 
   @BeforeEach
   void setup() throws Exception {
     // Clean and prepare test user
-    userService.deleteAllUsers(); // Optional: only if you want a clean slate
+    itemService.deleteAllItems();
+    categoryService.deleteAllCategories();
+    userService.deleteAllUsers();
+
     User user = new User();
     user.setUsername("itemuser");
     user.setPassword(passwordEncoder.encode("password123"));
@@ -44,15 +60,23 @@ public class ItemControllerIntegrationTest {
     user.setEmail("itemuser@example.com");
     user.setFirstName("Item");
     user.setLastName("User");
-    userService.saveUser(user);
+    user = userService.saveUser(user); // Save and capture user
+    userId = user.getId();
+
+    // Create category via DTO
+    CategoryCreateDTO createDTO = new CategoryCreateDTO();
+    createDTO.setName("Electronics"); // Make sure this is unique per test run if DB is persistent
+
+    CategoryResponseDTO responseDTO = categoryService.createCategory(createDTO);
+    categoryId = responseDTO.getId();
 
     // Login and retrieve JWT token
     String loginJson = """
-      {
-        "username": "itemuser",
-        "password": "password123"
-      }
-      """;
+        {
+          "username": "itemuser",
+          "password": "password123"
+        }
+        """;
 
     MvcResult result = mockMvc.perform(post("/api/auth/login")
         .contentType(MediaType.APPLICATION_JSON)
@@ -66,20 +90,24 @@ public class ItemControllerIntegrationTest {
 
   @Test
   public void testCreateItemWithAuth() throws Exception {
-    String itemJson = """
-      {
-        "title": "Test Item",
-        "description": "This is a test item",
-        "price": 100.0
-      }
-      """;
+    String itemJson = String.format("""
+            {
+                "title": "Item1",
+                "description": "Item desc",
+                "price": 750.98,
+                "locationLatitude": 43.43,
+                "locationLongitude": 12.12,
+                "categoryId": %d,
+                "sellerId": %d
+            }
+        """, categoryId, userId);
 
     mockMvc.perform(post("/api/items")
         .header("Authorization", "Bearer " + jwtToken)
         .contentType(MediaType.APPLICATION_JSON)
         .content(itemJson))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.title").value("Test Item"));
+        .andExpect(jsonPath("$.title").value("Item1"));
   }
 
   @Test
