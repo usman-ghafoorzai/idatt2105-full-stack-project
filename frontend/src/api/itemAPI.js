@@ -103,7 +103,7 @@ export async function getItemImage(itemId, imageId) {
 // Get first image of an item
 export async function getFirstImage(itemId) {
   try {
-    const response = await apiClient.get(`/items/${itemId}/images/first`, {
+    const response = await apiClient.get(`items/${itemId}/images/first`, {
       responseType: "blob",
     });
 
