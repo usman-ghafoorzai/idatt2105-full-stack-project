@@ -27,12 +27,7 @@ function triggerFileInput() {
 function handleFileChange(event) {
   const file = event.target.files[0];
   if (file) {
-<<<<<<< HEAD
-    profilePicSrc.value = URL.createObjectURL(file);
-    console.log(profilePicSrc.value);
-=======
     emit('update:modelValue', file); // Let parent know
->>>>>>> dev
   }
 }
 </script>
