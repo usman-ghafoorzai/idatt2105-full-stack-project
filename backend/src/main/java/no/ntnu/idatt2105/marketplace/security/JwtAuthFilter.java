@@ -28,18 +28,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws ServletException, IOException {
 
-        String path = request.getRequestURI();
-        System.out.println("JwtAuthFilter request URI: " + path);
-        if (path.startsWith("/v2/api-docs")
-                || path.startsWith("/v3/api-docs")
-                || path.startsWith("/swagger-resources")
-                || path.startsWith("/swagger-ui")
-                || path.startsWith("/swagger-ui.html")
-                || path.startsWith("/webjars")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
     String authorizationHeader = request.getHeader("Authorization");
 
     if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {

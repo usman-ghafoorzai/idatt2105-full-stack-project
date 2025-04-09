@@ -1,32 +1,34 @@
 package no.ntnu.idatt2105.marketplace.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.tags.Tag;
 
 @Configuration
 public class SwaggerConfig {
 
-  @Bean
-  public Docket api() {
-    return new Docket(DocumentationType.SWAGGER_2)
-        .select()
-        .apis(RequestHandlerSelectors.basePackage("no.ntnu.idatt2105.marketplace.controller"))
-        .paths(PathSelectors.any())
-        .build()
-        .apiInfo(apiInfo());
-  }
+	@Bean
+	public OpenAPI defineOpenApi() {
+		Server server = new Server();
+		server.setUrl("http://localhost:8888");
+		server.setDescription("Development");
 
-  private ApiInfo apiInfo() {
-    return new ApiInfoBuilder()
-        .title("Marketplace API")
-        .description("Documentation for the Marketplace API")
-        .version("1.0")
-        .build();
-  }
+		Info information = new Info()
+				.title("Marketplace System API")
+				.description("This API exposes endpoints for the Marketplace System");
+
+		return new OpenAPI()
+				.info(information)
+				.servers(List.of(server))
+				.tags(List.of(
+						new Tag().name("items").description("Operations about items"),
+						new Tag().name("users").description("Operations about users"),
+						new Tag().name("categories").description("Operations about categories")));
+	}
 }
