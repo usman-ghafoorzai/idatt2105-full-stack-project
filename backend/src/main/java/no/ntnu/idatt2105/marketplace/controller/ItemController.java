@@ -63,7 +63,7 @@ public class ItemController {
    * Deletes an item by its unique identifier.
    *
    * @param id the unique identifier of the item to be deleted
-   * @return {@code ResponseEntity} with a 204 No Content status if the item was successfully deleted, otherwise returns a 404 Not Found response
+   * @return {@code ResponseEntity} with a 204 No Content status if the item was successfully deleted
    */
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
@@ -71,14 +71,28 @@ public class ItemController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Retrieves items based on various filters.
+   * Filters can be a combination of title, category, minimum price, maximum price, and status.
+   * @param title the title of the item. It can be a partial match and is case-insensitive.
+   * @param category the category of the item. Must match exactly.
+   * @param minPrice the minimum price of the item
+   * @param maxPrice the maximum price of the item
+   * @param status the status of the item (e.g., ACTIVE, SOLD, etc.)
+   * @return {@code ResponseEntity} containing a list of filtered items. If no items are found, returns a 204 No Content response.
+   */
   @GetMapping
-  public List<Item> getItems(
+  public ResponseEntity<List<Item>> getItems(
       @RequestParam(required = false) String title,
       @RequestParam(required = false) String category,
       @RequestParam(required = false) Double minPrice,
       @RequestParam(required = false) Double maxPrice,
       @RequestParam(required = false) String status) {
 
-    return itemService.getFilteredItems(title, category, minPrice, maxPrice, status);
+    List<Item> items = itemService.getFilteredItems(title, category, minPrice, maxPrice, status);
+    if (items.isEmpty()) {
+      return ResponseEntity.noContent().build(); 
+    }
+    return ResponseEntity.ok(items);
   }
 }

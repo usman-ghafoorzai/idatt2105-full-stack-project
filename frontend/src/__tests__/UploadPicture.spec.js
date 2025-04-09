@@ -10,7 +10,7 @@ describe('UploadPicture.vue', () => {
   beforeEach(() => {
     wrapper = mount(UploadPicture);
     // Mock the URL.createObjectURL function to return a predictable URL for testing
-    vi.stubGlobal('URL', {createObjectURL: vi.fn(() => 'blob:mock-url')});
+    vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:mock-url') });
   });
 
   // After each test, clean up the stubbed globals to avoid affecting other tests
@@ -37,7 +37,7 @@ describe('UploadPicture.vue', () => {
     fileInput.click = mockClick;
 
     // Set the component's ref to our mocked element
-    wrapper.vm.$refs = {fileInput};
+    wrapper.vm.$refs = { fileInput };
 
     // Trigger click on the image container
     const imageContainer = wrapper.find('.image-container');
@@ -50,7 +50,7 @@ describe('UploadPicture.vue', () => {
   // Test if selecting a file updates the profile picture
   it('updates the profile picture when a file is selected', async () => {
     // Create a mock file object
-    const mockFile = new File(['dummy'], 'avatar.png', {type: 'image/png'});
+    const mockFile = new File(['dummy'], 'avatar.png', { type: 'image/png' });
 
     // Get the file input element
     const input = wrapper.find('input[type="file"]');
@@ -59,12 +59,16 @@ describe('UploadPicture.vue', () => {
     const changeEvent = new Event('change');
     Object.defineProperty(changeEvent, 'target', {
       writable: false,
-      value: {files: [mockFile]}
+      value: { files: [mockFile] }
     });
 
     // Dispatch the change event to the input element
     await input.element.dispatchEvent(changeEvent);
     // Wait for the next tick to allow Vue to process the update
+    await wrapper.vm.$nextTick();
+
+    // Simulate the parent updating modelValue
+    await wrapper.setProps({ modelValue: mockFile });
     await wrapper.vm.$nextTick();
 
     // Verify image src is updated to the blob URL from our mocked createObjectURL
