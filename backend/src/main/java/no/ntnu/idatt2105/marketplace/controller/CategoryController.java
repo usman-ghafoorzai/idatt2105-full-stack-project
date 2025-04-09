@@ -78,6 +78,7 @@ public class CategoryController {
       @ApiResponse(responseCode = "200", description = "Category created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "400", description = "Bad Request: Category already exists or invalid parent", content = @Content)
   })
+  //@PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/create")
   public ResponseEntity<CategoryResponseDTO> createCategory(
       @Parameter(description = "Category creation payload", required = true) @RequestBody CategoryCreateDTO createDTO) {
@@ -130,7 +131,7 @@ public class CategoryController {
       @ApiResponse(responseCode = "200", description = "Category updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "404", description = "Category or related subcategory not found", content = @Content)
   })
-  @PreAuthorize("hasRole('ADMIN')")
+  //@PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/update/{id}")
   public ResponseEntity<CategoryResponseDTO> updateCategory(
       @Parameter(description = "The ID of the category to update", required = true) @PathVariable Long id,
@@ -158,7 +159,7 @@ public class CategoryController {
       @ApiResponse(responseCode = "204", description = "Category deleted successfully", content = @Content),
       @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
   })
-  @PreAuthorize("hasRole('ADMIN')")
+  //@PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteCategory(
       @Parameter(description = "The ID of the category to delete", required = true) @PathVariable Long id) {
@@ -190,7 +191,7 @@ public class CategoryController {
               schema = @Schema(implementation = CategoryResponseDTO.class))),
       @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
   })
-  @PreAuthorize("hasRole('ADMIN')")
+  //@PreAuthorize("hasRole('ADMIN')")
   @PostMapping("/{parentName}/subcategories")
   public ResponseEntity<CategoryResponseDTO> addSubCategory(
       @Parameter(description = "The name of the parent category", required = true) @PathVariable String parentName,
@@ -221,7 +222,7 @@ public class CategoryController {
       @ApiResponse(responseCode = "204", description = "Sub-category removed successfully", content = @Content),
       @ApiResponse(responseCode = "400", description = "Bad Request: Invalid parent/sub-category relationship", content = @Content)
   })
-  @PreAuthorize("hasRole('ADMIN')")
+  //@PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/{parentName}/subcategories/{subCategoryName}")
   public ResponseEntity<Void> removeSubCategory(
     @Parameter(description = "The name of the parent category", required = true)
