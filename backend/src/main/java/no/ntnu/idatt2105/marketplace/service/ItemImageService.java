@@ -96,4 +96,19 @@ public class ItemImageService {
         List<ItemImage> images = itemImageRepository.findByItemId(itemId);
         itemImageRepository.deleteAll(images);
     }
+
+    /**
+     * Retrieves the first image for a specific item.
+     * 
+     * @param itemId the ID of the item
+     * @return the first ItemImage, or empty if no images are found
+     */
+    public Optional<ItemImage> getFirstImage(Long itemId) {
+      List<ItemImage> images = itemImageRepository.findByItemId(itemId);
+      if (images.isEmpty()) {
+          return Optional.empty();
+      }
+      // Return the first image (sorted by ID)
+      return Optional.of(images.get(0));  
+  }
 }
