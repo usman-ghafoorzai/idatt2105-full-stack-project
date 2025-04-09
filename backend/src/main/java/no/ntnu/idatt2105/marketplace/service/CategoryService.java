@@ -224,4 +224,12 @@ public class CategoryService {
     categoryRepository.save(parent);
     categoryRepository.save(subCategory);
   }
+
+  /**
+   * Deletes all categories from the database.
+   * This method is intended for testing purposes only.
+   */
+  public void deleteAllCategories() {
+    categoryRepository.deleteAll();
+  }
 }

@@ -1,15 +1,22 @@
 package no.ntnu.idatt2105.marketplace.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,119 +24,270 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
+import no.ntnu.idatt2105.marketplace.dto.ItemCreateDTO;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
+import no.ntnu.idatt2105.marketplace.dto.ItemUpdateDTO;
 import no.ntnu.idatt2105.marketplace.model.Category;
 import no.ntnu.idatt2105.marketplace.model.Item;
-import no.ntnu.idatt2105.marketplace.model.ItemStatus;
+import no.ntnu.idatt2105.marketplace.model.User;
+import no.ntnu.idatt2105.marketplace.repository.CategoryRepository;
 import no.ntnu.idatt2105.marketplace.repository.ItemRepository;
+import no.ntnu.idatt2105.marketplace.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
   @Mock
   private ItemRepository itemRepository;
 
+  @Mock
+  private CategoryRepository categoryRepository;
+
+  @Mock
+  private UserRepository userRepository;
+
   @InjectMocks
   private ItemService itemService;
 
-  @Test
-  void testGetItemById_Found() {
-    Item item = new Item();
-    item.setId(1L);
-    item.setTitle("Phone");
+  private Item item;
+  private Category category;
+  private User seller;
 
-    when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+  @BeforeEach
+  void setup() {
+    category = new Category();
+    category.setId(100L);
+    category.setName("Electronics");
 
-    Optional<Item> result = itemService.getItemById(1L);
+    seller = new User();
+    seller.setId(200L);
+    seller.setUsername("sellerUser");
 
-    assertThat(result).isPresent();
-    assertThat(result.get().getTitle()).isEqualTo("Phone");
+    item = new Item();
+    item.setId(300L);
+    item.setTitle("Smartphone");
+    item.setDescription("Latest model smartphone with advanced features.");
+    item.setPrice(8999.95);
+    item.setLocationLatitude(75.91);
+    item.setLocationLongitude(10.75);
+    item.setCategory(category);
+    item.setSeller(seller);
+    item.setCreatedAt(LocalDateTime.now());
   }
 
-  @Test
-  void testGetItemById_NotFound() {
-    when(itemRepository.findById(2L)).thenReturn(Optional.empty());
+  @Nested
+  @DisplayName("Positive test cases")
+  class PositiveTests {
 
-    Optional<Item> result = itemService.getItemById(2L);
+    @Test
+    void testGetItemByID() {
+      when(itemRepository.findById(300L)).thenReturn(Optional.of(item));
 
-    assertThat(result).isNotPresent();
+      Optional<ItemResponseDTO> result = itemService.getItemById(300L);
+
+      assertThat(result).isPresent();
+      ItemResponseDTO response = result.get();
+      assertThat(response.getId()).isEqualTo(300L);
+      assertThat(response.getTitle()).isEqualTo("Smartphone");
+      assertThat(response.getDescription()).isEqualTo("Latest model smartphone with advanced features.");
+      assertThat(response.getPrice()).isEqualTo(8999.95);
+      assertThat(response.getLocationLatitude()).isEqualTo(75.91);
+      assertThat(response.getLocationLongitude()).isEqualTo(10.75);
+      assertThat(response.getCategory().getId()).isEqualTo(100L);
+      assertThat(response.getCategory().getName()).isEqualTo("Electronics");
+      assertThat(response.getSeller().getId()).isEqualTo(200L);
+      assertThat(response.getSeller().getUsername()).isEqualTo("sellerUser");
+    }
+
+    @Test
+    void testSaveItem() {
+      ItemCreateDTO createDTO = new ItemCreateDTO();
+      createDTO.setTitle("Laptop");
+      createDTO.setDescription("Gaming laptop");
+      createDTO.setPrice(12299.99);
+      createDTO.setLocationLatitude(79.92);
+      createDTO.setLocationLongitude(90.06);
+      createDTO.setCategoryId(100L);
+      createDTO.setSellerId(200L);
+
+      // Stub repository calls for category and seller lookup.
+      when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
+      when(userRepository.findById(200L)).thenReturn(Optional.of(seller));
+
+      // Simulate save call.
+      Item savedItem = new Item();
+      savedItem.setId(400L);
+      savedItem.setTitle(createDTO.getTitle());
+      savedItem.setDescription(createDTO.getDescription());
+      savedItem.setPrice(createDTO.getPrice());
+      savedItem.setLocationLatitude(createDTO.getLocationLatitude());
+      savedItem.setLocationLongitude(createDTO.getLocationLongitude());
+      savedItem.setCategory(category);
+      savedItem.setSeller(seller);
+      savedItem.setCreatedAt(LocalDateTime.now());
+
+      when(itemRepository.save(any(Item.class))).thenReturn(savedItem);
+
+      
+      ItemResponseDTO response = itemService.saveItem(createDTO);
+
+      assertThat(response.getId()).isEqualTo(400L);
+      assertThat(response.getTitle()).isEqualTo("Laptop");
+      assertThat(response.getCategory().getName()).isEqualTo("Electronics");
+      assertThat(response.getSeller().getUsername()).isEqualTo("sellerUser");
+    }
+
+    @Test
+    void testUpdateItem() {
+      ItemUpdateDTO updateDTO = new ItemUpdateDTO();
+      updateDTO.setTitle("Smartphone Pro Max");
+      updateDTO.setDescription("Updated model with even more advanced features.");
+      updateDTO.setPrice(11999.99);
+      updateDTO.setLocationLatitude(80.00);
+      updateDTO.setLocationLongitude(90.00);
+      updateDTO.setCategoryId(100L);
+
+      when(itemRepository.findById(300L)).thenReturn(Optional.of(item));
+      when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
+
+      when(itemRepository.save(any(Item.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+      Optional<ItemResponseDTO> resultOpt = itemService.updateItem(300L, updateDTO);
+
+      assertThat(resultOpt).isPresent();
+      ItemResponseDTO response = resultOpt.get();
+      assertThat(response.getId()).isEqualTo(300L);
+      assertThat(response.getTitle()).isEqualTo("Smartphone Pro Max");
+      assertThat(response.getDescription()).isEqualTo("Updated model with even more advanced features.");
+      assertThat(response.getPrice()).isEqualTo(11999.99);
+    }
+
+    @Test
+    void testDeleteItem() {
+      when(itemRepository.existsById(300L)).thenReturn(true);
+
+      itemService.deleteItem(300L);
+
+      verify(itemRepository, times(1)).deleteById(300L);
+    }
+
+    @Test
+    void testGetAllItems() {
+      when(itemRepository.findAll()).thenReturn(Arrays.asList(item, item));
+
+      List<Item> result = itemService.getAllItems();
+
+      assertThat(result).hasSize(2);
+      assertThat(result.get(0).getId()).isEqualTo(300L);
+      assertThat(result.get(1).getId()).isEqualTo(300L);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void testGetFilteredItems() {
+    List<Item> filteredItems = Collections.singletonList(item);
+    
+    when(itemRepository.findAll(any(Specification.class))).thenReturn(filteredItems);
+
+    List<ItemResponseDTO> dtos = itemService.getFilteredItems("smart", "Electronics", 500.0, 1000.0, "AVAILABLE");
+
+    assertThat(dtos).hasSize(1);
+    ItemResponseDTO dto = dtos.get(0);
+    assertThat(dto.getId()).isEqualTo(300L);
+    assertThat(dto.getTitle()).isEqualTo("Smartphone");
+    assertThat(dto.getDescription()).isEqualTo("Latest model smartphone with advanced features.");
+    assertThat(dto.getPrice()).isEqualTo(8999.95);
+    }
+
   }
 
-  @Test
-  void testSaveItem() {
-    Item item = new Item();
-    item.setTitle("Laptop");
+  @Nested
+  @DisplayName("Negative test cases")
+  class NegativeTests {
 
-    when(itemRepository.save(item)).thenReturn(item);
+    @Test
+    void testGetItemById_NotFound() {
 
-    Item saved = itemService.saveItem(item);
+      when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-    assertThat(saved).isNotNull();
-    assertThat(saved.getTitle()).isEqualTo("Laptop");
-  }
+      Optional<ItemResponseDTO> resultOpt = itemService.getItemById(999L);
 
-  @Test
-  void testUpdateItem_Found() {
-    Item existing = new Item();
-    existing.setId(1L);
-    existing.setTitle("Old Title");
+      assertThat(resultOpt).isNotPresent();
+    }
 
-    Item updated = new Item();
-    updated.setTitle("New Title");
-    updated.setDescription("Updated description");
-    updated.setPrice(199.99);
-    updated.setCategory(new Category());
+    @Test
+    void testSaveItemThrowsWhenCategoryNotFound() {
+          // Arrange
+    ItemCreateDTO createDTO = new ItemCreateDTO();
+    createDTO.setTitle("Laptop");
+    createDTO.setDescription("Gaming laptop");
+    createDTO.setPrice(7299.05);
+    createDTO.setCategoryId(999L); // non-existent category id
+    createDTO.setSellerId(200L);
 
-    when(itemRepository.findById(1L)).thenReturn(Optional.of(existing));
-    when(itemRepository.save(any(Item.class))).thenAnswer(i -> i.getArgument(0));
+    when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
 
-    Optional<Item> result = itemService.updateItem(1L, updated);
+    assertThatThrownBy(() -> itemService.saveItem(createDTO))
+      .isInstanceOf(IllegalArgumentException.class)
+      .hasMessageContaining("Category not found");
+    }
 
-    assertThat(result).isPresent();
-    assertThat(result.get().getTitle()).isEqualTo("New Title");
-    assertThat(result.get().getDescription()).isEqualTo("Updated description");
-  }
+    @Test
+    void testSaveItemThrowsWhenSellerNotFound() {
+      // Arrange
+      ItemCreateDTO createDTO = new ItemCreateDTO();
+      createDTO.setTitle("Laptop");
+      createDTO.setDescription("Gaming laptop");
+      createDTO.setPrice(7299.05);
+      createDTO.setCategoryId(100L);
+      createDTO.setSellerId(999L); // non-existent seller id
 
-  @Test
-  void testUpdateItem_NotFound() {
-    Item updated = new Item();
-    updated.setTitle("Doesn't matter");
+      when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
+      when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-    when(itemRepository.findById(999L)).thenReturn(Optional.empty());
+      assertThatThrownBy(() -> itemService.saveItem(createDTO))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Seller not found");
+    }
 
-    Optional<Item> result = itemService.updateItem(999L, updated);
+    @Test
+    void testUpdateItemThrowsWhenItemNotFound() {
+    ItemUpdateDTO updateDTO = new ItemUpdateDTO();
+    updateDTO.setTitle("Nonexistent Item");
+    
+    when(itemRepository.findById(anyLong())).thenReturn(Optional.empty());
+    
+    Optional<ItemResponseDTO> responseOpt = itemService.updateItem(999L, updateDTO);
+    
+    assertThat(responseOpt).isNotPresent();
+    }
 
-    assertThat(result).isNotPresent();
-  }
+    @Test
+    void testUpdateItemThrowsWhenCategoryNotFound() {
+      ItemUpdateDTO updateDTO = new ItemUpdateDTO();
+      updateDTO.setTitle("Smartphone Pro Max");
+      updateDTO.setDescription("Updated model with even more advanced features.");
+      updateDTO.setPrice(11999.99);
+      updateDTO.setLocationLatitude(80.00);
+      updateDTO.setLocationLongitude(90.00);
+      updateDTO.setCategoryId(999L); // non-existent category id
 
-  @Test
-  void testDeleteItem() {
-    Long id = 1L;
+      when(itemRepository.findById(300L)).thenReturn(Optional.of(item));
+      when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
 
-    itemService.deleteItem(id);
+      assertThatThrownBy(() -> itemService.updateItem(300L, updateDTO))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Category not found");
+    }
 
-    // Verify that the deleteById method was called with the correct ID
-    verify(itemRepository, times(1)).deleteById(id);
-  }
+    @Test
+    void testDeleteItemThrowsWhenItemNotFound() {
+      when(itemRepository.existsById(999L)).thenReturn(false);
 
-  @Test
-  void testGetAllItems() {
-    List<Item> mockItems = Arrays.asList(new Item(), new Item());
-    when(itemRepository.findAll()).thenReturn(mockItems);
+      assertThatThrownBy(() -> itemService.deleteItem(999L))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Item not found");
 
-    List<Item> result = itemService.getAllItems();
-
-    assertThat(result).hasSize(2);
-  }
-
-  @SuppressWarnings("unchecked") // Suppress warning for unchecked cast
-  @Test
-  void testGetFilteredItems() {
-    List<Item> filteredItems = List.of(new Item(), new Item());
-
-    when(itemRepository.findAll((Specification<Item>) any(Specification.class))).thenReturn(filteredItems);
-
-    List<Item> result = itemService.getFilteredItems("Phone1", "Electronics", 100.0, 500.0, ItemStatus.ACTIVE.name());
-
-    assertThat(result).hasSize(2);
-    verify(itemRepository, times(1)).findAll(any(Specification.class));
+      verify(itemRepository, times(0)).deleteById(anyLong());
+    }
   }
 }

@@ -48,7 +48,7 @@ public class BookmarkService {
     User user = userService.getUserById(userId)
         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
     
-    Item item = itemService.getItemById(itemId)
+    Item item = itemService.getItemEntityById(itemId)
         .orElseThrow(() -> new IllegalArgumentException("Item not found with ID: " + itemId));
     
     Bookmark bookmark = new Bookmark(user, item);
