@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { createTestingPinia } from '@pinia/testing';
 import FilterSidebar from '../components/FilterSidebar.vue';
 
 const mockCategories = {
@@ -11,7 +12,13 @@ const mockCategories = {
 
 describe('FilterSidebar.vue', () => {
     it('renders the component correctly', () => {
-        const wrapper = mount(FilterSidebar);
+        const wrapper = mount(FilterSidebar, {
+            global: {
+                plugins: [createTestingPinia({
+                    createSpy: vi.fn,
+                })],
+            },
+        });
         expect(wrapper.exists()).toBe(true);
     });
 
