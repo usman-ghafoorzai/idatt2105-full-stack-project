@@ -14,7 +14,7 @@ describe('Header', () => {
     });
 
 
-    expect(wrapper.find('#logo').text()).toBe('LOGO');
+    expect(wrapper.find('#logo img').exists()).toBe(true);
     expect(wrapper.find('#home').text()).toBe('HOME');
     expect(wrapper.find('#categories').text()).toBe('CATEGORIES');
     expect(wrapper.find('#sell').text()).toBe('SELL');
