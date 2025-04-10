@@ -13,13 +13,15 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-  private final long expiration = 86400000; // 1 day in milliseconds
   private SecretKey key;
   private JwtParser jwtParser;
 
   // Inject secret from properties
   @Value("${jwt.secret}")
   private String secretString;
+
+  @Value("${jwt.expiration}")
+  private long expiration;
 
   @PostConstruct
   public void init() {
