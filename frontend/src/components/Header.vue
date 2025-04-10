@@ -10,7 +10,7 @@ const router = useRouter();
 defineProps({
   mail: {
     type: Number,
-    default: 5,
+    default: 0,
   }
 });
 
@@ -96,11 +96,11 @@ const navigateToUserProfile = () => {
       <fa icon="arrow-up-from-bracket" class="icons"></fa>
     </div>
     <div id="container">
-      <div id="inbox">Inbox</div>
-      <fa icon="envelope" id="inbox-icon"></fa>
+      <div id="profile" @click="navigateToUserProfile">Profile</div>
+      <fa icon="user" id="profile-icon" @click="navigateToUserProfile"></fa>
       <div v-if="mail > 0" id="notification-dot"></div>
       <div id="username" @click="handleAuthAction">{{ buttonText }}</div>
-      <fa icon="user" id="login-icon" @click="navigateToUserProfile"></fa>
+      <fa icon="right-to-bracket" id="login-icon" @click="handleAuthAction"></fa>
       <Searchbar id="searchbar"/>
     </div>
   </div>
@@ -144,7 +144,7 @@ const navigateToUserProfile = () => {
 }
 #container {
   grid-area: search;
-  grid-template-areas: 'inbox inbox-icon user user-icon'
+  grid-template-areas: 'profile profile-icon user user-icon'
                              'searchbar searchbar searchbar searchbar';
   display: grid;
   grid-template-rows: auto auto;
@@ -157,13 +157,13 @@ const navigateToUserProfile = () => {
 #home, #categories, #sell {
   font-size: 20px;
 }
-#inbox {
-  grid-area: inbox;
+#profile {
+  grid-area: profile;
   font-size: 20px;
   justify-self: right;
 }
-#inbox-icon {
-  grid-area: inbox-icon;
+#profile-icon {
+  grid-area: profile-icon;
   font-size: 25px;
   justify-self: left;
   padding-left: 3px;
@@ -188,34 +188,22 @@ const navigateToUserProfile = () => {
 .icons {
   font-size: 25px;
 }
-#home:hover, #categories:hover, #sell:hover, #inbox:hover, #username:hover {
+#home:hover, #categories:hover, #sell:hover, #profile:hover, #username:hover {
   cursor: pointer;
   border-bottom: 2px solid #000;
-}
-
-#notification-dot {
-  grid-area: inbox-icon;
-  justify-self: right;
-  align-self: start;
-  width: 10px;
-  height: 10px;
-  background-color: red;
-  border-radius: 50%;
-  border: 2px solid white;
-  transform: translate(50%, -30%);
 }
 
 @media (max-width:900px) {
   #home, #categories, #sell {
     font-size: 15px;
   }
-  #inbox, #username {
+  #profile, #username {
     font-size: 15px;
   }
 }
 
 @media (max-width: 768px) {
-  #home, #categories, #sell, #inbox, #username {
+  #home, #categories, #sell, #profile, #username {
     display: none;
   }
 
@@ -227,5 +215,17 @@ const navigateToUserProfile = () => {
     font-size: 20px;
     padding-left: 20px;
   }
+}
+
+#notification-dot {
+  grid-area: profile-icon;
+  justify-self: right;
+  align-self: start;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+  transform: translate(50%, -30%);
 }
 </style>
