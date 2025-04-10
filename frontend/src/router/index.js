@@ -7,6 +7,7 @@ import ItemView from '../views/ItemView.vue';
 import SellerView from '../views/SellerView.vue';
 import UserProfileView from "@/views/UserProfileView.vue";
 import { useSellerInformationStore } from '@/stores/SellerInformationStore';
+import { useCategoryStore } from '@/stores/CategoryStore';
 
 const routes = [
   {
@@ -22,7 +23,19 @@ const routes = [
   {
     path: '/search',
     name: 'Search',
-    component: ItemListingView
+    component: ItemListingView,
+    beforeEnter: async (to, from, next) => {
+      const categoryStore = useCategoryStore();
+      try {
+        if (categoryStore.categories.length === 0) {
+          await categoryStore.fetchCategories();
+        }
+        next();
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        next(false);
+      }
+    }
   },
   {
     path: '/item',

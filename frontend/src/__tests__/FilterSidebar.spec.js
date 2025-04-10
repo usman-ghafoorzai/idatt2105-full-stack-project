@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { createTestingPinia } from '@pinia/testing';
 import FilterSidebar from '../components/FilterSidebar.vue';
 
 const mockCategories = {
@@ -11,7 +12,13 @@ const mockCategories = {
 
 describe('FilterSidebar.vue', () => {
     it('renders the component correctly', () => {
-        const wrapper = mount(FilterSidebar);
+        const wrapper = mount(FilterSidebar, {
+            global: {
+                plugins: [createTestingPinia({
+                    createSpy: vi.fn,
+                })],
+            },
+        });
         expect(wrapper.exists()).toBe(true);
     });
 
@@ -31,21 +38,21 @@ describe('FilterSidebar.vue', () => {
         const wrapper = mount(FilterSidebar, {
             data() {
                 return {
-                    categories: mockCategories, // Provide mock categories
-                    item: 'clothing', // Set the active category
-                    visibility: { Tops: false, Bottoms: false }, // Initialize visibility
+                    categories: mockCategories,
+                    item: 'clothing',
+                    visibility: { Tops: false, Bottoms: false },
                 };
             },
         });
     
         // Find the first subcategory toggle
         const subcategoryToggle = wrapper.find('h3:nth-of-type(1)');
-        expect(subcategoryToggle.exists()).toBe(true); // Ensure the element exists
+        expect(subcategoryToggle.exists()).toBe(true); 
     
-        // Check if the subcategory list is initially hidden
+        // check if the subcategory list is initially hidden
         expect(wrapper.find('ul').exists()).toBe(false);
     
-        // Click to toggle visibility
+
         await subcategoryToggle.trigger('click');
         expect(wrapper.find('ul').exists()).toBe(true);
     
@@ -58,10 +65,10 @@ describe('FilterSidebar.vue', () => {
         const wrapper = mount(FilterSidebar, {
             data() {
                 return {
-                    categories: mockCategories, // Provide mock categories
-                    item: 'clothing', // Set the active category
-                    visibility: { Tops: true, Bottoms: true }, // Ensure subcategories are visible
-                    selectedSubcategories: [], // Initialize selected subcategories
+                    categories: mockCategories, 
+                    item: 'clothing', 
+                    visibility: { Tops: true, Bottoms: true },
+                    selectedSubcategories: [],
                 };
             },
         });
@@ -70,16 +77,15 @@ describe('FilterSidebar.vue', () => {
 
         // Find the first checkbox
         const checkbox = wrapper.find('input[type="checkbox"]');
-        expect(checkbox.exists()).toBe(true); // Ensure the checkbox exists
+        expect(checkbox.exists()).toBe(true); 
     
-        // Check the checkbox
         await checkbox.setChecked();
         
-        expect(wrapper.vm.selectedSubcategories).toContain('Troms og Finnmark'); // Replace with the correct value
+        expect(wrapper.vm.selectedSubcategories).toContain('Troms og Finnmark');
     
         // Uncheck the checkbox
         await checkbox.setChecked(false);
-        expect(wrapper.vm.selectedSubcategories).not.toContain('T-shirts'); // Replace with the correct value
+        expect(wrapper.vm.selectedSubcategories).not.toContain('T-shirts');
     });
 
     it('renders price range inputs correctly', () => {

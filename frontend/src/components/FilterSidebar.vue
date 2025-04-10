@@ -1,13 +1,44 @@
 <script setup>
-    import { ref } from 'vue';
-    import categoryStore from '../assets/CategoryStore.js';
-    let place = ref(false);
-    let item = ref('clothing');
-    let categories = categoryStore.categories;
-    let visibility = ref({});
+    import { ref, onMounted, watch } from 'vue';
+    import { useCategoryStore } from '../stores/CategoryStore.js';
+    import { useSearchStore } from '../stores/SearchStore.js';
+    import { fetchSearchResults, fetchSearchResultsByCategory } from '@/api/searchItemsAPI.js';
+    const place = ref(false);
+    const searchStore = useSearchStore();
+    const categoryStore = useCategoryStore();
+    const categories = categoryStore.categories;
+    const categoryVisibility = ref(false);
     const selectedSubcategories = ref([]);
+    const minPrice = ref(0);
+    const maxPrice = ref(Infinity);
 
-    for (let categoryKey in categories) {
+    onMounted(async () => {
+        try {
+            await categoryStore.fetchCategories();
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    });
+
+    watch([selectedSubcategories, minPrice, maxPrice], async ([newSelectedCategories, newMinPrice, newMaxPrice]) => {
+        if (newSelectedCategories.length === 0 && newMinPrice === 0 && (newMaxPrice === Infinity || newMaxPrice === 0 || newMaxPrice === '')) {
+            // no categories selected causes the search result to be rest
+            searchStore.setSearchResults(searchStore.originalResults);
+            return;
+        }
+
+        // filter items locally based on selected categories instead of doing api calls
+        const filteredResults = searchStore.originalResults.filter(item => {
+            const matchesCategory = newSelectedCategories.length === 0 || item.categories.some(category => newSelectedCategories.includes(category.id));
+            const matchesPrice = item.price >= newMinPrice && item.price <= newMaxPrice;
+            return matchesCategory && matchesPrice;
+        });
+
+        console.log('Filtered results:', filteredResults);
+        searchStore.setSearchResults(filteredResults);
+    });
+
+    /*for (let categoryKey in categories) {
         if (categoryKey === item.value) {
             for (let subcategoryKey in categories[categoryKey]) {
                 visibility.value[subcategoryKey] = false;
@@ -17,7 +48,7 @@
 
     function toggleVisibility(subcategoryKey) {
         visibility.value[subcategoryKey] = !visibility.value[subcategoryKey];
-    }
+    }*/
 </script>
 
 <template>
@@ -79,16 +110,16 @@
             <div id="price-container">
                 <div id="from-container">
                     <div>From</div>
-                    <input type="number" id="from-price" min="0"></input>
+                    <input type="number" id="from-price" min="0" v-model.number="minPrice"></input>
                 </div>
                 <div id="to-container">
                     <div>To</div>
-                    <input type="number" id="to-price" min="0"></input>
+                    <input type="number" id="to-price" min="0" v-model.number="maxPrice"></input>
                 </div>
             </div>
         </div>
 
-        <template v-for="(subcategories, subcategoryKey) in categories[item]" :key="subcategoryKey">
+       <!-- <template v-for="(subcategories, subcategoryKey) in categories[item]" :key="subcategoryKey">
             <div class="category">
                 <fa icon="chevron-right" v-if="!visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
                 <fa icon="chevron-down" v-if="visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
@@ -104,7 +135,23 @@
                     </li>
                 </ul>
             </div>
-        </template>
+        </template> -->
+
+        <div class="category">
+            <fa icon="chevron-right" v-if="!categoryVisibility" @click="categoryVisibility = !categoryVisibility"></fa>
+            <fa icon="chevron-down" v-if="categoryVisibility" @click="categoryVisibility = !categoryVisibility"></fa>
+            <h3 @click="categoryVisibility = !categoryVisibility">Categories</h3>
+            <ul v-if="categoryVisibility">
+                <li v-for="category in categories" :key="category.id">
+                    <input
+                        type="checkbox"
+                        :value="category.id"
+                        v-model="selectedSubcategories"
+                    />
+                    {{ category.name }}
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 

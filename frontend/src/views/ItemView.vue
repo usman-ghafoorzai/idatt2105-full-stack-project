@@ -10,6 +10,8 @@
     import { getAddress } from '@/utils/reverseGeoLocation';
     import PopUpModal from '../components/PopUpModal.vue';
     import { getItemImages } from '../api/itemAPI.js';
+    import { getLoggedInUser } from '../api/userAPI.js';
+    import { reserveItem } from '../api/reservationAPI.js';
 
     const itemStore = useItemStore();
     const sellerStore = useSellerInformationStore();
@@ -36,18 +38,19 @@
     async function confirmAction() {
     if (modalTitle.value.includes('Reserve')) {
         try {
-        const user = await getLoggedInUser();
-        await reserveItem(user.id, item.id);
-        alert("Item reserved successfully!");
-        modalRef.value.closeModal();
-        } catch (error) {
-        console.error("Reservation failed:", error);
-        alert("Failed to reserve item. Please make sure you're logged in.");
+            const user = await getLoggedInUser();
+            console.log(user);
+            await reserveItem(user.id, item.id);
+            alert("Item reserved successfully!");
+            modalRef.value.closeModal();
+            } catch (error) {
+            console.error("Reservation failed:", error);
+            alert("Failed to reserve item. Please make sure you're logged in.");
         }
     } else if (modalTitle.value.includes('purchase')) {
-        // Handle purchase confirmation
-        console.log("Purchase confirmed");
-        modalRef.value.closeModal();
+            // Handle purchase confirmation
+            console.log("Purchase confirmed");
+            modalRef.value.closeModal();
     }
     }
     const images = ref([]);
@@ -87,7 +90,7 @@
                     :description="item.description"
                     :image="images[0]"
                     :location="address"
-                    :categories="[item.category]"
+                    :categories="item.categories"
                 ></ItemDescription>
                 
                 <div id="buttons-container">
