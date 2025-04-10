@@ -125,14 +125,14 @@ const navigateToUserProfile = () => {
 }
 
 #logo-image {
-  height: 90px; /* Make it even smaller */
+  height: 90px;
   width: auto;
   object-fit: contain;
   cursor: pointer;
-  /* Add these properties */
-  mix-blend-mode: multiply; /* This helps with white backgrounds */
-  border-radius: 50%; /* If you want a circular logo */
-  filter: drop-shadow(0 0 2px rgba(0,0,0,0.1)); /* Optional shadow */
+
+  mix-blend-mode: multiply;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.1));
 }
 
 .container {
