@@ -1,56 +1,141 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import BaseItemListComponent from './BaseItemListComponent.vue';
+import { getReservedItems, deleteReservation } from '../api/reservationAPI.js';
+import { getFirstImage } from '../api/itemAPI.js';
+import { getLoggedInUser } from '../api/userAPI.js';
+import { useRouter } from 'vue-router';
+import { useItemStore } from '../stores/ItemStore.js';
+import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
 
-// Mock data - will be replaced with API call
-const reservedItems = ref([
-  { id: 1, title: 'Item 1', imageUrl: 'https://via.placeholder.com/150x100', price: '200', details: 'Item details here' },
-  { id: 2, title: 'Item 2', imageUrl: 'https://via.placeholder.com/150x100', price: '350', details: 'Item details here' },
-  { id: 3, title: 'Item 3', imageUrl: 'https://via.placeholder.com/150x100', price: '175', details: 'Item details here' },
-  { id: 4, title: 'Item 4', imageUrl: 'https://via.placeholder.com/150x100', price: '420', details: 'Item details here' },
-  { id: 5, title: 'Item 5', imageUrl: 'https://via.placeholder.com/150x100', price: '280', details: 'Item details here' },
-  { id: 6, title: 'Item 6', imageUrl: 'https://via.placeholder.com/150x100', price: '310', details: 'Item details here' },
-  { id: 7, title: 'Item 7', imageUrl: 'https://via.placeholder.com/150x100', price: '195', details: 'Item details here' },
-]);
+
+const router = useRouter();
+const itemStore = useItemStore();
+const sellerStore = useSellerInformationStore();
+const reservedItems = ref([]);
+const loading = ref(true);
+const error = ref(null);
+const userId = ref(null);
+
+const handleItemClick = (item) => {
+  itemStore.setSelectedItem(item);
+  sellerStore.setSellerId(item.seller.id);
+  sellerStore.getSellerInformation();
+  router.push('/item');
+};
+
+onMounted(async () => {
+  try {
+    loading.value = true;
+
+    // Get current user
+    const user = await getLoggedInUser();
+    userId.value = user.id;
+
+    // Fetch reserved items
+    const items = await getReservedItems(userId.value);
+
+    // For each item, get the first image
+    for (const item of items) {
+      try {
+        item.imageUrl = await getFirstImage(item.id);
+      } catch (imageErr) {
+        item.imageUrl = 'https://via.placeholder.com/150x100';
+      }
+    }
+
+    reservedItems.value = items;
+  } catch (fetchErr) {
+    error.value = 'Failed to load reserved items';
+    console.error(fetchErr);
+  } finally {
+    loading.value = false;
+  }
+});
 
 // Function to cancel reservation
-const cancelReservation = (itemId) => {
-  reservedItems.value = reservedItems.value.filter(item => item.id !== itemId);
-  console.log("Reservation canceled for item", itemId);
-  // In real implementation this would call an API
+const cancelReservation = async (item) => {
+  try {
+    // Use the correct ID format
+    const itemId = item.itemId || item.item?.id || item.id;
+
+    await deleteReservation(userId.value, itemId);
+    reservedItems.value = reservedItems.value.filter(i => i.id !== item.id);
+  } catch (cancelErr) {
+    console.error("Failed to cancel reservation:", cancelErr);
+    alert("Failed to cancel reservation. Please try again.");
+  }
 };
 </script>
 
 <template>
-  <BaseItemListComponent title="Reserved" bgColor="var(--color-light-bg)" class="elegant-card">
-    <div v-for="item in reservedItems" :key="item.id" class="reserved-item item-base">
-      <div class="image-container">
-        <img :src="item.imageUrl" alt="Reserved item">
-        <button class="cancel-button" @click="cancelReservation(item.id)">Cancel</button>
-      </div>
+<BaseItemListComponent title="Reserved" bgColor="var(--color-light-bg)" class="elegant-card">
+<div v-if="loading" class="loading-message">Loading reserved items...</div>
+<div v-else-if="error" class="error-message">{{ error }}</div>
+<div v-else-if="reservedItems.length === 0" class="empty-message">No reserved items</div>
+<div v-else class="items-container">
+  <div v-for="item in reservedItems" :key="item.id" class="item-card">
+    <div class="image-container" @click="handleItemClick(item)">
+      <img :src="item.imageUrl" alt="Reserved item">
+      <button class="cancel-button" @click.stop="cancelReservation(item)">Cancel</button>
     </div>
-  </BaseItemListComponent>
+  </div>
+</div>
+</BaseItemListComponent>
 </template>
 
 <style scoped>
+.items-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
+}
+
+.item-card {
+  width: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .cancel-button {
   position: absolute;
   top: 5px;
   right: 5px;
-  padding: 3px 8px !important; /* Override main.css padding */
-  font-size: 12px !important; /* Override main.css font-size */
-  background-color: var(--color-red); /* Use the variable from main.css */
+  padding: 2px 6px !important;
+  font-size: 11px !important;
+  background-color: var(--color-red, #ff4757);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   z-index: 10;
-  height: auto !important; /* Override any height from main.css */
-  width: auto !important; /* Override any width from main.css */
-  line-height: normal !important; /* Override any line-height */
 }
 
 .cancel-button:hover {
-  background-color: var(--color-gray-darker); /* Use the hover color from main.css */
+  background-color: var(--color-gray-darker, #d32f2f);
+}
+
+.loading-message, .error-message, .empty-message {
+  padding: 20px;
+  text-align: center;
+}
+
+.error-message {
+  color: var(--color-red, #ff4757);
 }
 </style>
