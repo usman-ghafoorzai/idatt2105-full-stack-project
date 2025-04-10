@@ -9,52 +9,46 @@
     import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
     import { getAddress } from '@/utils/reverseGeoLocation';
     import PopUpModal from '../components/PopUpModal.vue';
-    import { getFirstImage, getItemImages } from '../api/itemAPI.js';
+    import { getItemImages } from '../api/itemAPI.js';
 
-const itemStore = useItemStore();
-const sellerStore = useSellerInformationStore();
-const item = itemStore.selectedItem;
-const sellerInformation = sellerStore.sellerInformation;
+    const itemStore = useItemStore();
+    const sellerStore = useSellerInformationStore();
+    const item = itemStore.selectedItem;
+    const sellerInformation = sellerStore.sellerInformation;
 
-const address = ref('');
-const modalTitle = ref('');
-const modalRef = ref(null);
-const modalButtonText = ref('Confirm');
+    const address = ref('');
+    const modalTitle = ref('');
+    const modalRef = ref(null);
+    const modalButtonText = ref('Confirm');
 
-function openBuyNowModal() {
-  modalTitle.value = 'Confirm purchase';
-  modalButtonText.value = 'Confirm';
-  modalRef.value.openModal();
-}
-
-function openReserveModal() {
-  modalTitle.value = 'Reserve Item';
-  modalButtonText.value = 'Reserve';
-  modalRef.value.openModal();
-}
-
-async function confirmAction() {
-  if (modalTitle.value.includes('Reserve')) {
-    try {
-      const user = await getLoggedInUser();
-      await reserveItem(user.id, item.id);
-      alert("Item reserved successfully!");
-      modalRef.value.closeModal();
-    } catch (error) {
-      console.error("Reservation failed:", error);
-      alert("Failed to reserve item. Please make sure you're logged in.");
+    function openBuyNowModal() {
+    modalTitle.value = 'Confirm purchase';
+    modalButtonText.value = 'Confirm';
+    modalRef.value.openModal();
     }
-  } else if (modalTitle.value.includes('purchase')) {
-    // Handle purchase confirmation
-    console.log("Purchase confirmed");
-    modalRef.value.closeModal();
-  }
-}
 
     function openReserveModal() {
-        modalTitle.value = 'Reserve Item';
-        modalButtonText.value = 'Reserve';
-        modalRef.value.openModal();
+    modalTitle.value = 'Reserve Item';
+    modalButtonText.value = 'Reserve';
+    modalRef.value.openModal();
+    }
+
+    async function confirmAction() {
+    if (modalTitle.value.includes('Reserve')) {
+        try {
+        const user = await getLoggedInUser();
+        await reserveItem(user.id, item.id);
+        alert("Item reserved successfully!");
+        modalRef.value.closeModal();
+        } catch (error) {
+        console.error("Reservation failed:", error);
+        alert("Failed to reserve item. Please make sure you're logged in.");
+        }
+    } else if (modalTitle.value.includes('purchase')) {
+        // Handle purchase confirmation
+        console.log("Purchase confirmed");
+        modalRef.value.closeModal();
+    }
     }
     const images = ref([]);
 
@@ -103,24 +97,6 @@ async function confirmAction() {
             </div>
         </div>
 
-    </div>
-
-    <div id="right-section">
-      <div id="item-description-buttons">
-        <ItemDescription
-          :title="item.title"
-          :price=item.price
-          :description="item.description"
-          :image="'src/assets/images/boat.jpg'"
-          :location="address"
-          :categories="[item.category]"
-        ></ItemDescription>
-
-        <div id="buttons-container">
-          <BuyNowButton @click="openBuyNowModal"></BuyNowButton>
-          <ReserveButton @click="openReserveModal"></ReserveButton>
-        </div>
-      </div>
     </div>
 
     <PopUpModal
