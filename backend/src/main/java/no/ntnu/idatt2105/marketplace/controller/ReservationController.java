@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
+import no.ntnu.idatt2105.marketplace.model.Reservation;
 import no.ntnu.idatt2105.marketplace.service.ReservationService;
 
 /**
@@ -41,7 +42,7 @@ public class ReservationController {
   )
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Reserved items retrieved successfully",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Item.class))),
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
       @ApiResponse(responseCode = "404", description = "User not found or no reservations found", content = @Content)
   })
   @GetMapping("/{userId}")
