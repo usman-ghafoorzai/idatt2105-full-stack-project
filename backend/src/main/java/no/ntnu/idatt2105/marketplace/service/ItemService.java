@@ -203,8 +203,6 @@ public class ItemService {
         .collect(Collectors.toSet());
   }
 
-  // TODO: Implement pagination and sorting for the getAllItems method
-  // TODO: Category filtering and user filtering
   public List<ItemResponseDTO> getFilteredItems(String title, String categoryName, Double minPrice, Double maxPrice,
       String status) {
     Specification<Item> spec = Specification.where(null);
