@@ -98,6 +98,7 @@ const navigateToUserProfile = () => {
     <div id="container">
       <div id="profile" @click="navigateToUserProfile">Profile</div>
       <fa icon="user" id="profile-icon" @click="navigateToUserProfile"></fa>
+      <div v-if="mail > 0" id="notification-dot"></div>
       <div id="username" @click="handleAuthAction">{{ buttonText }}</div>
       <fa icon="right-to-bracket" id="login-icon" @click="handleAuthAction"></fa>
       <Searchbar id="searchbar"/>
@@ -214,5 +215,17 @@ const navigateToUserProfile = () => {
     font-size: 20px;
     padding-left: 20px;
   }
+}
+
+#notification-dot {
+  grid-area: profile-icon;
+  justify-self: right;
+  align-self: start;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+  transform: translate(50%, -30%);
 }
 </style>
