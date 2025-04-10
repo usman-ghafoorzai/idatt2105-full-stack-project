@@ -2,6 +2,7 @@ package no.ntnu.idatt2105.marketplace.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -47,11 +48,17 @@ public class ItemService {
       response.setStatus(item.getStatus().name());
     }
     
-    if (item.getCategory() != null) {
-      ItemResponseDTO.CategoryDTO categoryDTO = new ItemResponseDTO.CategoryDTO();
-      categoryDTO.setId(item.getCategory().getId());
-      categoryDTO.setName(item.getCategory().getName());
-      response.setCategory(categoryDTO);
+    if (item.getCategories() != null) {
+      Set<ItemResponseDTO.CategoryDTO> categoryDTOs = item.getCategories()
+          .stream()
+          .map(category -> {
+            ItemResponseDTO.CategoryDTO categoryDTO = new ItemResponseDTO.CategoryDTO();
+            categoryDTO.setId(category.getId());
+            categoryDTO.setName(category.getName());
+            return categoryDTO;
+          })
+          .collect(Collectors.toSet());
+      response.setCategories(categoryDTOs);
     }
     
     ItemResponseDTO.SellerDTO sellerDTO = new ItemResponseDTO.SellerDTO();
@@ -105,9 +112,14 @@ public class ItemService {
     }
 
     // Lookup category by id
-    Category category = categoryRepository.findById(createDTO.getCategoryId())
-        .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-    item.setCategory(category);
+    if (createDTO.getCategoryIds() != null) {
+      Set<Category> categories = createDTO.getCategoryIds()
+          .stream()
+          .map(categoryId -> categoryRepository.findById(categoryId)
+              .orElseThrow(() -> new IllegalArgumentException("Category not found")))
+          .collect(Collectors.toSet());
+      item.setCategories(categories);
+    }
 
     // Lookup seller by id
     User seller = userRepository.findById(createDTO.getSellerId())
@@ -144,10 +156,13 @@ public class ItemService {
       existingItem.setLocationLongitude(updateDTO.getLocationLongitude());
 
       // Update category if provided
-      if (updateDTO.getCategoryId() != null) {
-        Category category = categoryRepository.findById(updateDTO.getCategoryId())
-            .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-        existingItem.setCategory(category);
+      if (updateDTO.getCategoryIds() != null) {
+        Set<Category> categories = updateDTO.getCategoryIds()
+            .stream()
+            .map(categoryId -> categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found")))
+            .collect(Collectors.toSet());
+        existingItem.setCategories(categories);
       }
       Item updated = itemRepository.save(existingItem);
       return convertToResponse(updated);
