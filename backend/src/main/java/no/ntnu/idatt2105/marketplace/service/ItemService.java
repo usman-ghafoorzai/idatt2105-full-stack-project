@@ -190,6 +190,19 @@ public class ItemService {
     return itemRepository.findAll();
   }
 
+  /**
+   * Retrieves all items in the database as a set of response DTOs.
+   *
+   * @return a set of all items as response DTOs
+   */
+  public Set<ItemResponseDTO> getItemsByCategoryIds(Set<Long> categoryIds) {
+    Specification<Item> spec = (root, query, cb) -> root.get("categories").get("id").in(categoryIds);
+    return itemRepository.findAll(spec)
+        .stream()
+        .map(this::convertToResponse)
+        .collect(Collectors.toSet());
+  }
+
   // TODO: Implement pagination and sorting for the getAllItems method
   // TODO: Category filtering and user filtering
   public List<ItemResponseDTO> getFilteredItems(String title, String categoryName, Double minPrice, Double maxPrice,
