@@ -34,8 +34,8 @@
             return matchesCategory && matchesPrice;
         });
 
-        console.log('Filtered results:', filteredResults); // Debugging
-        searchStore.setSearchResults(filteredResults); // Update the search results
+        console.log('Filtered results:', filteredResults);
+        searchStore.setSearchResults(filteredResults);
     });
 
     /*for (let categoryKey in categories) {
