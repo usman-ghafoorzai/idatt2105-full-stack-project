@@ -1,7 +1,4 @@
 <script setup>
-    import { ref } from 'vue';
-
-    let c = ref(0);
     defineProps({
         title: String,
         price: Number,

@@ -9,10 +9,10 @@ describe('ItemDescription.vue', () => {
         description: 'Test description',
         location: 'Nidarosdomen, Trondheim',
         categories: [
-            'Electronics',
-            'Computers',
-            'Laptops'
-        ]
+            {name: 'Electronics'},
+            {name: 'Computers'},
+            {name: 'Laptops'},
+        ],
     };
 
     it('renders the item title', () => {
@@ -52,9 +52,9 @@ describe('ItemDescription.vue', () => {
             props: mockItem,
         });
 
-        expect(wrapper.find('#category:nth-of-type(1)').text()).toContain(mockItem.categories[0]);
-        expect(wrapper.find('#category:nth-of-type(2)').text()).toContain(mockItem.categories[1]);
-        expect(wrapper.find('#category:nth-of-type(3)').text()).toContain(mockItem.categories[2]);
+        expect(wrapper.find('#category:nth-of-type(1)').text()).toContain(mockItem.categories[0].name);
+        expect(wrapper.find('#category:nth-of-type(2)').text()).toContain(mockItem.categories[1].name);
+        expect(wrapper.find('#category:nth-of-type(3)').text()).toContain(mockItem.categories[2].name);
     })
 
 });
