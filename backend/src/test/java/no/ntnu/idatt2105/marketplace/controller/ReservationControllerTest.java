@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -61,7 +62,7 @@ public class ReservationControllerTest {
         CategoryDTO category = new CategoryDTO();
         category.setId(1L);
         category.setName("Electronics");
-        itemDTO.setCategory(category);
+        itemDTO.setCategories(Set.of(category));
 
         SellerDTO seller = new SellerDTO();
         seller.setId(2L);
@@ -77,7 +78,7 @@ public class ReservationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].title").value("Reserved Item"))
-                .andExpect(jsonPath("$[0].category.name").value("Electronics"))
+                .andExpect(jsonPath("$[0].categories[0].name").value("Electronics"))
                 .andExpect(jsonPath("$[0].seller.username").value("testSeller"));
     }
 

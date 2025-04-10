@@ -3,7 +3,6 @@ package no.ntnu.idatt2105.marketplace.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
