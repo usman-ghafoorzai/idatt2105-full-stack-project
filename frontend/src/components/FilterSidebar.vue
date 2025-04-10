@@ -4,13 +4,13 @@
     import { useSearchStore } from '../stores/SearchStore.js';
     import { fetchSearchResults, fetchSearchResultsByCategory } from '@/api/searchItemsAPI.js';
     const place = ref(false);
-    const item = ref('clothing');
     const searchStore = useSearchStore();
     const categoryStore = useCategoryStore();
     const categories = categoryStore.categories;
     const categoryVisibility = ref(false);
-    const visibility = ref({});
     const selectedSubcategories = ref([]);
+    const minPrice = ref(0);
+    const maxPrice = ref(Infinity);
 
     onMounted(async () => {
         try {
@@ -20,17 +20,19 @@
         }
     });
 
-    watch(selectedSubcategories, async (newSelectedCategories) => {
-        if (newSelectedCategories.length === 0) {
+    watch([selectedSubcategories, minPrice, maxPrice], async ([newSelectedCategories, newMinPrice, newMaxPrice]) => {
+        if (newSelectedCategories.length === 0 && newMinPrice === 0 && newMaxPrice === Infinity) {
             // no categories selected causes the search result to be rest
             searchStore.setSearchResults(searchStore.originalResults);
             return;
         }
 
         // filter items locally based on selected categories instead of doing api calls
-        const filteredResults = searchStore.originalResults.filter(item =>
-            item.categories.some(category => newSelectedCategories.includes(category.id))
-        );
+        const filteredResults = searchStore.originalResults.filter(item => {
+            const matchesCategory = newSelectedCategories.length === 0 || item.categories.some(category => newSelectedCategories.includes(category.id));
+            const matchesPrice = item.price >= newMinPrice && item.price <= newMaxPrice;
+            return matchesCategory && matchesPrice;
+        });
 
         console.log('Filtered results:', filteredResults); // Debugging
         searchStore.setSearchResults(filteredResults); // Update the search results
@@ -108,11 +110,11 @@
             <div id="price-container">
                 <div id="from-container">
                     <div>From</div>
-                    <input type="number" id="from-price" min="0"></input>
+                    <input type="number" id="from-price" min="0" v-model.number="minPrice"></input>
                 </div>
                 <div id="to-container">
                     <div>To</div>
-                    <input type="number" id="to-price" min="0"></input>
+                    <input type="number" id="to-price" min="0" v-model.number="maxPrice"></input>
                 </div>
             </div>
         </div>
