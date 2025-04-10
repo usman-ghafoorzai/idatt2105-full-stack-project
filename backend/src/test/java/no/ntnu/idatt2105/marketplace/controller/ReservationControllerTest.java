@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -61,7 +62,7 @@ public class ReservationControllerTest {
         CategoryDTO category = new CategoryDTO();
         category.setId(1L);
         category.setName("Electronics");
-        itemDTO.setCategory(category);
+        itemDTO.setCategories(Set.of(category));
 
         SellerDTO seller = new SellerDTO();
         seller.setId(2L);

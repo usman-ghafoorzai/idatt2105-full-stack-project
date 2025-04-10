@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,7 @@ public class BookmarkControllerTest {
         CategoryDTO category = new CategoryDTO();
         category.setId(1L);
         category.setName("Books");
-        itemDTO.setCategory(category);
+        itemDTO.setCategories(Set.of(category));
 
         SellerDTO seller = new SellerDTO();
         seller.setId(2L);
