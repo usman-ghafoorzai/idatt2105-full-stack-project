@@ -9,20 +9,37 @@
 
       <label for="price">Price:</label>
       <div id="input-with-currency">
-        <input type="number" name="price" id="price" min="0" v-model="formData.price" required/>
+        <input 
+          type="number" 
+          name="price" 
+          id="price" 
+          min="0" 
+          v-model="formData.price" 
+          required
+          step="0.01"
+          />
         <span id="currency">kr</span>
       </div>
 
       <label for="description">Description:</label>
       <textarea name="description" id="description" cols="30" rows="10" v-model="formData.description" required></textarea>
 
-      <label for="category">Main category:</label>
-      <select name="category" id="category" v-model="formData.categoryId" required>
-        <option value="" disabled>Select a category</option>
-        <option v-for="category in categories" :key="category.id" :value="category.id">
-          {{ category.name }}
-        </option>
-      </select>
+      <label for="category" id="category-label">Category:</label>
+      <div id="category-container">
+        <button type="button" @click="toggleCategoryList" id="category-toggle">
+          {{ showCategories ? 'Hide Categories' : 'Select Categories' }}
+        </button>
+        <ul v-if="showCategories" id="category-list">
+          <li v-for="category in categories" :key="category.id">
+            <input
+              type="checkbox"
+              :value="category.id"
+              v-model="formData.categoryIds"
+            />
+            {{ category.name }}
+          </li>
+        </ul>
+      </div>
 
       <label for="image">Upload image/images of item:</label>
       <input
@@ -62,12 +79,16 @@ const errorMessage = ref('');
 const successMessage = ref('');
 const categories = ref([]);
 const userId = ref(null);
+const showCategories = ref(false);
+const toggleCategoryList = () => {
+  showCategories.value = !showCategories.value;
+};
 
 const formData = ref({
   title: '',
   price: 0,
   description: '',
-  categoryId: '',
+  categoryIds: [],
   images: [],
   longitude: 0,
   latitude: 0,
@@ -128,7 +149,7 @@ function imageUpload(event) {
     event.target.value = '';
     return;
   }
-  formData.value.images = []; // Clear previous images
+  formData.value.images = [];
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     formData.value.images.push(file);
@@ -142,7 +163,11 @@ const submitForm = async (event) => {
     alert('Please select a location on the map.');
     return;
   }
-  if (!formData.value.title || !formData.value.price || !formData.value.description || !formData.value.categoryId) {
+  if (formData.value.categoryIds.length === 0) {
+    alert('Please select at least one category.');
+    return;
+  }
+  if (!formData.value.title || !formData.value.price || !formData.value.description) {
     alert('Please fill in all required fields.');
     return;
   }
@@ -160,9 +185,9 @@ const submitForm = async (event) => {
     const itemData = {
       title: formData.value.title,
       description: formData.value.description,
-      price: parseFloat(formData.value.price),
-      categoryId: parseInt(formData.value.categoryId),
-      sellerId: userId.value,
+      price: formData.value.price,
+      category_ids: formData.value.categoryIds,
+      seller_id: userId.value,
       locationLatitude: formData.value.latitude,
       locationLongitude: formData.value.longitude
     };
@@ -198,7 +223,7 @@ const resetForm = () => {
     title: '',
     price: 0,
     description: '',
-    categoryId: '',
+    categoryIds: [],
     images: [],
     longitude: 0,
     latitude: 0
@@ -249,7 +274,8 @@ const resetForm = () => {
     #seller-form label {
         font-weight: bold;
         color: #333;
-        align-self: center;
+        align-self: start;
+        margin-top: 8px;
         text-align: right;
     }
 
@@ -322,6 +348,19 @@ button:disabled {
   cursor: not-allowed;
 }
 
+#category-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+#category-list li {
+  margin-bottom: 5px;
+}
+
+#category-container {
+  margin-bottom: 20px;
+}
 @media (max-width: 768px) {
   #seller-form {
     width: 100%;
