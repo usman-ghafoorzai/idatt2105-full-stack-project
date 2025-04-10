@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -87,7 +88,7 @@ public class BookmarkRepositoryTest {
     item.setPrice(123.0);
     item.setStatus(ItemStatus.ACTIVE);
     item.setSeller(user);
-    item.setCategory(category);
+    item.setCategories(Set.of(category));
     item = itemRepository.save(item);
 
     Bookmark bookmark = new Bookmark();
