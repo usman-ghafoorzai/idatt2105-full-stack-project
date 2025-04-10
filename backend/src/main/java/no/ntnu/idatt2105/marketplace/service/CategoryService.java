@@ -1,7 +1,9 @@
 package no.ntnu.idatt2105.marketplace.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -174,6 +176,37 @@ public class CategoryService {
     }
     categoryRepository.deleteById(id);
   }
+
+   /**
+    * Retrieves all descendant category IDs of a given parent category.
+    * This includes the IDs of the parent category itself and all its subcategories.
+    * @param parentName the name of the parent category
+    * @return a set of IDs of all descendant categories
+    * @throws IllegalArgumentException if the parent category is not found
+    */
+    public Set<Long> getDescendantCategoryIds(String parentName) {
+        Category parent = categoryRepository.findByName(parentName);
+        if (parent == null) {
+            throw new IllegalArgumentException("Category not found: " + parentName);
+        }
+        Set<Long> ids = new HashSet<>();
+        gatherDescendantIds(parent, ids);
+        return ids;
+    }
+
+    /**
+     * Helper method to recursively gather all descendant category IDs.
+     * @param category the current category to process
+     * @param ids the set of IDs to populate
+     */
+    private void gatherDescendantIds(Category category, Set<Long> ids) {
+        ids.add(category.getId());
+        if (category.getSubcategories() != null) {
+            for (Category sub : category.getSubcategories()) {
+                gatherDescendantIds(sub, ids);
+            }
+        }
+    }
 
   // Additional Methods for Subcategory Operations
   
