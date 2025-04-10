@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,10 +58,8 @@ public class ItemRepositoryTest {
   @Test
   void testUpdateItem() {
     Item item = createTestItem("Tablet", 200.0);
-    item = itemRepository.save(item);
-
     item.setPrice(250.0);
-    item = itemRepository.save(item); // Update existing entry
+    item = itemRepository.save(item);
 
     Item updatedItem = itemRepository.findById(item.getId()).orElse(null);
     assertThat(updatedItem).isNotNull();
@@ -114,7 +113,7 @@ public class ItemRepositoryTest {
     item.setDescription("Test description for " + title);
     item.setPrice(price);
     item.setStatus(ItemStatus.ACTIVE);
-    item.setCategory(category);
+    item.setCategories(Set.of(category)); 
     item.setSeller(seller);
 
     return item;
