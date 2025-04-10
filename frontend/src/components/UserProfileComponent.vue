@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue'; // Added watch import
 import { isLoggedIn } from '@/utils/authService';
 import UploadPicture from './UploadPicture.vue';
-import { getLoggedInUser, getUserImage, updateUser} from '@/api/userAPI';
+import { getLoggedInUser, getUserImage, updateUser, uploadProfilePicture} from '@/api/userAPI';
 
 // Reactive variables for user info and image
 const user = ref({
@@ -11,6 +11,7 @@ const user = ref({
   email: '',
 });
 const profileImage = ref(null);
+const newProfileImage = ref(null); // Add this for v-model binding
 const showEditModal = ref(false);
 const editForm = ref({});
 const isSubmitting = ref(false);
@@ -81,6 +82,26 @@ onMounted(() => {
   if (isLoggedIn()) {
     fetchUserData();
   }
+}); // Added missing closing brace
+
+// Watch for changes to newProfileImage and upload the image
+watch(newProfileImage, async (file) => {
+  if (file && user.value.id) {
+    try {
+      await uploadProfilePicture(file, user.value.id);
+      // Update the profile image after successful upload
+      profileImage.value = URL.createObjectURL(file);
+      successMessage.value = 'Profile picture updated successfully!';
+      setTimeout(() => {
+        successMessage.value = '';
+      }, 2000);
+    } catch (error) {
+      errorMessage.value = error.message || 'Failed to update profile picture';
+      setTimeout(() => {
+        errorMessage.value = '';
+      }, 2000);
+    }
+  }
 });
 </script>
 
@@ -89,9 +110,13 @@ onMounted(() => {
     <div class="account-box elegant-card">
       <div class="account-content">
         <div class="profile-picture-wrapper">
-          <img v-if="profileImage" :src="profileImage" alt="Profile Picture" class="profile-picture" />
-          <UploadPicture v-else />
+          <UploadPicture v-model="newProfileImage" :initialImage="profileImage" />
         </div>
+        <!-- Display success/error messages for image upload -->
+        <div class="success-message" v-if="successMessage">{{ successMessage }}</div>
+        <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
+      </div>
+
         <div class="user-details">
           <!-- Display the user data only if logged in -->
           <h3 class="user-name" v-if="isLoggedIn()">
@@ -171,7 +196,6 @@ onMounted(() => {
         </form>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
