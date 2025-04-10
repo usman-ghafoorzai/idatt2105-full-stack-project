@@ -43,18 +43,18 @@ public class ItemImageController {
   }
 
   /**
-   * Retrieves all images for a specific item.
+   * Retrieves all image IDs associated with a specific item.
    * 
    * @param itemId the ID of the item
-   * @return a list of ItemImage objects with image metadata
+   * @return a list of image IDs, or 404 if no images are found
    */
   @GetMapping("/{itemId}/images")
-  public ResponseEntity<List<ItemImage>> getItemImages(@PathVariable Long itemId) {
-    List<ItemImage> images = itemImageService.getItemImages(itemId);
-    if (images.isEmpty()) {
+  public ResponseEntity<List<Long>> getItemImageIds(@PathVariable Long itemId) {
+    List<Long> imageIds = itemImageService.getItemImageIds(itemId);
+    if (imageIds.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
-    return ResponseEntity.ok(images);
+    return ResponseEntity.ok(imageIds);
   }
 
   /**
