@@ -36,6 +36,7 @@ public class UserImageService {
         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
     userImageRepository.deleteByUserId(userId); // replace existing image if any
+    userImageRepository.flush(); // ensure the deletion is committed
 
     UserImage image = new UserImage();
     image.setUser(user);
