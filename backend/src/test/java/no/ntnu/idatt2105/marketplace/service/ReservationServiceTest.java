@@ -14,9 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +56,7 @@ public class ReservationServiceTest {
     CategoryDTO category = new CategoryDTO();
     category.setId(1L);
     category.setName("Electronics");
-    itemDTO.setCategory(category);
+    itemDTO.setCategories(Set.of(category));
 
     SellerDTO seller = new SellerDTO();
     seller.setId(2L);
@@ -96,7 +98,7 @@ public class ReservationServiceTest {
     CategoryDTO category = new CategoryDTO();
     category.setId(1L);
     category.setName("Electronics");
-    itemDTO.setCategory(category);
+    itemDTO.setCategories(Set.of(category));
 
     SellerDTO seller = new SellerDTO();
     seller.setId(2L);
