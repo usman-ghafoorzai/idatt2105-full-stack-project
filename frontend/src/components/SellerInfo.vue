@@ -1,9 +1,21 @@
 <script setup>
+    import PopUpModal from './PopUpModal.vue';
+    import { ref } from 'vue';
+
+    const modalRef = ref(null);
+    const modalTitle = ref('Contact Seller');
+    const modalButtonText = ref('Contact through website');
+
+    function openModal() {
+        modalRef.value.openModal();
+    }
+
     defineProps({
         name: String,
         phoneNumber: String,
         email: String,
     })
+
 </script>
 
 <template>
@@ -14,9 +26,15 @@
             <div><strong>Phone Number:</strong> {{ phoneNumber }}</div>
             <div><strong>Email:</strong> {{ email }}</div>
         </div>
-        <button>
+        <button @click="openModal">
             Contact seller
         </button>
+        <PopUpModal
+            ref="modalRef"
+            :title="modalTitle"
+            :buttonText="modalButtonText"
+            :onConfirm="() => console.log('Confirmed contact with seller')"
+        />
     </div>
 </template>
 
