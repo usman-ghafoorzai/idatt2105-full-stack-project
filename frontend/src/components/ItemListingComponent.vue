@@ -3,12 +3,14 @@
     import { useRouter } from 'vue-router';
     import { useItemStore } from '../stores/ItemStore.js';
     import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
+    import { ref, onMounted, watch } from 'vue';
+    import { getFirstImage } from '../api/itemAPI.js'
 
     const itemStore = useItemStore();
     const sellerStore = useSellerInformationStore();
     const router = useRouter();
 
-    defineProps({
+    const props = defineProps({
         items: {
             type: Array,
             required: true,
@@ -18,6 +20,30 @@
             required: true,
         },
     });
+
+    const itemImages = ref({});
+
+
+    async function fetchFirstImages() {
+        const images = {};
+        for (const item of props.items) {
+            try {
+                const image = await getFirstImage(item.id);
+                images[item.id] = image;
+            } catch (error) {
+                console.error(`Failed to fetch the first image for item ${item.id}:`, error);
+                images[item.id] = '';
+            }
+        }
+        itemImages.value = images;
+    }
+
+    onMounted(fetchFirstImages);
+    watch(() => props.items, 
+          () => { 
+            fetchFirstImages();
+        }
+    );
 
     function handleItemClick(item) {
         itemStore.setSelectedItem(item);
@@ -33,7 +59,7 @@
         <ItemFrameComponent
             v-for="item in items"
             :id="item.id"
-            :image="item.image"
+            :image="itemImages[item.id]"
             :price=item.price
             :details="item.title"
             @click="handleItemClick(item)"

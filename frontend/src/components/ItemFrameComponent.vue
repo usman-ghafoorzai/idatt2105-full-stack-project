@@ -31,7 +31,7 @@
 <style scoped>
     .item-frame {
         display: grid;
-        grid-template-rows: 4fr auto;
+        grid-template-rows: 3fr auto;
         width: 300px;
         height: 400px;
         border-radius: 10px;
@@ -41,6 +41,8 @@
     }
     .item-image {
         position: relative;
+        height: 100%;
+        overflow: hidden;
     }
     img {
         height: 100%;

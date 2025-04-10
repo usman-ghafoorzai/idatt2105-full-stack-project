@@ -9,6 +9,7 @@
     import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
     import { getAddress } from '@/utils/reverseGeoLocation';
     import PopUpModal from '../components/PopUpModal.vue';
+    import { getFirstImage, getItemImages } from '../api/itemAPI.js';
 
     const itemStore = useItemStore();
     const sellerStore = useSellerInformationStore();
@@ -31,10 +32,16 @@
         modalButtonText.value = 'Reserve';
         modalRef.value.openModal();
     }
+    const images = ref([]);
 
     onMounted(async () => {
-        address.value = await getAddress(item.locationLatitude, item.locationLongitude);
-    })
+        try {
+            address.value = await getAddress(item.locationLatitude, item.locationLongitude);
+            images.value = await getItemImages(item.id);
+        } catch (error) {
+            console.error('Error fetching item data:', error);
+        }
+    });
 </script>
 
 <template>
@@ -42,7 +49,7 @@
         <div id="left-section">
             <div id="image-seller-information">
                <ItemPicture
-                :images="['src/assets/images/boat.jpg', 'src/assets/images/Thor.png']"
+                :images="images"
                 id="item-picture"
                 />
                 <SellerInfo
@@ -60,7 +67,7 @@
                     :title="item.title"
                     :price=item.price
                     :description="item.description"
-                    :image="'src/assets/images/boat.jpg'"
+                    :image="images[0]"
                     :location="address"
                     :categories="[item.category]"
                 ></ItemDescription>
