@@ -1,14 +1,9 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { getItemImage } from '../api/itemAPI.js';
 
 const props = defineProps({
     images: {
         type: Array,
-        required: true,
-    },
-    itemId: {
-        type: Number,
         required: true,
     },
 });
@@ -17,15 +12,6 @@ let currentIndex = ref(0);
 const currentImage = computed(() => props.images[currentIndex.value]);
 
 async function nextImage() {
-    const nextIndex = currentIndex.value + 1;
-    if (nextIndex >= props.images.length) {
-        try {
-            const nextImage = await getItemImage(props.itemId, 7);
-            props.images.push(nextImage);
-        } catch (error) {
-            console.error('Error fetching next image:', error);
-        }
-    }
     currentIndex.value = (currentIndex.value + 1) % props.images.length;
 }
 

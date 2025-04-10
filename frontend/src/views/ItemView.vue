@@ -37,8 +37,7 @@
     onMounted(async () => {
         try {
             address.value = await getAddress(item.locationLatitude, item.locationLongitude);
-            const firstImage = await getFirstImage(item.id); // Fetch images dynamically
-            images.value = [firstImage];
+            images.value = await getItemImages(item.id);
         } catch (error) {
             console.error('Error fetching item data:', error);
         }
@@ -51,7 +50,6 @@
             <div id="image-seller-information">
                <ItemPicture
                 :images="images"
-                :itemId="item.id"
                 id="item-picture"
                 />
                 <SellerInfo
