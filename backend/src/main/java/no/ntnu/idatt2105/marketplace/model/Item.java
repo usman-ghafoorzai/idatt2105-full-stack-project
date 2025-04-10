@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -73,9 +75,13 @@ public class Item {
    * The category to which the Item belongs.
    * This field is a foreign key reference to the {@link Category} entity.
    */
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "category_id")
-  private Category category; // TODO: set nullable = false, or does an item not need to have a category?
+  @ManyToMany
+  @JoinTable(
+    name = "item_category",
+    joinColumns = @JoinColumn(name = "item_id"),
+    inverseJoinColumns = @JoinColumn(name = "category_id")
+  )
+  private Set<Category> categories = new HashSet<>();   // TODO: set nullable = false, or does an item not need to have a category?
 
   /**
    * The user who is selling the Item.
