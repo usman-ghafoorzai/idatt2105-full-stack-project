@@ -21,6 +21,7 @@ public class UserImageController {
 
   /**
    * Uploads a profile image for a specific user.
+   * Replaces any existing image for that user if present.
    *
    * @param userId the ID of the user
    * @param image  the uploaded image file

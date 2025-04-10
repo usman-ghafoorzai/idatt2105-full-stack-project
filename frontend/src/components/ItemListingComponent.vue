@@ -1,35 +1,42 @@
 <script setup>
     import ItemFrameComponent from './ItemFrameComponent.vue';
-    import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
+    import { useItemStore } from '../stores/ItemStore.js';
+    import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
 
-    let search = 'boats';
+    const itemStore = useItemStore();
+    const sellerStore = useSellerInformationStore();
+    const router = useRouter();
 
-    // Byttes ut med data fra API senere
-    const items = ref([
-        { id: 1, image: 'src/assets/images/boat.jpg', price: '10000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 2, image: 'src/assets/images/boat.jpg', price: '20000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 3, image: 'src/assets/images/boat.jpg', price: '30000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 4, image: 'src/assets/images/boat.jpg', price: '10000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 5, image: 'src/assets/images/boat.jpg', price: '20000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 6, image: 'src/assets/images/boat.jpg', price: '30000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 7, image: 'src/assets/images/boat.jpg', price: '10000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 8, image: 'src/assets/images/boat.jpg', price: '20000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 9, image: 'src/assets/images/boat.jpg', price: '30000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 10, image: 'src/assets/images/boat.jpg', price: '10000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 11, image: 'src/assets/images/boat.jpg', price: '20000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-        { id: 12, image: 'src/assets/images/boat.jpg', price: '30000 kr', details: 'Bayliner VR 5 Cuddy OB Lite brukt' },
-    ]);
+    defineProps({
+        items: {
+            type: Array,
+            required: true,
+        },
+        searchTerm: {
+            type: String,
+            required: true,
+        },
+    });
+
+    function handleItemClick(item) {
+        itemStore.setSelectedItem(item);
+        sellerStore.setSellerId(item.seller.id);
+        sellerStore.getSellerInformation();
+        router.push('/item');
+    }
 </script>
 
 <template>
     <div id="item-listing-container">
-        <h2> Finding items for "{{ search }}"</h2>
+        <h2> Finding items for "{{ searchTerm }}"</h2>
         <ItemFrameComponent
             v-for="item in items"
             :id="item.id"
             :image="item.image"
-            :price="item.price"
-            :details="item.details"
+            :price=item.price
+            :details="item.title"
+            @click="handleItemClick(item)"
         />
     </div>
 </template>
@@ -38,10 +45,10 @@
     #item-listing-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: 40px auto;
         width: 100%;
         justify-items: center;
-        align-items: center;
+        align-items: baseline;
     }
     h2 {
         text-align: center;

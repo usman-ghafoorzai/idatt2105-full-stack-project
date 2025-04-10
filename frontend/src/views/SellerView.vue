@@ -1,131 +1,215 @@
 <template>
-    <div id="seller-container">
-        <form id="seller-form" class="elegant-card" @submit="submitForm">
-                <label for="title">Title:</label>
-                <input type="text" name="title" id="title" v-model="formData.title"/>
-                <label for="price">Price:</label>
-                <div id="input-with-currency">
-                    <input type="number" name="price" id="price" min="0" v-model="formData.price"/>
-                    <span id="currency">kr</span>
-                </div>
-                <label for="description">Description:</label>
-                <textarea name="description" id="description" cols="30" rows="10" v-model="formData.description"></textarea>
-                <!--TODO: endre til å hente data fra backend-->
-                <label for="category">Main category:</label>
-                <select name="category" id="category" v-model="formData.category">
-                    <option value="electronics">Electronics</option>
-                    <option value="clothing">Clothing</option>
-                    <option value="home">Home</option>
-                    <option value="toys">Toys</option>
-                    <option value="books">Books</option>
-                    <option value="sports">Sports</option>
-                    <option value="automotive">Automotive</option>
-                    <option value="health">Health</option>
-                    <option value="beauty">Beauty</option>
-                    <option value="other">Other</option>
-                </select>
-                <label for="image">Upload image/images of item:</label>
-                <input 
-                    type="file"
-                    name="image" 
-                    id="image" 
-                    accept="image/jpeg, image/png"
-                    multiple 
-                    @change="imageUpload"/>
-                <label for="adress">Chosen address:</label>
-                <input type="text" name="adress" id="adress" disabled placeholder="click on the map" :value="address" />
-                <div id="map"></div>
-            <button type="submit" @click="submitForm">Submit</button>
-        </form>
-    </div>
+  <div id="seller-container">
+    <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+    <form id="seller-form" class="elegant-card" @submit.prevent="submitForm">
+      <label for="title">Title:</label>
+      <input type="text" name="title" id="title" v-model="formData.title" required/>
+
+      <label for="price">Price:</label>
+      <div id="input-with-currency">
+        <input type="number" name="price" id="price" min="0" v-model="formData.price" required/>
+        <span id="currency">kr</span>
+      </div>
+
+      <label for="description">Description:</label>
+      <textarea name="description" id="description" cols="30" rows="10" v-model="formData.description" required></textarea>
+
+      <label for="category">Main category:</label>
+      <select name="category" id="category" v-model="formData.categoryId" required>
+        <option value="" disabled>Select a category</option>
+        <option v-for="category in categories" :key="category.id" :value="category.id">
+          {{ category.name }}
+        </option>
+      </select>
+
+      <label for="image">Upload image/images of item:</label>
+      <input
+        type="file"
+        name="image"
+        id="image"
+        accept="image/jpeg, image/png"
+        multiple
+        @change="imageUpload"/>
+
+      <label for="address">Chosen address:</label>
+      <input type="text" name="address" id="address" disabled placeholder="click on the map" :value="address" />
+
+      <div id="map"></div>
+
+      <button type="submit" :disabled="isSubmitting">
+        {{ isSubmitting ? 'Submitting...' : 'List Item' }}
+      </button>
+    </form>
+  </div>
 </template>
 
 <script setup>
-    import { onMounted, ref } from 'vue';
-    import 'leaflet/dist/leaflet.css';
-    import L from 'leaflet';
-    import { useGeolocation } from '@vueuse/core';
-    import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { getAddress } from '../utils/reverseGeoLocation.js';
+import { getLoggedInUser } from "@/api/userAPI.js";
+import { getAllCategories } from "@/api/categoryAPI.js";
+import { createItem, uploadItemImages } from "@/api/itemAPI.js";
 
-    let map;
-    let marker;
-    const address = ref('');
-    const formData = ref({
-        title: '',
-        price: 0,
-        description: '',
-        category: '',
-        images: [],
-        longitude: 0,
-        latitude: 0,
-    });
+let map;
+let marker;
+const address = ref('');
+const isSubmitting = ref(false);
+const errorMessage = ref('');
+const successMessage = ref('');
+const categories = ref([]);
+const userId = ref(null);
 
-    onMounted(() => {
-        map = L.map('map').setView([63.427029, 10.396700], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
+const formData = ref({
+  title: '',
+  price: 0,
+  description: '',
+  categoryId: '',
+  images: [],
+  longitude: 0,
+  latitude: 0,
+});
 
-        map.on('click', setLocation);
-        marker = L.marker([63.427029, 10.396700]).addTo(map);
-    });
-    function setLocation(e) {
+onMounted(async () => {
+  map = L.map('map').setView([63.427029, 10.396700], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+  }).addTo(map);
 
-        if (!map) {
-            console.error('Map is not initialized');
-            return;
-        }
-        const lat = e.latlng.lat;
-        const lng = e.latlng.lng;
-        marker.removeFrom(map);
-        marker = L.marker([lat, lng]).addTo(map);
-        console.log(`Latitude: ${lat}, Longitude: ${lng}`);
-        formData.value.latitude = lat;
-        formData.value.longitude = lng;
-        getAddress(lat, lng);
+  map.on('click', setLocation);
+  marker = L.marker([63.427029, 10.396700]).addTo(map);
+
+  // Fetch categories from backend
+  try {
+    categories.value = await getAllCategories();
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    errorMessage.value = 'Failed to load categories';
+  }
+
+  // Get logged in user
+  try {
+    const user = await getLoggedInUser();
+    userId.value = user.id;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    errorMessage.value = 'You must be logged in to list items';
+  }
+});
+
+async function setLocation(e) {
+  if (!map) {
+    console.error('Map is not initialized');
+    return;
+  }
+  const lat = e.latlng.lat;
+  const lng = e.latlng.lng;
+  marker.removeFrom(map);
+  marker = L.marker([lat, lng]).addTo(map);
+  console.log(`Latitude: ${lat}, Longitude: ${lng}`);
+  formData.value.latitude = lat;
+  formData.value.longitude = lng;
+
+  try {
+    address.value = await getAddress(lat, lng);
+  } catch (error) {
+    console.error('Error fetching address:', error);
+    address.value = 'Unable to fetch address';
+  }
+}
+
+function imageUpload(event) {
+  const files = event.target.files;
+  if (files.length > 6) {
+    alert('You can only upload a maximum of 6 images.');
+    event.target.value = '';
+    return;
+  }
+  formData.value.images = []; // Clear previous images
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    formData.value.images.push(file);
+  }
+  console.log('Uploaded images:', formData.value.images);
+}
+
+const submitForm = async (event) => {
+  event.preventDefault();
+  if (!formData.value.latitude || !formData.value.longitude) {
+    alert('Please select a location on the map.');
+    return;
+  }
+  if (!formData.value.title || !formData.value.price || !formData.value.description || !formData.value.categoryId) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+  if (!userId.value) {
+    alert('You must be logged in to create a listing.');
+    return;
+  }
+
+  isSubmitting.value = true;
+  errorMessage.value = '';
+  successMessage.value = '';
+
+  try {
+    // Create the item data object
+    const itemData = {
+      title: formData.value.title,
+      description: formData.value.description,
+      price: parseFloat(formData.value.price),
+      categoryId: parseInt(formData.value.categoryId),
+      sellerId: userId.value,
+      locationLatitude: formData.value.latitude,
+      locationLongitude: formData.value.longitude
+    };
+
+    // Create the item
+    const createdItem = await createItem(itemData);
+
+    // If we have images, upload them separately
+    if (formData.value.images.length > 0) {
+      await uploadItemImages(createdItem.id, formData.value.images);
     }
 
-    async function getAddress(lat, lng) {
-        const response = await axios.get(
-            // Gratis API for reverse geocoding, men grunnet derfor har vi ingen garanti for at den alltid fungerer
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-        );
-        if (response.data && response.data.display_name) {
-            address.value = response.data.display_name;
-            console.log(`Address: ${address.value}`);
-        } else {
-            console.error('No address found');
-        }
-    }
+    // Show success message and reset form
+    successMessage.value = 'Your item has been listed successfully!';
+    resetForm();
 
-    function imageUpload(event) {
-        const files = event.target.files;
-        if (files.length > 6) {
-            alert('You can only upload a maximum of 6 images.');
-            event.target.value = '';
-            return;
-        }
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            formData.value.images.push(file);
-        };
-        console.log('Uploaded images:', formData.value.images);
-    }
+    // Redirect to item page or show success message
+    setTimeout(() => {
+      successMessage.value = '';
+      // router.push('/items/' + createdItem.id); // Uncomment if you want to redirect
+    }, 3000);
 
-    const submitForm = async (event) => {
-        event.preventDefault();
-        if (!formData.value.latitude || !formData.value.longitude) {
-            alert('Please select a location on the map.');
-            return;
-        }
-        if (!formData.value.title || !formData.value.price || !formData.value.description || !formData.value.category) {
-            alert('Please fill in all required fields.');
-            return;
-        }
+  } catch (error) {
+    console.error('Error creating item:', error);
+    errorMessage.value = error.message || 'Failed to create listing';
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 
-        /* TODO legge til API kall mot backend for å legge til et item */
-        console.log('Form submitted:', formData.value);
-    }
+const resetForm = () => {
+  formData.value = {
+    title: '',
+    price: 0,
+    description: '',
+    categoryId: '',
+    images: [],
+    longitude: 0,
+    latitude: 0
+  };
+  address.value = '';
+  // Remove marker from map
+  if (marker) {
+    marker.removeFrom(map);
+    marker = L.marker([63.427029, 10.396700]).addTo(map);
+  }
+};
 </script>
 
 <style scoped>
@@ -147,7 +231,7 @@
     #seller-form {
         display: grid;
         grid-template-columns: 1fr 2fr;
-        grid-template-areas: 
+        grid-template-areas:
             "title-label title"
             "price-label price"
             "description-label description"
@@ -169,55 +253,80 @@
         text-align: right;
     }
 
-    #seller-form input[type="text"],
-    #seller-form input[type="number"],
-    #seller-form select {
-        width: 80%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-        box-sizing: border-box;
-    }
-    #seller-form textarea {
-        width: 80%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-        box-sizing: border-box;
-        resize: none;
-    }
+#seller-form input[type="text"],
+#seller-form input[type="number"],
+#seller-form select {
+  width: 80%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+#seller-form textarea {
+  width: 80%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  box-sizing: border-box;
+  resize: none;
+}
 
-    #seller-form textarea {
-        resize: none;
-    }
+#seller-form textarea {
+  resize: none;
+}
 
-    #price::after {
-        content: ' kr';
-        position: absolute;
-        right: 10px;
-    }
-    #seller-form button {
-        grid-area: submit;
-        width: 50%;
-        justify-self: center;
-    }
-    input:disabled {
-        background-color: #f5f5f5;
-        color: #999;
-        cursor: not-allowed;
-    }
-    .elegant-card:hover {
-        transform: none;
-    }
+#price::after {
+  content: ' kr';
+  position: absolute;
+  right: 10px;
+}
+#seller-form button {
+  grid-area: submit;
+  width: 50%;
+  justify-self: center;
+}
+input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+.elegant-card:hover {
+  transform: none;
+}
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
 
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
 
-    @media (max-width: 768px) {
-        #seller-form {
-            width: 100%;
-            grid-template-columns: 1fr;
-            grid-template-areas: 
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  #seller-form {
+    width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-areas:
                 "title-label"
                 "title"
                 "price-label"
@@ -232,13 +341,13 @@
                 "address"
                 "map"
                 "submit";
-            padding: 10px 0 10px 10px;
-        }
-        #seller-form label {
-            text-align: left;
-        }
-        #map {
-            width: 100%;
-        }
-    }
+    padding: 10px 0 10px 10px;
+  }
+  #seller-form label {
+    text-align: left;
+  }
+  #map {
+    width: 100%;
+  }
+}
 </style>

@@ -5,8 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -74,7 +75,7 @@ public class Item {
    */
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
-  private Category category;
+  private Category category; // TODO: set nullable = false, or does an item not need to have a category?
 
   /**
    * The user who is selling the Item.
@@ -89,8 +90,7 @@ public class Item {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "seller_id")
-  @JsonIgnore // Prevent full User Object from being serialized
-  private User seller;
+  private User seller; // TODO: set nullable = false
 
   /**
    * Gets the ID of the seller.
@@ -113,4 +113,12 @@ public class Item {
    */
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
+
+  /**
+   * One-to-many relationship with ItemImage.
+   * An item can have many images.
+   */
+  @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ItemImage> images = new ArrayList<>();
+  
 }
