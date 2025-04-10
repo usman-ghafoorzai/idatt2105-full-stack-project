@@ -91,16 +91,16 @@ public class ItemControllerIntegrationTest {
   @Test
   public void testCreateItemWithAuth() throws Exception {
     String itemJson = String.format("""
-            {
-                "title": "Item1",
-                "description": "Item desc",
-                "price": 750.98,
-                "locationLatitude": 43.43,
-                "locationLongitude": 12.12,
-                "categoryId": %d,
-                "sellerId": %d
-            }
-        """, categoryId, userId);
+      {
+          "title": "Item1",
+          "description": "Item desc",
+          "price": 750.98,
+          "locationLatitude": 43.43,
+          "locationLongitude": 12.12,
+          "category_id": [%s],
+          "seller_id": %d
+      }
+  """, categoryId, userId);
 
     mockMvc.perform(post("/api/items")
         .header("Authorization", "Bearer " + jwtToken)

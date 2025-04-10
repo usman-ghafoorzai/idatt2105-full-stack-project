@@ -204,9 +204,22 @@ public class ItemController {
    * @param parentName the name of the parent category
    * @return {@code ResponseEntity} containing a set of items. If no items are found, returns a 204 No Content response.
    */
+  @Operation(
+      summary = "Get items by parent category",
+      description = "Retrieves all items in the database based on the specified parent category name. " +
+                    "This method first retrieves all descendant category IDs of the specified parent category, " +
+                    "then queries items with category IDs in the set."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "Items retrieved successfully",
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
+      @ApiResponse(responseCode = "204", description = "No items found", content = @Content),
+      @ApiResponse(responseCode = "400", description = "Bad Request - error during retrieval", content = @Content)
+  })
   @GetMapping("/by-parent-category/{parentName}")
   public ResponseEntity<Set<ItemResponseDTO>> getItemsByParentCategory(
-          @PathVariable String parentName) {
+    @Parameter(description = "The name of the parent category", required = true)
+    @PathVariable String parentName) {
       try {
           // Get all descendant category ids
           var descendantIds = categoryService.getDescendantCategoryIds(parentName);

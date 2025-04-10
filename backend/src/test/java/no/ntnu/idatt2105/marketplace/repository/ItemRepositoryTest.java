@@ -58,10 +58,8 @@ public class ItemRepositoryTest {
   @Test
   void testUpdateItem() {
     Item item = createTestItem("Tablet", 200.0);
-    item = itemRepository.save(item);
-
     item.setPrice(250.0);
-    item = itemRepository.save(item); // Update existing entry
+    item = itemRepository.save(item);
 
     Item updatedItem = itemRepository.findById(item.getId()).orElse(null);
     assertThat(updatedItem).isNotNull();
