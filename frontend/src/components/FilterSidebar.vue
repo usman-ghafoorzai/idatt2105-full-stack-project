@@ -21,34 +21,20 @@
     });
 
     watch(selectedSubcategories, async (newSelectedCategories) => {
-    try {
-        console.log('Selected categories:', newSelectedCategories); // Debugging
-
         if (newSelectedCategories.length === 0) {
-            // fetch all items if we remove categories from the filter
-            const noCategories = await fetchSearchResults(searchStore.searchTerm);
-            searchStore.setSearchResults(noCategories);
+            // no categories selected causes the search result to be rest
+            searchStore.setSearchResults(searchStore.originalResults);
             return;
         }
 
-        const allResults = []; // To store all fetched results
-
-        for (const category of newSelectedCategories) {
-            const fetchedItems = await fetchSearchResultsByCategory(searchStore.searchTerm, category); // Fetch items
-            allResults.push(...fetchedItems); // Add fetched items to the results array
-        }
-
-        // Remove duplicates from the results
-        const uniqueResults = Array.from(new Set(allResults.map(item => item.id))).map(id =>
-            allResults.find(item => item.id === id)
+        // filter items locally based on selected categories instead of doing api calls
+        const filteredResults = searchStore.originalResults.filter(item =>
+            item.categories.some(category => newSelectedCategories.includes(category.id))
         );
 
-        console.log('Filtered results:', uniqueResults); // Debugging
-        searchStore.setSearchResults(uniqueResults); // Replace the search results with the filtered items
-    } catch (error) {
-        console.error('Error fetching filtered items:', error);
-    }
-});
+        console.log('Filtered results:', filteredResults); // Debugging
+        searchStore.setSearchResults(filteredResults); // Update the search results
+    });
 
     /*for (let categoryKey in categories) {
         if (categoryKey === item.value) {
@@ -157,7 +143,7 @@
                 <li v-for="category in categories" :key="category.id">
                     <input
                         type="checkbox"
-                        :value="category.name"
+                        :value="category.id"
                         v-model="selectedSubcategories"
                     />
                     {{ category.name }}

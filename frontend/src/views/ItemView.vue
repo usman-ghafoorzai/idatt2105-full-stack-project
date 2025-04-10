@@ -69,7 +69,7 @@
                     :description="item.description"
                     :image="images[0]"
                     :location="address"
-                    :categories="[item.category]"
+                    :categories="item.categories"
                 ></ItemDescription>
                 
                 <div id="buttons-container">

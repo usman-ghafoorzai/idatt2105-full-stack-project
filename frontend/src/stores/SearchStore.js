@@ -5,6 +5,7 @@ export const useSearchStore = defineStore('search', {
     state: () => ({
         searchTerm: '', // The term entered by the user
         searchResults: [], // The results fetched from the backend
+        originalResults: [],
     }),
     actions: {
         // Set the search term
@@ -14,11 +15,16 @@ export const useSearchStore = defineStore('search', {
         setSearchResults(results) {
             this.searchResults = results;
         },
+        setOriginalResults(results) {
+            this.originalResults = results;
+            this.searchResults = results;
+        },
 
         // Fetch search results from the backend
         async fetchSearchResults() {
             try {
-                this.searchResults = await fetchSearchResults(this.searchTerm); 
+                this.searchResults = await fetchSearchResults(this.searchTerm);
+                this.originalResults = this.searchResults; // Store the original results 
                 console.log('Search results:', this.searchResults); // Log the results for debugging
             } catch (error) {
                 console.error('Error fetching search results:', error);
