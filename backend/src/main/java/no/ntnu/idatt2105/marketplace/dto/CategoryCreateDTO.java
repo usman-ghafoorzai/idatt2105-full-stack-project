@@ -1,5 +1,8 @@
 package no.ntnu.idatt2105.marketplace.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 /**
  * Data Transfer Object for creating a new category.
  * This class is used to transfer data from the client to the server when creating a new category.
@@ -7,6 +10,9 @@ package no.ntnu.idatt2105.marketplace.dto;
  * The parent category name is optional and can be null if the category is a top-level category.
  */
 public class CategoryCreateDTO {
+  
+  @NotBlank(message = "Category name is required.")
+  @Size(max = 100, message = "Category name must be 100 characters or less.")
   private String name;
   private String parentCategoryName;
 

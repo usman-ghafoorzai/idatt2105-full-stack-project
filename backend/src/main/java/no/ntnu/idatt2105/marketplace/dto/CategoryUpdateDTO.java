@@ -2,6 +2,9 @@ package no.ntnu.idatt2105.marketplace.dto;
 
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 /**
  * Data Transfer Object for updating a category.
  * This class is used to transfer data between the client and server for category updates.
@@ -10,7 +13,11 @@ import java.util.List;
  * The subcategory IDs can be an empty list to remove all subcategories.
  */
 public class CategoryUpdateDTO {
+
+  @NotBlank(message = "Category name is required.")
+  @Size(max = 100, message = "Category name must be 100 characters or less.")
   private String name;
+  
   private Long parentCategoryId; // optional; can be null to remove the parent
   private List<Long> subCategoryIds; // optional; list of subcategory IDs to remain
 

@@ -13,12 +13,11 @@ describe('Header', () => {
       },
     });
 
-
-    expect(wrapper.find('#logo').text()).toBe('LOGO');
+    expect(wrapper.find('#logo img').exists()).toBe(true);
     expect(wrapper.find('#home').text()).toBe('HOME');
     expect(wrapper.find('#categories').text()).toBe('CATEGORIES');
     expect(wrapper.find('#sell').text()).toBe('SELL');
-    expect(wrapper.find('#inbox').text()).toBe('Inbox');
+    expect(wrapper.find('#profile').text()).toBe('Profile'); // Changed from #inbox to #profile
     expect(wrapper.find('#username').text()).toBe('Log in/Sign up');
     expect(wrapper.find('#searchbar').exists()).toBe(true);
   });
@@ -35,7 +34,6 @@ describe('Header', () => {
       },
     });
 
-
     expect(wrapper.find('#notification-dot').exists()).toBe(false);
   });
 
@@ -50,7 +48,6 @@ describe('Header', () => {
         })],
       },
     });
-
 
     expect(wrapper.find('#notification-dot').exists()).toBe(true);
   });
