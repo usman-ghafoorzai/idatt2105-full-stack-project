@@ -4,11 +4,25 @@ import BaseItemListComponent from './BaseItemListComponent.vue';
 import { getBookmarkedItems, deleteBookmark } from '../api/bookmarkAPI.js';
 import { getFirstImage } from '../api/itemAPI.js';
 import { getLoggedInUser } from '../api/userAPI.js';
+import { useRouter } from 'vue-router';
+import { useItemStore } from '../stores/ItemStore.js';
+import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
 
+
+const router = useRouter();
+const itemStore = useItemStore();
+const sellerStore = useSellerInformationStore();
 const bookmarkedItems = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const userId = ref(null);
+
+const handleItemClick = (item) => {
+  itemStore.setSelectedItem(item);
+  sellerStore.setSellerId(item.seller.id);
+  sellerStore.getSellerInformation();
+  router.push('/item');
+};
 
 onMounted(async () => {
   try {
@@ -49,6 +63,7 @@ const cancelBookmark = async (itemId) => {
     alert("Failed to remove bookmark. Please try again.");
   }
 };
+
 </script>
 
 <template>
@@ -58,9 +73,9 @@ const cancelBookmark = async (itemId) => {
     <div v-else-if="bookmarkedItems.length === 0" class="empty-message">No bookmarked items</div>
     <div v-else class="items-container">
       <div v-for="item in bookmarkedItems" :key="item.id" class="item-card">
-        <div class="image-container">
+        <div class="image-container" @click="handleItemClick(item)">
           <img :src="item.imageUrl" alt="Bookmarked item">
-          <button class="cancel-button" @click="cancelBookmark(item.id)">Remove</button>
+          <button class="cancel-button" @click.stop="cancelBookmark(item)">Remove</button>
         </div>
       </div>
     </div>
@@ -86,6 +101,7 @@ const cancelBookmark = async (itemId) => {
   position: relative;
   width: 120px;
   height: 120px;
+  cursor: pointer;
 }
 
 .image-container img {

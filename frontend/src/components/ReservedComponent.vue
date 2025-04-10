@@ -4,11 +4,25 @@ import BaseItemListComponent from './BaseItemListComponent.vue';
 import { getReservedItems, deleteReservation } from '../api/reservationAPI.js';
 import { getFirstImage } from '../api/itemAPI.js';
 import { getLoggedInUser } from '../api/userAPI.js';
+import { useRouter } from 'vue-router';
+import { useItemStore } from '../stores/ItemStore.js';
+import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
 
+
+const router = useRouter();
+const itemStore = useItemStore();
+const sellerStore = useSellerInformationStore();
 const reservedItems = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const userId = ref(null);
+
+const handleItemClick = (item) => {
+  itemStore.setSelectedItem(item);
+  sellerStore.setSellerId(item.seller.id);
+  sellerStore.getSellerInformation();
+  router.push('/item');
+};
 
 onMounted(async () => {
   try {
@@ -55,19 +69,19 @@ const cancelReservation = async (item) => {
 </script>
 
 <template>
-  <BaseItemListComponent title="Reserved" bgColor="var(--color-light-bg)" class="elegant-card">
-    <div v-if="loading" class="loading-message">Loading reserved items...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-    <div v-else-if="reservedItems.length === 0" class="empty-message">No reserved items</div>
-    <div v-else class="items-container">
-      <div v-for="item in reservedItems" :key="item.id" class="item-card">
-        <div class="image-container">
-          <img :src="item.imageUrl" alt="Reserved item">
-          <button class="cancel-button" @click="cancelReservation(item.id)">Cancel</button>
-        </div>
-      </div>
+<BaseItemListComponent title="Reserved" bgColor="var(--color-light-bg)" class="elegant-card">
+<div v-if="loading" class="loading-message">Loading reserved items...</div>
+<div v-else-if="error" class="error-message">{{ error }}</div>
+<div v-else-if="reservedItems.length === 0" class="empty-message">No reserved items</div>
+<div v-else class="items-container">
+  <div v-for="item in reservedItems" :key="item.id" class="item-card">
+    <div class="image-container" @click="handleItemClick(item)">
+      <img :src="item.imageUrl" alt="Reserved item">
+      <button class="cancel-button" @click.stop="cancelReservation(item)">Cancel</button>
     </div>
-  </BaseItemListComponent>
+  </div>
+</div>
+</BaseItemListComponent>
 </template>
 
 <style scoped>
@@ -89,6 +103,7 @@ const cancelReservation = async (item) => {
   position: relative;
   width: 120px;
   height: 120px;
+  cursor: pointer;
 }
 
 .image-container img {
