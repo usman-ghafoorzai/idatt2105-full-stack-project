@@ -5,6 +5,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -16,16 +17,14 @@ public class JwtUtil {
   private SecretKey key;
   private JwtParser jwtParser;
 
+  // Inject secret from properties
+  @Value("${jwt.secret}")
+  private String secretString;
+
   @PostConstruct
   public void init() {
-    // Think it should be like this if saved in application.properties:
-    // @Value("${jwt.secret}")
-    // private String secretString;
-    // TODO: Load this from application.properties or an environment variable
-    String secretString = "your-super-secure-and-long-secret-key-should-be-at-least-256-bit";
-    byte[] secretBytes = secretString.getBytes(); // OR: use Base64 decoding if you're storing it encoded
+    byte[] secretBytes = secretString.getBytes();
     this.key = Keys.hmacShaKeyFor(secretBytes);
-
     this.jwtParser = Jwts.parser().verifyWith(key).build();
   }
 
