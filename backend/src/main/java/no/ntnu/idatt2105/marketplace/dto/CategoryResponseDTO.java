@@ -2,16 +2,27 @@ package no.ntnu.idatt2105.marketplace.dto;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * DTO (Data Transfer Object) for representing a category response.
  * This class is used to transfer category data from the server to the client.
  * It includes the category ID, name, parent category information,
  * and a list of subcategories.
  */
+@Schema(description = "DTO representing a category response. Includes parent category and subcategories.")
 public class CategoryResponseDTO {
+
+  @Schema(description = "The ID of the category.", example = "1")
   private Long id;
+
+  @Schema(description = "The name of the category.", example = "Electronics")
   private String name;
+
+  @Schema(description = "The parent category information.", implementation = ParentCategoryDTO.class)
   private ParentCategoryDTO parentCategory;
+
+  @Schema(description = "The list of subcategories.", implementation = SubCategoryDTO.class)
   private List<SubCategoryDTO> subcategories;
 
   /**
@@ -19,8 +30,13 @@ public class CategoryResponseDTO {
    * This class is used to transfer parent category data from the server to the client.
    * It includes the parent category ID and name.
    */
+  @Schema(description = "DTO representing a parent category.")
   public static class ParentCategoryDTO {
+
+    @Schema(description = "The ID of the parent category.", example = "2")
     private Long id;
+
+    @Schema(description = "The name of the parent category.", example = "Home")
     private String name;
 
     // Getters and setters
@@ -63,8 +79,13 @@ public class CategoryResponseDTO {
    * This class is used to transfer subcategory data from the server to the client.
    * It includes the subcategory ID and name.
    */
+  @Schema(description = "DTO representing a subcategory.")
   public static class SubCategoryDTO {
+
+    @Schema(description = "The ID of the subcategory.", example = "3")
     private Long id;
+
+    @Schema(description = "The name of the subcategory.", example = "Mobile Phones")
     private String name;
 
     // Getters and setters
