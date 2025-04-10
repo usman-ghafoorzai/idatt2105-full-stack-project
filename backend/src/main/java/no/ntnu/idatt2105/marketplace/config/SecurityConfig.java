@@ -17,8 +17,7 @@ import no.ntnu.idatt2105.marketplace.security.JwtAuthFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Enables @PreAuthorize, we can use this to ensure that only admins can access
-                      // certain endpoints
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
   private final JwtAuthFilter jwtAuthFilter;
 
@@ -31,9 +30,14 @@ public class SecurityConfig {
     http
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.GET, "/api/**").permitAll() 
-            .requestMatchers("/api/auth/**").permitAll() // Allow login/register without authentication
-            .anyRequest().authenticated() // Everything else requires JWT
+            .requestMatchers(
+              "/v3/api-docs/**",       
+              "/swagger-ui/**",         
+              "/swagger-ui.html"   
+          ).permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+            .requestMatchers("/api/auth/**").permitAll()
+            .anyRequest().authenticated()
         )
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         .sessionManagement(session -> session
