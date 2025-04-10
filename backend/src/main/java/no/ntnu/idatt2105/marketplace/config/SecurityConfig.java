@@ -56,7 +56,7 @@ public class SecurityConfig {
     CorsConfiguration config = new CorsConfiguration();
 
     config.setAllowCredentials(true);
-    config.addAllowedOriginPattern("*"); // TODO: Should we restrict this to specific origins?
+    config.addAllowedOriginPattern("http://localhost:5173");
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
 

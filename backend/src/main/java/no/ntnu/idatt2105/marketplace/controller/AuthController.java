@@ -17,6 +17,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Map;
 
+/**
+ * Controller for handling user authentication and registration.
+ * Provides REST endpoints for user login and registration.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -50,7 +54,6 @@ public class AuthController {
     if (user.getUsername() == null || user.getEmail() == null || user.getPassword() == null || user.getRole() == null) {
       return ResponseEntity.badRequest().body("Username, email, password, and role are required");
     }
-    // TODO: Should role be set to USER by default?
 
     // Hash the password before saving the user
     user.setPassword(passwordEncoder.encode(user.getPassword()));

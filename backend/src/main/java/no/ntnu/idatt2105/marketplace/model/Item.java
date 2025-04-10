@@ -1,6 +1,7 @@
 package no.ntnu.idatt2105.marketplace.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -50,7 +51,8 @@ public class Item {
    * This field cannot be null and must be a positive number.
    */
   @Column(nullable = false)
-  private Double price; // TODO validate that this is a positive number?
+  @Positive
+  private Double price;
 
   /**
    * Latitude of the Item's location.
@@ -81,7 +83,7 @@ public class Item {
     joinColumns = @JoinColumn(name = "item_id"),
     inverseJoinColumns = @JoinColumn(name = "category_id")
   )
-  private Set<Category> categories = new HashSet<>();   // TODO: set nullable = false, or does an item not need to have a category?
+  private Set<Category> categories = new HashSet<>();
 
   /**
    * The user who is selling the Item.
@@ -95,8 +97,8 @@ public class Item {
    */
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "seller_id")
-  private User seller; // TODO: set nullable = false
+  @JoinColumn(name = "seller_id", nullable = false)
+  private User seller;
 
   /**
    * Gets the ID of the seller.

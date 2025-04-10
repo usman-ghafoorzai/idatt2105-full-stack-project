@@ -51,8 +51,6 @@ public class UserImageController {
     @Parameter(description = "The image file to be uploaded", required = true,
                content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE))
     @RequestParam("image") MultipartFile image) {
-    System.out.println("Received image for user " + userId);
-    System.out.println("Image name: " + image.getOriginalFilename()); // TODO: Remove 
     try {
       userImageService.saveImage(userId, image);
       return ResponseEntity.ok("Image uploaded successfully");

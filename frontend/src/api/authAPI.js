@@ -17,7 +17,6 @@ export async function login(username, password) {
   }
 }
 
-// TODO: Location, password confirmation?
 export async function register({firstName, lastName, username, email, password}) {
   try {
     const response = await apiClient.post("/auth/register", {
