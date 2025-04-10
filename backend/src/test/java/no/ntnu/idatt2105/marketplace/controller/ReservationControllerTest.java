@@ -78,7 +78,7 @@ public class ReservationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[0].title").value("Reserved Item"))
-                .andExpect(jsonPath("$[0].category.name").value("Electronics"))
+                .andExpect(jsonPath("$[0].categories[0].name").value("Electronics"))
                 .andExpect(jsonPath("$[0].seller.username").value("testSeller"));
     }
 
