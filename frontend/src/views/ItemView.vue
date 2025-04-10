@@ -8,6 +8,7 @@
     import { useItemStore } from '../stores/ItemStore.js';
     import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
     import { getAddress } from '@/utils/reverseGeoLocation';
+    import { getFirstImage, getItemImages } from '../api/itemAPI.js';
 
     const itemStore = useItemStore();
     const sellerStore = useSellerInformationStore();
@@ -15,10 +16,17 @@
     const sellerInformation = sellerStore.sellerInformation;
 
     const address = ref('');
+    const images = ref([]);
 
     onMounted(async () => {
-        address.value = await getAddress(item.locationLatitude, item.locationLongitude);
-    })
+        try {
+            address.value = await getAddress(item.locationLatitude, item.locationLongitude);
+            const firstImage = await getFirstImage(item.id); // Fetch images dynamically
+            images.value = [firstImage];
+        } catch (error) {
+            console.error('Error fetching item data:', error);
+        }
+    });
 </script>
 
 <template>
@@ -26,7 +34,8 @@
         <div id="left-section">
             <div id="image-seller-information">
                <ItemPicture
-                :images="['src/assets/images/boat.jpg', 'src/assets/images/Thor.png']"
+                :images="images"
+                :itemId="item.id"
                 id="item-picture"
                 />
                 <SellerInfo
@@ -44,7 +53,7 @@
                     :title="item.title"
                     :price=item.price
                     :description="item.description"
-                    :image="'src/assets/images/boat.jpg'"
+                    :image="images[0]"
                     :location="address"
                     :categories="[item.category]"
                 ></ItemDescription>
