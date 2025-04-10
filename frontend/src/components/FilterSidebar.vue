@@ -21,7 +21,7 @@
     });
 
     watch([selectedSubcategories, minPrice, maxPrice], async ([newSelectedCategories, newMinPrice, newMaxPrice]) => {
-        if (newSelectedCategories.length === 0 && newMinPrice === 0 && newMaxPrice === Infinity) {
+        if (newSelectedCategories.length === 0 && newMinPrice === 0 && (newMaxPrice === Infinity || newMaxPrice === 0 || newMaxPrice === '')) {
             // no categories selected causes the search result to be rest
             searchStore.setSearchResults(searchStore.originalResults);
             return;
