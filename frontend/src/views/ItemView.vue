@@ -129,7 +129,6 @@ async function confirmAction() {
       :buttonText="modalButtonText"
       :onConfirm="confirmAction"
     />
-  </div>
 </template>
 
 <style scoped>
