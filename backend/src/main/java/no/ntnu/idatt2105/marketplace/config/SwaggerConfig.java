@@ -51,6 +51,7 @@ public class SwaggerConfig {
 						new Tag().name("Bookmarks").description("Operations related to managing bookmarks"),
 						new Tag().name("Reservations").description("Operations related to managing reservations"),
 						new Tag().name("Authentication").description("Operations related to authentication"),
+						new Tag().name("Items Images").description("Operations related to managing item images"),
 						new Tag().name("User Images").description("Operations related to managing user images")));
 	}
 }
