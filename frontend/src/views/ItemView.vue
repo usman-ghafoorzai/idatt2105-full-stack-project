@@ -8,6 +8,7 @@
     import { useItemStore } from '../stores/ItemStore.js';
     import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
     import { getAddress } from '@/utils/reverseGeoLocation';
+    import PopUpModal from '../components/PopUpModal.vue';
 
     const itemStore = useItemStore();
     const sellerStore = useSellerInformationStore();
@@ -15,6 +16,21 @@
     const sellerInformation = sellerStore.sellerInformation;
 
     const address = ref('');
+    const modalTitle = ref('');
+    const modalRef = ref(null);
+    const modalButtonText = ref('Confirm');
+
+    function openBuyNowModal() {
+        modalTitle.value = 'Confirm purchase';
+        modalButtonText.value = 'Confirm';
+        modalRef.value.openModal();
+    }
+
+    function openReserveModal() {
+        modalTitle.value = 'Reserve Item';
+        modalButtonText.value = 'Reserve';
+        modalRef.value.openModal();
+    }
 
     onMounted(async () => {
         address.value = await getAddress(item.locationLatitude, item.locationLongitude);
@@ -50,11 +66,17 @@
                 ></ItemDescription>
                 
                 <div id="buttons-container">
-                    <BuyNowButton></BuyNowButton>
-                    <ReserveButton></ReserveButton>
+                    <BuyNowButton @click="openBuyNowModal"></BuyNowButton>
+                    <ReserveButton @click="openReserveModal"></ReserveButton>
                 </div>
             </div>
         </div>
+
+        <PopUpModal
+            ref="modalRef"
+            :title="modalTitle"
+            :buttonText="modalButtonText"
+            />
     </div>
 </template>
 
