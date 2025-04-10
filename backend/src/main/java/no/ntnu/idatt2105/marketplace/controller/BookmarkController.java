@@ -41,7 +41,7 @@ public class BookmarkController {
   )
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Bookmarked items retrieved successfully",
-        content = @Content(mediaType = "application/json", schema = @Schema(implementation = Item.class))),
+        content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
     @ApiResponse(responseCode = "404", description = "User not found or no bookmarks found", content = @Content)
   })
   @GetMapping("/{userId}")
