@@ -11,7 +11,7 @@ const props = defineProps({
 let currentIndex = ref(0);
 const currentImage = computed(() => props.images[currentIndex.value]);
 
-function nextImage() {
+async function nextImage() {
     currentIndex.value = (currentIndex.value + 1) % props.images.length;
 }
 

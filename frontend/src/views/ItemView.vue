@@ -1,16 +1,15 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import ItemPicture from '../components/ItemPicture.vue';
-import ItemDescription from '../components/ItemDescription.vue';
-import SellerInfo from '../components/SellerInfo.vue';
-import ReserveButton from '../components/ReserveButton.vue';
-import BuyNowButton from '../components/BuyNowButton.vue';
-import { useItemStore } from '../stores/ItemStore.js';
-import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
-import { getAddress } from '@/utils/reverseGeoLocation';
-import PopUpModal from '../components/PopUpModal.vue';
-import { reserveItem } from '../api/reservationAPI.js';
-import { getLoggedInUser } from '../api/userAPI.js';
+    import { ref , onMounted } from 'vue';
+    import ItemPicture from '../components/ItemPicture.vue';
+    import ItemDescription from '../components/ItemDescription.vue';
+    import SellerInfo from '../components/SellerInfo.vue';
+    import ReserveButton from '../components/ReserveButton.vue';
+    import BuyNowButton from '../components/BuyNowButton.vue';
+    import { useItemStore } from '../stores/ItemStore.js';
+    import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
+    import { getAddress } from '@/utils/reverseGeoLocation';
+    import PopUpModal from '../components/PopUpModal.vue';
+    import { getFirstImage, getItemImages } from '../api/itemAPI.js';
 
 const itemStore = useItemStore();
 const sellerStore = useSellerInformationStore();
@@ -52,25 +51,57 @@ async function confirmAction() {
   }
 }
 
-onMounted(async () => {
-  address.value = await getAddress(item.locationLatitude, item.locationLongitude);
-})
+    function openReserveModal() {
+        modalTitle.value = 'Reserve Item';
+        modalButtonText.value = 'Reserve';
+        modalRef.value.openModal();
+    }
+    const images = ref([]);
+
+    onMounted(async () => {
+        try {
+            address.value = await getAddress(item.locationLatitude, item.locationLongitude);
+            images.value = await getItemImages(item.id);
+        } catch (error) {
+            console.error('Error fetching item data:', error);
+        }
+    });
 </script>
 
 <template>
-  <div id="item-view-container">
-    <div id="left-section">
-      <div id="image-seller-information">
-        <ItemPicture
-          :images="['src/assets/images/boat.jpg', 'src/assets/images/Thor.png']"
-          id="item-picture"
-        />
-        <SellerInfo
-          :name="sellerStore.sellerInformation.firstName + ' ' + sellerStore.sellerInformation.lastName + ' (' + sellerStore.sellerInformation.username + ')'"
-          :phoneNumber="'12345678'"
-          :email="sellerInformation.email"
-        />
-      </div>
+    <div id="item-view-container">
+        <div id="left-section">
+            <div id="image-seller-information">
+               <ItemPicture
+                :images="images"
+                id="item-picture"
+                />
+                <SellerInfo
+                    :name="sellerStore.sellerInformation.firstName + ' ' + sellerStore.sellerInformation.lastName + ' (' + sellerStore.sellerInformation.username + ')'"
+                    :phoneNumber="'12345678'"
+                    :email="sellerInformation.email"
+                /> 
+            </div>
+            
+        </div>
+        
+        <div id="right-section">
+            <div id="item-description-buttons">
+                <ItemDescription
+                    :title="item.title"
+                    :price=item.price
+                    :description="item.description"
+                    :image="images[0]"
+                    :location="address"
+                    :categories="[item.category]"
+                ></ItemDescription>
+                
+                <div id="buttons-container">
+                    <BuyNowButton @click="openBuyNowModal"></BuyNowButton>
+                    <ReserveButton @click="openReserveModal"></ReserveButton>
+                </div>
+            </div>
+        </div>
 
     </div>
 

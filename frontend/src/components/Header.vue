@@ -3,6 +3,7 @@ import Searchbar from './Searchbar.vue';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { isLoggedIn, logout, getToken } from '../utils/authService.js';
+import logoImage from '../assets/logo.jpeg';
 
 const router = useRouter();
 // Define props for mail notifications
@@ -14,6 +15,7 @@ defineProps({
 });
 
 const loggedIn = ref(false);
+const logoSrc = ref(logoImage);
 
 // Check login status when component mounts
 onMounted(() => {
@@ -79,7 +81,7 @@ const navigateToUserProfile = () => {
 <template>
   <div id="header">
     <div id="logo" @click="navigateToHome">
-      <h2 id="logo">LOGO</h2>
+      <img :src="logoSrc" alt="Logo" id="logo-image" />
     </div>
     <div class="container">
       <div id="home" @click="navigateToHome">HOME</div>
@@ -117,9 +119,20 @@ const navigateToUserProfile = () => {
 
 #logo {
   grid-area: logo;
-  font-size: 48px;
-  font-weight: bold;
   padding-left: 40px;
+  display: flex;
+  align-items: center;
+}
+
+#logo-image {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  cursor: pointer;
+
+  mix-blend-mode: multiply;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.1));
 }
 
 .container {
