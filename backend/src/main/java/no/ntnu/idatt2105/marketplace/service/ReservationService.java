@@ -79,18 +79,18 @@ public class ReservationService {
    * @throws IllegalStateException if the item is not reserved
    */
   public void deleteReservation(Long userId, Long itemId) {
-    reservationRepository.deleteByUserIdAndItemId(userId, itemId);
     Reservation reservation = reservationRepository.findByItemId(itemId)
-        .orElseThrow(() -> new IllegalArgumentException("Reservation not found for item ID: " + itemId));
-
+    .orElseThrow(() -> new IllegalArgumentException("Reservation not found for item ID: " + itemId));
+    
     if (!reservation.getItem().getId().equals(itemId)) {
       throw new IllegalArgumentException("Reservation not found for the specified item.");
     }
-
+    
     // Set the item's status back to ACTIVE when reservation is deleted
     Item item = reservation.getItem();
     item.setStatus(ItemStatus.ACTIVE);
     itemService.saveItemEntity(item); // Save the item status update
+    reservationRepository.deleteByUserIdAndItemId(userId, itemId);
 
     // Delete the reservation
     reservationRepository.delete(reservation);
