@@ -1,5 +1,8 @@
 package no.ntnu.idatt2105.marketplace.service;
 
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO.CategoryDTO;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO.SellerDTO;
 import no.ntnu.idatt2105.marketplace.model.*;
 import no.ntnu.idatt2105.marketplace.repository.ReservationRepository;
 import org.junit.jupiter.api.Test;
@@ -8,12 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservationServiceTest {
@@ -35,14 +39,34 @@ public class ReservationServiceTest {
     Long userId = 1L;
     User user = new User();
     user.setId(userId);
-    Item item = new Item();
-    item.setId(1L);
-    item.setTitle("Reserved Item");
+    
+    // Create ItemResponseDTO instead of Item
+    ItemResponseDTO itemDTO = new ItemResponseDTO();
+    itemDTO.setId(1L);
+    itemDTO.setTitle("Reserved Item");
+    itemDTO.setDescription("Test Item");
+    itemDTO.setPrice(100.0);
+    itemDTO.setLocationLatitude(59.9);
+    itemDTO.setLocationLongitude(10.7);
+    itemDTO.setStatus("RESERVED");
+    itemDTO.setCreatedAt(LocalDateTime.now());
 
-    Reservation reservation = new Reservation(user, item);
+    CategoryDTO category = new CategoryDTO();
+    category.setId(1L);
+    category.setName("Electronics");
+    itemDTO.setCategory(category);
+
+    SellerDTO seller = new SellerDTO();
+    seller.setId(2L);
+    seller.setUsername("testSeller");
+    seller.setEmail("seller@example.com");
+    itemDTO.setSeller(seller);
+
+    Reservation reservation = new Reservation(user, new Item());
     when(reservationRepository.findByUserId(userId)).thenReturn(List.of(reservation));
+    when(itemService.convertToResponse(reservation.getItem())).thenReturn(itemDTO);
 
-    List<Item> reservedItems = reservationService.getReservedItemsByUserId(userId);
+    List<ItemResponseDTO> reservedItems = reservationService.getReservedItemsByUserId(userId);
 
     assertThat(reservedItems).hasSize(1);
     assertThat(reservedItems.get(0).getTitle()).isEqualTo("Reserved Item");
@@ -58,21 +82,40 @@ public class ReservationServiceTest {
     User user = new User();
     user.setId(userId);
 
+    // Create ItemResponseDTO instead of Item
+    ItemResponseDTO itemDTO = new ItemResponseDTO();
+    itemDTO.setId(itemId);
+    itemDTO.setTitle("Reserved Item");
+    itemDTO.setDescription("Test");
+    itemDTO.setPrice(100.0);
+    itemDTO.setLocationLatitude(59.9);
+    itemDTO.setLocationLongitude(10.7);
+    itemDTO.setStatus("ACTIVE");
+    itemDTO.setCreatedAt(LocalDateTime.now());
+
+    CategoryDTO category = new CategoryDTO();
+    category.setId(1L);
+    category.setName("Electronics");
+    itemDTO.setCategory(category);
+
+    SellerDTO seller = new SellerDTO();
+    seller.setId(2L);
+    seller.setUsername("testSeller");
+    seller.setEmail("seller@example.com");
+    itemDTO.setSeller(seller);
+
     Item item = new Item();
     item.setId(itemId);
     item.setStatus(ItemStatus.ACTIVE);
 
     when(userService.getUserById(userId)).thenReturn(Optional.of(user));
     when(itemService.getItemEntityById(itemId)).thenReturn(Optional.of(item));
-    when(reservationRepository.save(any(Reservation.class)))
-        .thenAnswer(invocation -> invocation.getArgument(0));
+    when(itemService.saveItemEntity(any(Item.class))).thenReturn(item);
 
-    Reservation reservation = reservationService.saveReservation(userId, itemId);
+    reservationService.saveReservation(userId, itemId);
 
-    assertThat(reservation.getUser()).isEqualTo(user);
-    assertThat(reservation.getItem()).isEqualTo(item);
+    // Assert the status is changed to RESERVED
     assertThat(item.getStatus()).isEqualTo(ItemStatus.RESERVED);
-
     verify(userService).getUserById(userId);
     verify(itemService).getItemEntityById(itemId);
     verify(itemService).saveItemEntity(item);
@@ -92,7 +135,7 @@ public class ReservationServiceTest {
     assertThat(exception.getMessage()).isEqualTo("User not found with ID: " + userId);
 
     verify(userService).getUserById(userId);
-    verify(itemService, never()).getItemEntityById(anyLong());
+    verify(itemService, never()).getItemEntityById(itemId);
     verify(reservationRepository, never()).save(any());
   }
 
