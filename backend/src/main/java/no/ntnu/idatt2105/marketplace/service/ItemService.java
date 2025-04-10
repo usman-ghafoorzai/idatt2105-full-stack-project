@@ -31,7 +31,7 @@ public class ItemService {
   private final CategoryRepository categoryRepository;
   private final UserRepository userRepository;
 
-  private ItemResponseDTO convertToResponse(Item item) {
+  public ItemResponseDTO convertToResponse(Item item) {
     ItemResponseDTO response = new ItemResponseDTO();
     response.setId(item.getId());
     response.setTitle(item.getTitle());
