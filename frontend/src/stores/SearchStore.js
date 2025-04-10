@@ -11,6 +11,9 @@ export const useSearchStore = defineStore('search', {
         setSearchTerm(term) {
             this.searchTerm = term;
         },
+        setSearchResults(results) {
+            this.searchResults = results;
+        },
 
         // Fetch search results from the backend
         async fetchSearchResults() {

@@ -1,8 +1,11 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, watch } from 'vue';
     import { useCategoryStore } from '../stores/CategoryStore.js';
+    import { useSearchStore } from '../stores/SearchStore.js';
+    import { fetchSearchResults, fetchSearchResultsByCategory } from '@/api/searchItemsAPI.js';
     const place = ref(false);
     const item = ref('clothing');
+    const searchStore = useSearchStore();
     const categoryStore = useCategoryStore();
     const categories = categoryStore.categories;
     const categoryVisibility = ref(false);
@@ -17,17 +20,47 @@
         }
     });
 
+    watch(selectedSubcategories, async (newSelectedCategories) => {
+    try {
+        console.log('Selected categories:', newSelectedCategories); // Debugging
+
+        if (newSelectedCategories.length === 0) {
+            // fetch all items if we remove categories from the filter
+            const noCategories = await fetchSearchResults(searchStore.searchTerm);
+            searchStore.setSearchResults(noCategories);
+            return;
+        }
+
+        const allResults = []; // To store all fetched results
+
+        for (const category of newSelectedCategories) {
+            const fetchedItems = await fetchSearchResultsByCategory(searchStore.searchTerm, category); // Fetch items
+            allResults.push(...fetchedItems); // Add fetched items to the results array
+        }
+
+        // Remove duplicates from the results
+        const uniqueResults = Array.from(new Set(allResults.map(item => item.id))).map(id =>
+            allResults.find(item => item.id === id)
+        );
+
+        console.log('Filtered results:', uniqueResults); // Debugging
+        searchStore.setSearchResults(uniqueResults); // Replace the search results with the filtered items
+    } catch (error) {
+        console.error('Error fetching filtered items:', error);
+    }
+});
+
     /*for (let categoryKey in categories) {
         if (categoryKey === item.value) {
             for (let subcategoryKey in categories[categoryKey]) {
                 visibility.value[subcategoryKey] = false;
             }
         }
-    }*/
+    }
 
     function toggleVisibility(subcategoryKey) {
         visibility.value[subcategoryKey] = !visibility.value[subcategoryKey];
-    }
+    }*/
 </script>
 
 <template>
