@@ -65,7 +65,6 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.username").value("test_user"))
         .andExpect(jsonPath("$.email").value("test@example.com"))
         .andExpect(jsonPath("$.role").value("USER"));
-    // TODO password?
   }
 
   @Test

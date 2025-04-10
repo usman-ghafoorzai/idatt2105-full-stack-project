@@ -26,7 +26,6 @@ import no.ntnu.idatt2105.marketplace.service.ItemService;
  * Controller class for handling item-related HTTP requests.
  * Provides endpoints for CRUD operations on item entities.
  */
-// TODO: Update javadoc to inclide status codes
 @RestController
 @RequestMapping("/api/items")
 @CrossOrigin(origins = "*")
