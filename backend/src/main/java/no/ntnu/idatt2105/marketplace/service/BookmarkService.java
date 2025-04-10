@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
 import no.ntnu.idatt2105.marketplace.model.Bookmark;
 import no.ntnu.idatt2105.marketplace.model.Item;
 import no.ntnu.idatt2105.marketplace.model.User;
@@ -30,10 +31,10 @@ public class BookmarkService {
    * @return a list of items bookmarked by the user
    * @throws IllegalArgumentException if the user is not found
    */
-  public List<Item> getBookmarkedItemsByUserId(Long userId) {
+  public List<ItemResponseDTO> getBookmarkedItemsByUserId(Long userId) {
     List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
     return bookmarks.stream()
-        .map(Bookmark::getItem)
+        .map(bookmark -> itemService.convertToResponse(bookmark.getItem()))
         .toList();
   }
 
@@ -44,7 +45,7 @@ public class BookmarkService {
    * @param itemId the unique identifier of the item
    * @return the saved bookmark entity
    */
-  public Bookmark saveBookmark(Long userId, Long itemId) {
+  public void saveBookmark(Long userId, Long itemId) {
     User user = userService.getUserById(userId)
         .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
     
@@ -52,7 +53,7 @@ public class BookmarkService {
         .orElseThrow(() -> new IllegalArgumentException("Item not found with ID: " + itemId));
     
     Bookmark bookmark = new Bookmark(user, item);
-    return bookmarkRepository.save(bookmark);
+    bookmarkRepository.save(bookmark);
   }
 
   /**

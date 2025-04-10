@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import no.ntnu.idatt2105.marketplace.model.Item;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
 import no.ntnu.idatt2105.marketplace.model.Reservation;
 import no.ntnu.idatt2105.marketplace.service.ReservationService;
 
@@ -42,14 +42,12 @@ public class ReservationController {
   )
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Reserved items retrieved successfully",
-          content = @Content(mediaType = "application/json", schema = @Schema(implementation = Item.class))),
+          content = @Content(mediaType = "application/json", schema = @Schema(implementation = ItemResponseDTO.class))),
       @ApiResponse(responseCode = "404", description = "User not found or no reservations found", content = @Content)
   })
   @GetMapping("/{userId}")
-  public ResponseEntity<List<Item>> getReservedItems(
-    @Parameter(description = "The unique id of the user", required = true)
-    @PathVariable Long userId) {
-    List<Item> items = reservationService.getReservedItemsByUserId(userId);
+  public ResponseEntity<List<ItemResponseDTO>> getReservedItems(@PathVariable Long userId) {
+    List<ItemResponseDTO> items = reservationService.getReservedItemsByUserId(userId);
     return ResponseEntity.ok(items);
   }
 
@@ -58,7 +56,7 @@ public class ReservationController {
    *
    * @param userId the unique identifier of the user
    * @param itemId the unique identifier of the item
-   * @return {@code ResponseEntity} containing the created reservation
+   * @return {@code ResponseEntity} containing the result of the operation
    */
   @Operation(
       summary = "Reserve an item",
@@ -70,13 +68,15 @@ public class ReservationController {
       @ApiResponse(responseCode = "400", description = "Bad Request - error creating reservation", content = @Content)
   })
   @PostMapping("/{userId}/{itemId}")
-  public ResponseEntity<Reservation> reserveItem(
-    @Parameter(description = "The unique identifier of the user", required = true)
-    @PathVariable Long userId,
-    @Parameter(description = "The unique identifier of the item", required = true)
-    @PathVariable Long itemId) {
-    Reservation reservation = reservationService.saveReservation(userId, itemId);
-    return ResponseEntity.ok(reservation);
+  public ResponseEntity<?> reserveItem(@PathVariable Long userId, @PathVariable Long itemId) {
+    try {
+      reservationService.saveReservation(userId, itemId);
+      return ResponseEntity.ok().build();
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(500).body("An error occurred while reserving the item.");
+    }
   }
 
   /**
