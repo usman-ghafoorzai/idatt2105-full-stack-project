@@ -17,6 +17,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Map;
 
+/**
+ * Controller for handling user authentication and registration.
+ * Provides REST endpoints for user login and registration.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
