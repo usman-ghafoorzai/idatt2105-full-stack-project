@@ -90,7 +90,6 @@ public class ReservationService {
     Item item = reservation.getItem();
     item.setStatus(ItemStatus.ACTIVE);
     itemService.saveItemEntity(item); // Save the item status update
-    reservationRepository.deleteByUserIdAndItemId(userId, itemId);
 
     // Delete the reservation
     reservationRepository.delete(reservation);
