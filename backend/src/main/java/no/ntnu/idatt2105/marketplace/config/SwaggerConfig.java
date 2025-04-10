@@ -47,6 +47,10 @@ public class SwaggerConfig {
 				.tags(List.of(
 						new Tag().name("Items").description("Operations about items"),
 						new Tag().name("Users").description("Operations about users"),
-						new Tag().name("Categories").description("Operations about categories")));
+						new Tag().name("Categories").description("Operations about categories"),
+						new Tag().name("Bookmarks").description("Operations related to managing bookmarks"),
+						new Tag().name("Reservations").description("Operations related to managing reservations"),
+						new Tag().name("Authentication").description("Operations related to authentication"),
+						new Tag().name("User Images").description("Operations related to managing user images")));
 	}
 }
