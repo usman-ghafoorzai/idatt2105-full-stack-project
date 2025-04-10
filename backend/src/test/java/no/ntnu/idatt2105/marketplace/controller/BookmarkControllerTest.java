@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +21,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import no.ntnu.idatt2105.marketplace.model.Item;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO.CategoryDTO;
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO.SellerDTO;
 import no.ntnu.idatt2105.marketplace.service.BookmarkService;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,16 +47,32 @@ public class BookmarkControllerTest {
 
     @Test
     void testGetBookmarkedItems_UserFound() throws Exception {
-        // Given
         Long userId = 1L;
-        Item item = new Item();
-        item.setId(1L);
-        item.setTitle("Bookmarked Item");
+        
+        ItemResponseDTO itemDTO = new ItemResponseDTO();
+        itemDTO.setId(1L);
+        itemDTO.setTitle("Bookmarked Item");
+        itemDTO.setDescription("A test item");
+        itemDTO.setPrice(10.0);
+        itemDTO.setLocationLatitude(59.91);
+        itemDTO.setLocationLongitude(10.75);
+        itemDTO.setStatus("ACTIVE");
+        itemDTO.setCreatedAt(LocalDateTime.now());
 
-        List<Item> items = Arrays.asList(item);
+        CategoryDTO category = new CategoryDTO();
+        category.setId(1L);
+        category.setName("Books");
+        itemDTO.setCategory(category);
 
-        // Mock the service call to return bookmarked items
-        when(bookmarkService.getBookmarkedItemsByUserId(userId)).thenReturn(items);
+        SellerDTO seller = new SellerDTO();
+        seller.setId(2L);
+        seller.setUsername("sellerUser");
+        seller.setEmail("seller@example.com");
+        itemDTO.setSeller(seller);
+
+        List<ItemResponseDTO> itemDTOs = Arrays.asList(itemDTO);
+
+        when(bookmarkService.getBookmarkedItemsByUserId(userId)).thenReturn(itemDTOs);
 
         // Perform the GET request
         mockMvc.perform(get("/api/bookmarks/{userId}", userId))
