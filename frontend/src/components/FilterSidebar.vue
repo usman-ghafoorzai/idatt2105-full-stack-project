@@ -1,19 +1,29 @@
 <script setup>
-    import { ref } from 'vue';
-    import categoryStore from '../assets/CategoryStore.js';
-    let place = ref(false);
-    let item = ref('clothing');
-    let categories = categoryStore.categories;
-    let visibility = ref({});
+    import { ref, onMounted } from 'vue';
+    import { useCategoryStore } from '../stores/CategoryStore.js';
+    const place = ref(false);
+    const item = ref('clothing');
+    const categoryStore = useCategoryStore();
+    const categories = categoryStore.categories;
+    const categoryVisibility = ref(false);
+    const visibility = ref({});
     const selectedSubcategories = ref([]);
 
-    for (let categoryKey in categories) {
+    onMounted(async () => {
+        try {
+            await categoryStore.fetchCategories();
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+        }
+    });
+
+    /*for (let categoryKey in categories) {
         if (categoryKey === item.value) {
             for (let subcategoryKey in categories[categoryKey]) {
                 visibility.value[subcategoryKey] = false;
             }
         }
-    }
+    }*/
 
     function toggleVisibility(subcategoryKey) {
         visibility.value[subcategoryKey] = !visibility.value[subcategoryKey];
@@ -88,7 +98,7 @@
             </div>
         </div>
 
-        <template v-for="(subcategories, subcategoryKey) in categories[item]" :key="subcategoryKey">
+       <!-- <template v-for="(subcategories, subcategoryKey) in categories[item]" :key="subcategoryKey">
             <div class="category">
                 <fa icon="chevron-right" v-if="!visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
                 <fa icon="chevron-down" v-if="visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
@@ -104,7 +114,23 @@
                     </li>
                 </ul>
             </div>
-        </template>
+        </template> -->
+
+        <div class="category">
+            <fa icon="chevron-right" v-if="!categoryVisibility" @click="categoryVisibility = !categoryVisibility"></fa>
+            <fa icon="chevron-down" v-if="categoryVisibility" @click="categoryVisibility = !categoryVisibility"></fa>
+            <h3 @click="categoryVisibility = !categoryVisibility">Categories</h3>
+            <ul v-if="categoryVisibility">
+                <li v-for="category in categories" :key="category.id">
+                    <input
+                        type="checkbox"
+                        :value="category.name"
+                        v-model="selectedSubcategories"
+                    />
+                    {{ category.name }}
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
