@@ -2,6 +2,7 @@ package no.ntnu.idatt2105.marketplace.dto;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,13 +13,18 @@ import jakarta.validation.constraints.Size;
  * The parent category ID can be null to remove the parent category association.
  * The subcategory IDs can be an empty list to remove all subcategories.
  */
+@Schema(description = "Data Transfer Object for updating a category.")
 public class CategoryUpdateDTO {
 
   @NotBlank(message = "Category name is required.")
   @Size(max = 100, message = "Category name must be 100 characters or less.")
+  @Schema(description = "The name of the category.", example = "Electronics", required = true)
   private String name;
   
+  @Schema(description = "The ID of the parent category. Can be null to remove the parent category association.", example = "1")
   private Long parentCategoryId; // optional; can be null to remove the parent
+
+  @Schema(description = "List of subcategory IDs to remain. Can be an empty list to remove all subcategories.", example = "[2, 3]")
   private List<Long> subCategoryIds; // optional; list of subcategory IDs to remain
 
   // Getters and setters
