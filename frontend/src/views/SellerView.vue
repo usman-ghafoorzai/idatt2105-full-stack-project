@@ -361,7 +361,7 @@ button:disabled {
 #category-container {
   margin-bottom: 20px;
 }
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   #seller-form {
     width: 100%;
     grid-template-columns: 1fr;
@@ -380,7 +380,7 @@ button:disabled {
                 "address"
                 "map"
                 "submit";
-    padding: 10px 0 10px 10px;
+    padding: 10px 0;
   }
   #seller-form label {
     text-align: left;

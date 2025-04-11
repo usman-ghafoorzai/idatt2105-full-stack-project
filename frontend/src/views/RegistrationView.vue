@@ -99,11 +99,14 @@ const selecedImage = ref(null) // Shared state for the image
 @media (max-width: 992px) {
   .registration-layout {
     flex-direction: column;
+    gap: 40px;
+    align-items: center;
   }
 
   .login-section {
     width: 100%;
     min-height: 300px;
+    padding-left:0;
   }
 
   .registration-section {

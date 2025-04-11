@@ -66,6 +66,7 @@ import UserProfileComponent from "@/components/UserProfileComponent.vue";
   .profile-section,
   .items-section {
     width: 100%;
+    padding: 40px 0;
   }
 }
 </style>
