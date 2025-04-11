@@ -77,19 +77,19 @@ const saveUserProfile = async () => {
   }
 };
 
-// Check if user is logged in
+
 onMounted(() => {
   if (isLoggedIn()) {
     fetchUserData();
   }
-}); // Added missing closing brace
+}); 
 
-// Watch for changes to newProfileImage and upload the image
+// keep track if new profile image has been selected
 watch(newProfileImage, async (file) => {
   if (file && user.value.id) {
     try {
       await uploadProfilePicture(file, user.value.id);
-      // Update the profile image after successful upload
+      // update said image
       profileImage.value = URL.createObjectURL(file);
       successMessage.value = 'Profile picture updated successfully!';
       setTimeout(() => {
@@ -112,25 +112,24 @@ watch(newProfileImage, async (file) => {
         <div class="profile-picture-wrapper">
           <UploadPicture v-model="newProfileImage" :initialImage="profileImage" />
         </div>
-        <!-- Display success/error messages for image upload -->
+
         <div class="success-message" v-if="successMessage">{{ successMessage }}</div>
         <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
       </div>
 
         <div class="user-details">
-          <!-- Display the user data only if logged in -->
           <h3 class="user-name" v-if="isLoggedIn()">
             {{ `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User Name' }}
           </h3>
           <h2 class="username" v-if="isLoggedIn()">{{ user.username || 'Username' }}</h2>
           <p class="user-email" v-if="isLoggedIn()">{{ user.email || 'Email' }}</p>
 
-          <!-- Display a message when the user is not logged in -->
+
           <div v-else>
             <p>Please log in to view your profile.</p>
           </div>
 
-          <!-- Edit Profile Button -->
+
           <button v-if="isLoggedIn()" @click="openEditModal" class="edit-profile-btn">
             Edit Profile
           </button>
@@ -138,7 +137,7 @@ watch(newProfileImage, async (file) => {
       </div>
     </div>
 
-    <!-- Edit Profile Modal -->
+
     <div v-if="showEditModal" class="modal-overlay">
       <div class="modal-content elegant-card">
         <h2>Edit Profile</h2>

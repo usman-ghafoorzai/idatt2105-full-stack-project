@@ -28,14 +28,13 @@ onMounted(async () => {
   try {
     loading.value = true;
 
-    // Get current user
+
     const user = await getLoggedInUser();
     userId.value = user.id;
 
-    // Fetch bookmarked items
     const items = await getBookmarkedItems(userId.value);
 
-    // For each item, get the first image
+    // get first image of each item
     for (const item of items) {
       try {
         item.imageUrl = await getFirstImage(item.id);
@@ -53,7 +52,7 @@ onMounted(async () => {
   }
 });
 
-// Function to remove bookmark
+// remove bookmark
 const cancelBookmark = async (itemId) => {
   try {
     await deleteBookmark(userId.value, itemId);

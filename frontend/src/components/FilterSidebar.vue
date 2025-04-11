@@ -16,6 +16,7 @@
     const maxPrice = ref(Infinity);
     const maxDistance = ref(10); // in km
     const userLocation = ref({ lat: 63.427029, lng: 10.396700 });
+    const oldUserLocation = ref({ lat: 63.427029, lng: 10.396700 });
 
     onMounted(async () => {
         map = L.map('map').setView([userLocation.value.lat, userLocation.value.lng], 13);
@@ -26,6 +27,7 @@
         marker = L.marker([userLocation.value.lat, userLocation.value.lng]).addTo(map)
 
         map.on('click', (e) => {
+            oldUserLocation.value = { lat: userLocation.value.lat, lng: userLocation.value.lng };
             userLocation.value = { lat: e.latlng.lat, lng: e.latlng.lng };
             marker.setLatLng([e.latlng.lat, e.latlng.lng]);
         });
@@ -54,12 +56,17 @@
         return deg * (Math.PI / 180);
     }
 
-    watch([selectedSubcategories, minPrice, maxPrice, maxDistance, userLocation], async ([newSelectedCategories, newMinPrice, newMaxPrice, newMaxDistance, newUserLocation]) => {
+    watch([selectedSubcategories, minPrice, maxPrice, userLocation], async ([newSelectedCategories, newMinPrice, newMaxPrice, newUserLocation]) => {
+        console.log("Selected categories:", newSelectedCategories);
+
+
         if (newSelectedCategories.length === 0 && 
             newMinPrice === 0 && 
             (newMaxPrice === Infinity || newMaxPrice === 0 || newMaxPrice === '') &&
-            newMaxDistance === 0
+            newUserLocation.lat === oldUserLocation.value.lat &&
+            newUserLocation.lng === oldUserLocation.value.lng
         ) {
+            console.log("original search", searchStore.originalResults);
             // no categories selected causes the search result to be rest
             searchStore.setSearchResults(searchStore.originalResults);
             return;
@@ -74,7 +81,7 @@
                 newUserLocation.lng,
                 item.locationLatitude,
                 item.locationLongitude
-            ) <= newMaxDistance;
+            ) <= maxDistance.value;
 
             return matchesCategory && matchesPrice && matchesDistance;
         });
@@ -82,6 +89,13 @@
         console.log('Filtered results:', filteredResults);
         searchStore.setSearchResults(filteredResults);
     });
+
+    function resetMap() {
+        userLocation.value = { lat: 63.427029, lng: 10.396700 };
+        oldUserLocation.value = { lat: 63.427029, lng: 10.396700 };
+        map.setView([userLocation.value.lat, userLocation.value.lng], 13);
+        marker.setLatLng([userLocation.value.lat, userLocation.value.lng]);
+    }
 </script>
 
 <template>
@@ -90,6 +104,9 @@
             <h3>Location within 10km</h3>
         </div>
         <div id="map"></div>
+        <div class="map-controls">
+            <button @click="resetMap">Reset Map</button>
+        </div>
         <div class="category">
             <span></span>
             <h3>Price range</h3>
@@ -141,6 +158,22 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         margin-top: 10px;
+    }
+    .map-controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    .map-controls button {
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .map-controls button:hover {
+        background-color: #0056b3;
     }
     .category {
         display: grid;

@@ -12,19 +12,19 @@ const isLoading = ref(false);
 const error = ref(null);
 const router = useRouter();
 
-// Fetch categories from the store or API
+// get categories from the store or API
 const fetchCategories = async () => {
   try {
     isLoading.value = true;
     error.value = null;
 
-    // Check if categories exist in the store
+    // see if categories are already in the store
     if (categoryStore.categories.length > 0) {
       categories.value = categoryStore.categories.filter(
         (category) => category.parentCategory === null
       );
     } else {
-      // Fetch from API if not in the store
+      // get from API if not
       await categoryStore.fetchCategories();
       categories.value = categoryStore.categories.filter(
         (category) => category.parentCategory === null
@@ -37,7 +37,7 @@ const fetchCategories = async () => {
   }
 };
 
-// Close the popup
+
 const closePopup = () => {
   emit('close');
 };
@@ -48,7 +48,7 @@ const navigateToSearch = (category) => {
     router.push('/search');
 };
 
-// Fetch categories when the component is mounted
+// get categories when we mount the component
 onMounted(fetchCategories);
 </script>
 

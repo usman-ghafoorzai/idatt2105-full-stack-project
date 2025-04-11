@@ -26,17 +26,14 @@ const logoSrc = ref(logoImage);
 // Check login status when component mounts
 onMounted(() => {
   updateLoginStatus();
-  // Add event listener for auth changes
   window.addEventListener('auth-change', updateLoginStatus);
 });
 
 onUnmounted(() => {
-  // Clean up event listener when component is unmounted
   window.removeEventListener('auth-change', updateLoginStatus);
 });
 
-// Watch for token changes to update login status
-// Using an anonymous function to avoid the unused parameter warning
+// check to see if the token has changed
 watch(() => getToken(), () => {
   updateLoginStatus();
 });
@@ -52,12 +49,10 @@ const buttonText = computed(() =>
 
 const handleAuthAction = () => {
   if (loggedIn.value) {
-    // Logout functionality
     logout();
     updateLoginStatus();
     router.push('/');
   } else {
-    // Navigate to login/register page
     router.push('/register');
   }
 };

@@ -7,12 +7,10 @@ import UserProfileComponent from "@/components/UserProfileComponent.vue";
 <template>
   <div class="page-container">
     <div class="profile-layout">
-      <!-- Left section with darker background -->
       <div class="profile-section">
         <UserProfileComponent />
       </div>
 
-      <!-- Right section with lighter background -->
       <div class="items-section">
         <div class="items-content">
           <BookmarkedComponent class="content-section" />
@@ -68,6 +66,7 @@ import UserProfileComponent from "@/components/UserProfileComponent.vue";
   .profile-section,
   .items-section {
     width: 100%;
+    padding: 40px 0;
   }
 }
 </style>
