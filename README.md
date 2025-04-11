@@ -2,16 +2,23 @@
 
 ### Build & Run
 
+#### Tech Stack
+ - HTML
+ - CSS
+ - Javascript
+ - Vue.js 3.5.13 (Latest as of 11.04)
+ - Vitest 3.0.8
+
 **Prerequisites:**
  - node js from https://nodejs.org/en
  
- **Build and run:**
+**Build and run:**
  - Download the file and navigate to the frontend folder
  - Run the command "npm install" to install dependencies
  - Then run the command "npm run dev"
  - Open localhost:5713
 
- **Testing:**
+**Testing:**
  - Follow same steps as in build and run, but instead of writing "npm run dev",
    write the command "npx vitest"
 
@@ -55,6 +62,10 @@ Generate code coverage report:
 Coverage report will be avaliable at:
 - target/site/jacoco/index.html
 
+**Login:**
+Login to already existing user:
+ - username: test
+ - password: password
 
 **Security:**
 The application uses JWT for authentication and authorization, implemented using the jjwt library. Secure endpoints require a valid Bearer token in the Authorization header.
