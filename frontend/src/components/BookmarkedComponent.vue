@@ -75,7 +75,7 @@ const cancelBookmark = async (itemId) => {
       <div v-for="item in bookmarkedItems" :key="item.id" class="item-card">
         <div class="image-container" @click="handleItemClick(item)">
           <img :src="item.imageUrl" alt="Bookmarked item">
-          <button class="cancel-button" @click.stop="cancelBookmark(item)">Remove</button>
+          <button class="cancel-button" @click.stop="cancelBookmark(item.id)">Remove</button>
         </div>
       </div>
     </div>

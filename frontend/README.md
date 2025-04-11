@@ -3,8 +3,18 @@
 ### Build & Run
 
 **Prerequisites:**
-To be able to run the project there are a few things that need to be done.
-Step one
+ - node js from https://nodejs.org/en
+ 
+ **Build and run:**
+ - Download the file and navigate to the frontend folder
+ - Run the command "npm install" to install dependencies
+ - Then run the command "npm run dev"
+ - Open localhost:5713
+
+ **Testing:**
+ - Follow same steps as in build and run, but instead of writing "npm run dev",
+   write the command "npx vitest"
+
 
 ### Backend - Spring Boot
 
