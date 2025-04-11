@@ -16,10 +16,7 @@ export async function fetchSearchResults(searchTerm) {
 
 export async function fetchSearchResultsByCategory(searchTerm, category) {
     try {
-        console.log('Fetching search results for category:', category);
-        const response = await apiClient.get('/items', {
-            params: { title: searchTerm, category: category }
-        });
+        const response = await apiClient.get(`/items/by-parent-category/${category}`);
         console.log('API response:', response);
         return response.data;
     } catch (error) {

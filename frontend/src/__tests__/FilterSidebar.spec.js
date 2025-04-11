@@ -3,93 +3,75 @@ import { describe, it, expect, vi } from 'vitest';
 import { createTestingPinia } from '@pinia/testing';
 import FilterSidebar from '../components/FilterSidebar.vue';
 
-const mockCategories = {
-    clothing: {
-        Tops: ['T-shirts', 'Sweaters'],
-        Bottoms: ['Jeans', 'Shorts'],
-    },
-};
-
 describe('FilterSidebar.vue', () => {
+    const mockCategories = [
+        { id: 'T-shirts', name: 'T-shirts' },
+        { id: 'Sweaters', name: 'Sweaters' },
+    ];
+
+    vi.mock('leaflet', () => {
+        return {
+            default: {
+                map: vi.fn(() => ({
+                    setView: vi.fn().mockReturnThis(),
+                    on: vi.fn(),
+                    remove: vi.fn(),
+                })),
+                tileLayer: vi.fn(() => ({
+                    addTo: vi.fn(),
+                })),
+                marker: vi.fn(() => ({
+                    addTo: vi.fn(),
+                    setLatLng: vi.fn(),
+                })),
+            },
+        };
+    });
     it('renders the component correctly', () => {
         const wrapper = mount(FilterSidebar, {
             global: {
-                plugins: [createTestingPinia({
-                    createSpy: vi.fn,
-                })],
+                plugins: [createTestingPinia({ createSpy: vi.fn })],
             },
         });
         expect(wrapper.exists()).toBe(true);
     });
 
-    it('toggles place visibility when clicked', async () => {
-        const wrapper = mount(FilterSidebar);
-        const placeCategory = wrapper.find('h3');
-        expect(wrapper.find('ul').exists()).toBe(false);
-
-        await placeCategory.trigger('click');
-        expect(wrapper.find('ul').exists()).toBe(true);
-
-        await placeCategory.trigger('click');
-        expect(wrapper.find('ul').exists()).toBe(false);
-    });
-
-    it('toggles subcategory visibility when clicked', async () => {
+    it('toggles category visibility when the header is clicked', async () => {
         const wrapper = mount(FilterSidebar, {
+            global: {
+                plugins: [createTestingPinia({ createSpy: vi.fn })],
+            },
             data() {
                 return {
                     categories: mockCategories,
-                    item: 'clothing',
-                    visibility: { Tops: false, Bottoms: false },
+                    categoryVisibility: false,
                 };
             },
         });
-    
-        // Find the first subcategory toggle
-        const subcategoryToggle = wrapper.find('h3:nth-of-type(1)');
-        expect(subcategoryToggle.exists()).toBe(true); 
-    
-        // check if the subcategory list is initially hidden
-        expect(wrapper.find('ul').exists()).toBe(false);
-    
 
-        await subcategoryToggle.trigger('click');
+        const headers = wrapper.findAll('h3');
+        const categoryHeader = headers[headers.length - 1];
+        expect(categoryHeader.exists()).toBe(true);
+
+        // Initially, the category list should not be visible
+        expect(wrapper.find('ul').exists()).toBe(false);
+
+        // Click to show the category list
+        await categoryHeader.trigger('click');
         expect(wrapper.find('ul').exists()).toBe(true);
-    
-        // Click again to hide the subcategory list
-        await subcategoryToggle.trigger('click');
+
+        // Click again to hide the category list
+        await categoryHeader.trigger('click');
         expect(wrapper.find('ul').exists()).toBe(false);
-    });
-
-    it('updates selected subcategories when checkboxes are clicked', async () => {
-        const wrapper = mount(FilterSidebar, {
-            data() {
-                return {
-                    categories: mockCategories, 
-                    item: 'clothing', 
-                    visibility: { Tops: true, Bottoms: true },
-                    selectedSubcategories: [],
-                };
-            },
-        });
-        const subcategoryToggle = wrapper.find('h3:nth-of-type(1)');
-        await subcategoryToggle.trigger('click');
-
-        // Find the first checkbox
-        const checkbox = wrapper.find('input[type="checkbox"]');
-        expect(checkbox.exists()).toBe(true); 
-    
-        await checkbox.setChecked();
-        
-        expect(wrapper.vm.selectedSubcategories).toContain('Troms og Finnmark');
-    
-        // Uncheck the checkbox
-        await checkbox.setChecked(false);
-        expect(wrapper.vm.selectedSubcategories).not.toContain('T-shirts');
     });
 
     it('renders price range inputs correctly', () => {
-        const wrapper = mount(FilterSidebar);
+        const wrapper = mount(FilterSidebar, {
+            global: {
+                plugins: [createTestingPinia({ createSpy: vi.fn })],
+            },
+        });
+
         const fromPriceInput = wrapper.find('#from-price');
         const toPriceInput = wrapper.find('#to-price');
 
@@ -98,14 +80,19 @@ describe('FilterSidebar.vue', () => {
     });
 
     it('updates price range inputs when values are entered', async () => {
-        const wrapper = mount(FilterSidebar);
+        const wrapper = mount(FilterSidebar, {
+            global: {
+                plugins: [createTestingPinia({ createSpy: vi.fn })],
+            },
+        });
+
         const fromPriceInput = wrapper.find('#from-price');
         const toPriceInput = wrapper.find('#to-price');
 
         await fromPriceInput.setValue(100);
         await toPriceInput.setValue(500);
 
-        expect(fromPriceInput.element.value).toBe('100');
-        expect(toPriceInput.element.value).toBe('500');
+        expect(wrapper.vm.minPrice).toBe(100);
+        expect(wrapper.vm.maxPrice).toBe(500);
     });
 });

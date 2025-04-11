@@ -2,8 +2,11 @@
     import { ref, onMounted, watch } from 'vue';
     import { useCategoryStore } from '../stores/CategoryStore.js';
     import { useSearchStore } from '../stores/SearchStore.js';
-    import { fetchSearchResults, fetchSearchResultsByCategory } from '@/api/searchItemsAPI.js';
-    const place = ref(false);
+    import 'leaflet/dist/leaflet.css';
+    import L from 'leaflet';
+    
+    let map;
+    let marker;
     const searchStore = useSearchStore();
     const categoryStore = useCategoryStore();
     const categories = categoryStore.categories;
@@ -11,8 +14,22 @@
     const selectedSubcategories = ref([]);
     const minPrice = ref(0);
     const maxPrice = ref(Infinity);
+    const maxDistance = ref(10); // in km
+    const userLocation = ref({ lat: 63.427029, lng: 10.396700 });
 
     onMounted(async () => {
+        map = L.map('map').setView([userLocation.value.lat, userLocation.value.lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        marker = L.marker([userLocation.value.lat, userLocation.value.lng]).addTo(map)
+
+        map.on('click', (e) => {
+            userLocation.value = { lat: e.latlng.lat, lng: e.latlng.lng };
+            marker.setLatLng([e.latlng.lat, e.latlng.lng]);
+        });
+
         try {
             await categoryStore.fetchCategories();
         } catch (error) {
@@ -20,8 +37,29 @@
         }
     });
 
-    watch([selectedSubcategories, minPrice, maxPrice], async ([newSelectedCategories, newMinPrice, newMaxPrice]) => {
-        if (newSelectedCategories.length === 0 && newMinPrice === 0 && (newMaxPrice === Infinity || newMaxPrice === 0 || newMaxPrice === '')) {
+    // funksjon hentet fra nett
+    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of the earth in km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in km
+    }
+
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
+
+    watch([selectedSubcategories, minPrice, maxPrice, maxDistance, userLocation], async ([newSelectedCategories, newMinPrice, newMaxPrice, newMaxDistance, newUserLocation]) => {
+        if (newSelectedCategories.length === 0 && 
+            newMinPrice === 0 && 
+            (newMaxPrice === Infinity || newMaxPrice === 0 || newMaxPrice === '') &&
+            newMaxDistance === 0
+        ) {
             // no categories selected causes the search result to be rest
             searchStore.setSearchResults(searchStore.originalResults);
             return;
@@ -31,79 +69,27 @@
         const filteredResults = searchStore.originalResults.filter(item => {
             const matchesCategory = newSelectedCategories.length === 0 || item.categories.some(category => newSelectedCategories.includes(category.id));
             const matchesPrice = item.price >= newMinPrice && item.price <= newMaxPrice;
-            return matchesCategory && matchesPrice;
+            const matchesDistance = getDistanceFromLatLonInKm(
+                newUserLocation.lat,
+                newUserLocation.lng,
+                item.locationLatitude,
+                item.locationLongitude
+            ) <= newMaxDistance;
+
+            return matchesCategory && matchesPrice && matchesDistance;
         });
 
         console.log('Filtered results:', filteredResults);
         searchStore.setSearchResults(filteredResults);
     });
-
-    /*for (let categoryKey in categories) {
-        if (categoryKey === item.value) {
-            for (let subcategoryKey in categories[categoryKey]) {
-                visibility.value[subcategoryKey] = false;
-            }
-        }
-    }
-
-    function toggleVisibility(subcategoryKey) {
-        visibility.value[subcategoryKey] = !visibility.value[subcategoryKey];
-    }*/
 </script>
 
 <template>
     <div class="filter-sidebar">
         <div class="category">
-            <fa icon="chevron-right" v-if="!place" @click="place = !place"></fa>
-            <fa icon="chevron-down" v-if="place" @click="place = !place"></fa>
-            <h3 @click="place = !place">Place</h3>
-            <ul v-if="place">
-            <li>
-                <input type="checkbox" value="Troms og Finnmark" v-model="selectedSubcategories" />
-                Troms og Finnmark
-            </li>
-            <li>
-                <input type="checkbox" value="Nordland" v-model="selectedSubcategories" />
-                Nordland
-            </li>
-            <li>
-                <input type="checkbox" value="Trøndelag" v-model="selectedSubcategories" />
-                Trøndelag
-            </li>
-            <li>
-                <input type="checkbox" value="Møre og Romsdal" v-model="selectedSubcategories" />
-                Møre og Romsdal
-            </li>
-            <li>
-                <input type="checkbox" value="Innlandet" v-model="selectedSubcategories" />
-                Innlandet
-            </li>
-            <li>
-                <input type="checkbox" value="Oslo" v-model="selectedSubcategories" />
-                Oslo
-            </li>
-            <li>
-                <input type="checkbox" value="Viken" v-model="selectedSubcategories" />
-                Viken
-            </li>
-            <li>
-                <input type="checkbox" value="Vestlandet" v-model="selectedSubcategories" />
-                Vestlandet
-            </li>
-            <li>
-                <input type="checkbox" value="Rogaland" v-model="selectedSubcategories" />
-                Rogaland
-            </li>
-            <li>
-                <input type="checkbox" value="Agder" v-model="selectedSubcategories" />
-                Agder
-            </li>
-            <li>
-                <input type="checkbox" value="Vestfold og Telemark" v-model="selectedSubcategories" />
-                Vestfold og Telemark
-            </li>
-        </ul>
+            <h3>Location within 10km</h3>
         </div>
+        <div id="map"></div>
         <div class="category">
             <span></span>
             <h3>Price range</h3>
@@ -118,25 +104,6 @@
                 </div>
             </div>
         </div>
-
-       <!-- <template v-for="(subcategories, subcategoryKey) in categories[item]" :key="subcategoryKey">
-            <div class="category">
-                <fa icon="chevron-right" v-if="!visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
-                <fa icon="chevron-down" v-if="visibility[subcategoryKey]" @click="toggleVisibility(subcategoryKey)"></fa>
-                <h3 @click="toggleVisibility(subcategoryKey)">{{ subcategoryKey }}</h3>
-                <ul v-if="visibility[subcategoryKey]">
-                    <li v-for="(subcategory, index) in subcategories" :key="index">
-                        <input 
-                            type="checkbox"
-                            :value="subcategory"
-                            v-model="selectedSubcategories"
-                        /> 
-                        {{ subcategory }}
-                    </li>
-                </ul>
-            </div>
-        </template> -->
-
         <div class="category">
             <fa icon="chevron-right" v-if="!categoryVisibility" @click="categoryVisibility = !categoryVisibility"></fa>
             <fa icon="chevron-down" v-if="categoryVisibility" @click="categoryVisibility = !categoryVisibility"></fa>
@@ -162,11 +129,18 @@
         gap: 10px;
         padding: 20px;
         width: 350px;
-        height: 100vh;
+        min-height: 100vh;
         background-color: var(--color-light-bg);
         border-right: 2px solid black;
         align-content: center;
         overflow-y: auto;
+    }
+    #map {
+        height: 400px;
+        width: 100%;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-top: 10px;
     }
     .category {
         display: grid;

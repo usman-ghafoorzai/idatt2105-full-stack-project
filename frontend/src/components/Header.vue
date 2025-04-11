@@ -1,5 +1,6 @@
 <script setup>
 import Searchbar from './Searchbar.vue';
+import CategoryPopup from './CategoryPopup.vue';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { isLoggedIn, logout, getToken } from '../utils/authService.js';
@@ -13,6 +14,11 @@ defineProps({
     default: 0,
   }
 });
+
+const showCategoryPopup = ref(false);
+const toggleCategoryPopup = () => {
+  showCategoryPopup.value = !showCategoryPopup.value;
+};
 
 const loggedIn = ref(false);
 const logoSrc = ref(logoImage);
@@ -88,9 +94,10 @@ const navigateToUserProfile = () => {
       <fa icon="home" class="icons"></fa>
     </div>
     <div class="container">
-      <div id="categories">CATEGORIES</div>
+      <div id="categories" @click="toggleCategoryPopup">CATEGORIES</div>
       <fa icon="icons" class="icons"></fa>
     </div>
+    <CategoryPopup v-if="showCategoryPopup" @close="toggleCategoryPopup" />
     <div class="container">
       <div id="sell" @click="navigateToSell">SELL</div>
       <fa icon="arrow-up-from-bracket" class="icons"></fa>

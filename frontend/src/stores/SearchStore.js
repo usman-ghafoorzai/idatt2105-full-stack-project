@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { fetchSearchResults } from '../api/searchItemsAPI'; // Adjust the import path as necessary
+import { fetchSearchResults, fetchSearchResultsByCategory } from '../api/searchItemsAPI'; // Adjust the import path as necessary
 
 export const useSearchStore = defineStore('search', {
     state: () => ({
@@ -30,5 +30,14 @@ export const useSearchStore = defineStore('search', {
                 console.error('Error fetching search results:', error);
             }
         },
+        async fetchSearchResultsByCategory(category) {
+            try {
+                this.searchResults = await fetchSearchResultsByCategory('', category);
+                this.originalResults = this.searchResults; // Store the original results 
+                console.log('Search results by category:', this.searchResults); // Log the results for debugging
+            } catch (error) {
+                console.error('Error fetching search results by category:', error);
+            }
+        }
     },
 });
