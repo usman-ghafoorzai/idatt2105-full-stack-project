@@ -13,24 +13,20 @@
  - node js from https://nodejs.org/en
  
 **Build and run:**
- ```console
-  cd frontend
-  npm install
-  npm run dev
- ```
- - Download the file and navigate to the frontend folder
- - Run the command "npm install" to install dependencies
- - Then run the command "npm run dev"
- - Open localhost:5713
+```console
+// navigate to frontend folder
+cd frontend 
+// install all dependencies
+npm install
+npm run dev
+```
 
 **Testing:**
- - Follow same steps as in build and run, but instead of writing "npm run dev",
-   write the command "npx vitest"
-   ```console
-    cd frontend
-    npm install
-    npx vitest
-    ```
+```console
+cd frontend
+npm install
+npx vitest
+```
 
 
 ### Backend - Spring Boot
@@ -64,10 +60,14 @@ If you want to use namox or other Mysql database by changing profile to prod and
 
 **Testing:**
 Run unit and integration tests:
-- mvn test
+```console
+mvn test
+```
 
 Generate code coverage report:
-- mvn verify
+```console
+mvn verify
+```
 
 Coverage report will be avaliable at:
 - target/site/jacoco/index.html
