@@ -1,3 +1,11 @@
+### Frontend - Vue
+
+### Build & Run
+
+**Prerequisites:**
+To be able to run the project there are a few things that need to be done.
+Step one
+
 ### Backend - Spring Boot
 
 #### Tech Stack
