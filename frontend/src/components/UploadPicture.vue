@@ -1,20 +1,35 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import genericAvatar from '../assets/generic-avatar.png';
 
 const props = defineProps({
-  modelValue: File // v-model binding
+  modelValue: File, // v-model binding
+  initialImage: String // Initial image from profile
 });
 const emit = defineEmits(['update:modelValue']);
 
 const profilePicSrc = ref(genericAvatar);
+
+// Initialize with initialImage if available
+onMounted(() => {
+  if (props.initialImage) {
+    profilePicSrc.value = props.initialImage;
+  }
+});
 
 // Update image preview when modelValue changes
 watch(() => props.modelValue, (newFile) => {
   if (newFile) {
     profilePicSrc.value = URL.createObjectURL(newFile);
   } else {
-    profilePicSrc.value = genericAvatar;
+    profilePicSrc.value = props.initialImage || genericAvatar;
+  }
+});
+
+// Update image preview when initialImage changes
+watch(() => props.initialImage, (newImage) => {
+  if (newImage && !props.modelValue) {
+    profilePicSrc.value = newImage;
   }
 });
 

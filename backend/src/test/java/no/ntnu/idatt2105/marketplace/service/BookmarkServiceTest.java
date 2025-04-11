@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import no.ntnu.idatt2105.marketplace.dto.ItemResponseDTO;
 import no.ntnu.idatt2105.marketplace.model.Bookmark;
 import no.ntnu.idatt2105.marketplace.model.Item;
 import no.ntnu.idatt2105.marketplace.model.User;
@@ -46,18 +47,25 @@ public class BookmarkServiceTest {
     item.setId(1L);
     item.setTitle("Sample Item");
 
+    // Create ItemResponseDTO to match the service update
+    ItemResponseDTO itemResponseDTO = new ItemResponseDTO();
+    itemResponseDTO.setId(item.getId());
+    itemResponseDTO.setTitle(item.getTitle());
+    
     Bookmark bookmark = new Bookmark();
     bookmark.setUser(user);
     bookmark.setItem(item);
 
     when(bookmarkRepository.findByUserId(userId)).thenReturn(Arrays.asList(bookmark));
+    when(itemService.convertToResponse(item)).thenReturn(itemResponseDTO);
 
-    List<Item> result = bookmarkService.getBookmarkedItemsByUserId(userId);
+    List<ItemResponseDTO> result = bookmarkService.getBookmarkedItemsByUserId(userId);
 
     assertThat(result).hasSize(1);
     assertThat(result.get(0).getTitle()).isEqualTo("Sample Item");
 
     verify(bookmarkRepository, times(1)).findByUserId(userId);
+    verify(itemService, times(1)).convertToResponse(item);
   }
 
   @Test
@@ -80,11 +88,8 @@ public class BookmarkServiceTest {
     when(itemService.getItemEntityById(itemId)).thenReturn(Optional.of(item));
     when(bookmarkRepository.save(any(Bookmark.class))).thenReturn(bookmark);
 
-    Bookmark savedBookmark = bookmarkService.saveBookmark(userId, itemId);
+    bookmarkService.saveBookmark(userId, itemId);
 
-    assertThat(savedBookmark).isNotNull();
-    assertThat(savedBookmark.getUser().getId()).isEqualTo(userId);
-    assertThat(savedBookmark.getItem().getId()).isEqualTo(itemId);
     verify(userService, times(1)).getUserById(userId);
     verify(itemService, times(1)).getItemEntityById(itemId);
     verify(bookmarkRepository, times(1)).save(any(Bookmark.class));
@@ -141,5 +146,4 @@ public class BookmarkServiceTest {
 
     verify(bookmarkRepository, times(1)).deleteByUserIdAndItemId(userId, itemId);
   }
-
 }

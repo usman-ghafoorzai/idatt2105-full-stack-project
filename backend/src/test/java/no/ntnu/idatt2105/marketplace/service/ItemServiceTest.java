@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,7 @@ public class ItemServiceTest {
     item.setPrice(8999.95);
     item.setLocationLatitude(75.91);
     item.setLocationLongitude(10.75);
-    item.setCategory(category);
+    item.setCategories(Set.of(category));
     item.setSeller(seller);
     item.setCreatedAt(LocalDateTime.now());
   }
@@ -92,8 +93,9 @@ public class ItemServiceTest {
       assertThat(response.getPrice()).isEqualTo(8999.95);
       assertThat(response.getLocationLatitude()).isEqualTo(75.91);
       assertThat(response.getLocationLongitude()).isEqualTo(10.75);
-      assertThat(response.getCategory().getId()).isEqualTo(100L);
-      assertThat(response.getCategory().getName()).isEqualTo("Electronics");
+      assertThat(response.getCategories()).hasSize(1);
+      assertThat(response.getCategories().iterator().next().getId()).isEqualTo(100L);
+      assertThat(response.getCategories().iterator().next().getName()).isEqualTo("Electronics");
       assertThat(response.getSeller().getId()).isEqualTo(200L);
       assertThat(response.getSeller().getUsername()).isEqualTo("sellerUser");
     }
@@ -106,7 +108,7 @@ public class ItemServiceTest {
       createDTO.setPrice(12299.99);
       createDTO.setLocationLatitude(79.92);
       createDTO.setLocationLongitude(90.06);
-      createDTO.setCategoryId(100L);
+      createDTO.setCategoryIds(Set.of(100L));
       createDTO.setSellerId(200L);
 
       // Stub repository calls for category and seller lookup.
@@ -121,7 +123,7 @@ public class ItemServiceTest {
       savedItem.setPrice(createDTO.getPrice());
       savedItem.setLocationLatitude(createDTO.getLocationLatitude());
       savedItem.setLocationLongitude(createDTO.getLocationLongitude());
-      savedItem.setCategory(category);
+      savedItem.setCategories(Set.of(category));
       savedItem.setSeller(seller);
       savedItem.setCreatedAt(LocalDateTime.now());
 
@@ -132,7 +134,9 @@ public class ItemServiceTest {
 
       assertThat(response.getId()).isEqualTo(400L);
       assertThat(response.getTitle()).isEqualTo("Laptop");
-      assertThat(response.getCategory().getName()).isEqualTo("Electronics");
+      assertThat(response.getCategories()).hasSize(1);
+      assertThat(response.getCategories().iterator().next().getId()).isEqualTo(100L);
+      assertThat(response.getCategories().iterator().next().getName()).isEqualTo("Electronics");
       assertThat(response.getSeller().getUsername()).isEqualTo("sellerUser");
     }
 
@@ -144,7 +148,7 @@ public class ItemServiceTest {
       updateDTO.setPrice(11999.99);
       updateDTO.setLocationLatitude(80.00);
       updateDTO.setLocationLongitude(90.00);
-      updateDTO.setCategoryId(100L);
+      updateDTO.setCategoryIds(Set.of(100L));
 
       when(itemRepository.findById(300L)).thenReturn(Optional.of(item));
       when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
@@ -221,7 +225,7 @@ public class ItemServiceTest {
     createDTO.setTitle("Laptop");
     createDTO.setDescription("Gaming laptop");
     createDTO.setPrice(7299.05);
-    createDTO.setCategoryId(999L); // non-existent category id
+    createDTO.setCategoryIds(Set.of(999L)); 
     createDTO.setSellerId(200L);
 
     when(categoryRepository.findById(999L)).thenReturn(Optional.empty());
@@ -238,7 +242,7 @@ public class ItemServiceTest {
       createDTO.setTitle("Laptop");
       createDTO.setDescription("Gaming laptop");
       createDTO.setPrice(7299.05);
-      createDTO.setCategoryId(100L);
+      createDTO.setCategoryIds(Set.of(100L)); 
       createDTO.setSellerId(999L); // non-existent seller id
 
       when(categoryRepository.findById(100L)).thenReturn(Optional.of(category));
@@ -269,7 +273,7 @@ public class ItemServiceTest {
       updateDTO.setPrice(11999.99);
       updateDTO.setLocationLatitude(80.00);
       updateDTO.setLocationLongitude(90.00);
-      updateDTO.setCategoryId(999L); // non-existent category id
+      updateDTO.setCategoryIds(Set.of(999L)); // non-existent category id
 
       when(itemRepository.findById(300L)).thenReturn(Optional.of(item));
       when(categoryRepository.findById(999L)).thenReturn(Optional.empty());

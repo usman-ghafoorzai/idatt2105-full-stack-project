@@ -71,12 +71,10 @@ export async function uploadItemImages(itemId, images) {
 export async function getItemImages(itemId) {
   try {
     const response = await apiClient.get(`items/${itemId}/images`);
+    const imageIds = response.data;
 
     const images = await Promise.all(
-      response.data.map(async (image) => {
-        const blob = new Blob([new Uint8Array(image.data)], { type: image.contentType });
-        return await blobToDataUrl(blob);
-      })
+      imageIds.map((imageId) => getItemImage(itemId, imageId))
     );
 
     return images;

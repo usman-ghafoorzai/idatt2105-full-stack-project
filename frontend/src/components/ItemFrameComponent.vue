@@ -1,18 +1,52 @@
 <script setup>
-    import { ref } from "vue"
-    const isBookmarked = ref(false);
-    defineProps ({
-        id: Number,
-        image: String,
-        price: Number,
-        details: String,
-    });
+import { ref, onMounted } from "vue";
+import { bookmarkItem, deleteBookmark } from '../api/bookmarkAPI.js';
+import { getLoggedInUser } from '../api/userAPI.js';
 
+const isBookmarked = ref(false);
+const user = ref(null);
 
-    function toggleBookmark() {
-        isBookmarked.value = !isBookmarked.value;
-        console.log(isBookmarked.value ? "Added to bookmarks!" : "Removed from bookmarks");
+const props = defineProps({
+  id: Number,
+  image: String,
+  price: Number,
+  details: String,
+});
+
+onMounted(async () => {
+  try {
+    // Get logged-in user when component mounts
+    user.value = await getLoggedInUser();
+    // Could add code here to check if this item is already bookmarked
+  } catch (error) {
+    console.error("Not logged in or error fetching user");
+  }
+});
+
+async function toggleBookmark(event) {
+  // Prevent the item click event from triggering
+  event.stopPropagation();
+
+  try {
+    // Try to get logged in user if not already available
+    if (!user.value) {
+      user.value = await getLoggedInUser();
     }
+
+    if (isBookmarked.value) {
+      await deleteBookmark(user.value.id, props.id);
+      console.log("Removed from bookmarks");
+    } else {
+      await bookmarkItem(user.value.id, props.id);
+      console.log("Added to bookmarks!");
+    }
+
+    isBookmarked.value = !isBookmarked.value;
+  } catch (error) {
+    console.error("Error with bookmark:", error.message);
+    alert("Please log in to bookmark items");
+  }
+}
 </script>
 
 <template>
@@ -31,7 +65,7 @@
 <style scoped>
     .item-frame {
         display: grid;
-        grid-template-rows: 4fr auto;
+        grid-template-rows: 3fr auto;
         width: 300px;
         height: 400px;
         border-radius: 10px;
@@ -41,6 +75,8 @@
     }
     .item-image {
         position: relative;
+        height: 100%;
+        overflow: hidden;
     }
     img {
         height: 100%;

@@ -1,49 +1,139 @@
 <script setup>
-import { ref } from 'vue';
-import { FontAwesomeIcon as fa } from '@fortawesome/vue-fontawesome';
+import { ref, onMounted } from 'vue';
 import BaseItemListComponent from './BaseItemListComponent.vue';
+import { getBookmarkedItems, deleteBookmark } from '../api/bookmarkAPI.js';
+import { getFirstImage } from '../api/itemAPI.js';
+import { getLoggedInUser } from '../api/userAPI.js';
+import { useRouter } from 'vue-router';
+import { useItemStore } from '../stores/ItemStore.js';
+import { useSellerInformationStore } from '../stores/SellerInformationStore.js';
 
-// This will be replaced with actual API call later
-const bookmarkedItems = ref([
-  { id: 1, title: 'Item 1', imageUrl: 'https://via.placeholder.com/150x100', price: '200', details: 'Item details here' },
-  { id: 2, title: 'Item 2', imageUrl: 'https://via.placeholder.com/150x100', price: '350', details: 'Item details here' },
-  { id: 3, title: 'Item 3', imageUrl: 'https://via.placeholder.com/150x100', price: '175', details: 'Item details here' },
-  { id: 4, title: 'Item 4', imageUrl: 'https://via.placeholder.com/150x100', price: '420', details: 'Item details here' },
-  { id: 5, title: 'Item 5', imageUrl: 'https://via.placeholder.com/150x100', price: '300', details: 'Item details here' },
-  { id: 6, title: 'Item 6', imageUrl: 'https://via.placeholder.com/150x100', price: '250', details: 'Item details here' },
-  { id: 7, title: 'Item 7', imageUrl: 'https://via.placeholder.com/150x100', price: '190', details: 'Item details here' },
-]);
+
+const router = useRouter();
+const itemStore = useItemStore();
+const sellerStore = useSellerInformationStore();
+const bookmarkedItems = ref([]);
+const loading = ref(true);
+const error = ref(null);
+const userId = ref(null);
+
+const handleItemClick = (item) => {
+  itemStore.setSelectedItem(item);
+  sellerStore.setSellerId(item.seller.id);
+  sellerStore.getSellerInformation();
+  router.push('/item');
+};
+
+onMounted(async () => {
+  try {
+    loading.value = true;
+
+    // Get current user
+    const user = await getLoggedInUser();
+    userId.value = user.id;
+
+    // Fetch bookmarked items
+    const items = await getBookmarkedItems(userId.value);
+
+    // For each item, get the first image
+    for (const item of items) {
+      try {
+        item.imageUrl = await getFirstImage(item.id);
+      } catch (imageErr) {
+        item.imageUrl = 'https://via.placeholder.com/150x100';
+      }
+    }
+
+    bookmarkedItems.value = items;
+  } catch (fetchErr) {
+    error.value = 'Failed to load bookmarked items';
+    console.error(fetchErr);
+  } finally {
+    loading.value = false;
+  }
+});
 
 // Function to remove bookmark
-const removeBookmark = (itemId) => {
-  bookmarkedItems.value = bookmarkedItems.value.filter(item => item.id !== itemId);
-  console.log("Removed from bookmarks");
-  // However, In real implementation a call will be made to API to remove bookmark
+const cancelBookmark = async (itemId) => {
+  try {
+    await deleteBookmark(userId.value, itemId);
+    bookmarkedItems.value = bookmarkedItems.value.filter(item => item.id !== itemId);
+  } catch (removeErr) {
+    console.error("Failed to remove bookmark:", removeErr);
+    alert("Failed to remove bookmark. Please try again.");
+  }
 };
+
 </script>
 
 <template>
   <BaseItemListComponent title="Bookmarked" bgColor="var(--color-light-bg)" class="elegant-card">
-    <div v-for="item in bookmarkedItems" :key="item.id" class="bookmarked-item item-base">
-      <div class="image-container">
-        <img :src="item.imageUrl" alt="Bookmarked item">
-        <fa :icon="['fas','bookmark']" class="bookmark-icon" @click="removeBookmark(item.id)"/>
+    <div v-if="loading" class="loading-message">Loading bookmarked items...</div>
+    <div v-else-if="error" class="error-message">{{ error }}</div>
+    <div v-else-if="bookmarkedItems.length === 0" class="empty-message">No bookmarked items</div>
+    <div v-else class="items-container">
+      <div v-for="item in bookmarkedItems" :key="item.id" class="item-card">
+        <div class="image-container" @click="handleItemClick(item)">
+          <img :src="item.imageUrl" alt="Bookmarked item">
+          <button class="cancel-button" @click.stop="cancelBookmark(item.id)">Remove</button>
+        </div>
       </div>
     </div>
   </BaseItemListComponent>
 </template>
 
 <style scoped>
-.bookmark-icon {
-  color: var(--color-red);
-  font-size: 20px;
-  position: absolute;
-  z-index: 10;
-  top: 5px;
-  right: 10px;
+.items-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px;
 }
 
-.bookmark-icon:hover {
+.item-card {
+  width: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
   cursor: pointer;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cancel-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 2px 6px !important;
+  font-size: 11px !important;
+  background-color: var(--color-red, #ff4757);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.cancel-button:hover {
+  background-color: var(--color-gray-darker, #d32f2f);
+}
+
+.loading-message, .error-message, .empty-message {
+  padding: 20px;
+  text-align: center;
+}
+
+.error-message {
+  color: var(--color-red, #ff4757);
 }
 </style>

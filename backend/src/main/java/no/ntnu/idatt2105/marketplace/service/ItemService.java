@@ -2,6 +2,7 @@ package no.ntnu.idatt2105.marketplace.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -31,7 +32,7 @@ public class ItemService {
   private final CategoryRepository categoryRepository;
   private final UserRepository userRepository;
 
-  private ItemResponseDTO convertToResponse(Item item) {
+  public ItemResponseDTO convertToResponse(Item item) {
     ItemResponseDTO response = new ItemResponseDTO();
     response.setId(item.getId());
     response.setTitle(item.getTitle());
@@ -47,11 +48,17 @@ public class ItemService {
       response.setStatus(item.getStatus().name());
     }
     
-    if (item.getCategory() != null) {
-      ItemResponseDTO.CategoryDTO categoryDTO = new ItemResponseDTO.CategoryDTO();
-      categoryDTO.setId(item.getCategory().getId());
-      categoryDTO.setName(item.getCategory().getName());
-      response.setCategory(categoryDTO);
+    if (item.getCategories() != null) {
+      Set<ItemResponseDTO.CategoryDTO> categoryDTOs = item.getCategories()
+          .stream()
+          .map(category -> {
+            ItemResponseDTO.CategoryDTO categoryDTO = new ItemResponseDTO.CategoryDTO();
+            categoryDTO.setId(category.getId());
+            categoryDTO.setName(category.getName());
+            return categoryDTO;
+          })
+          .collect(Collectors.toSet());
+      response.setCategories(categoryDTOs);
     }
     
     ItemResponseDTO.SellerDTO sellerDTO = new ItemResponseDTO.SellerDTO();
@@ -105,9 +112,14 @@ public class ItemService {
     }
 
     // Lookup category by id
-    Category category = categoryRepository.findById(createDTO.getCategoryId())
-        .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-    item.setCategory(category);
+    if (createDTO.getCategoryIds() != null) {
+      Set<Category> categories = createDTO.getCategoryIds()
+          .stream()
+          .map(categoryId -> categoryRepository.findById(categoryId)
+              .orElseThrow(() -> new IllegalArgumentException("Category not found")))
+          .collect(Collectors.toSet());
+      item.setCategories(categories);
+    }
 
     // Lookup seller by id
     User seller = userRepository.findById(createDTO.getSellerId())
@@ -144,10 +156,13 @@ public class ItemService {
       existingItem.setLocationLongitude(updateDTO.getLocationLongitude());
 
       // Update category if provided
-      if (updateDTO.getCategoryId() != null) {
-        Category category = categoryRepository.findById(updateDTO.getCategoryId())
-            .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-        existingItem.setCategory(category);
+      if (updateDTO.getCategoryIds() != null) {
+        Set<Category> categories = updateDTO.getCategoryIds()
+            .stream()
+            .map(categoryId -> categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found")))
+            .collect(Collectors.toSet());
+        existingItem.setCategories(categories);
       }
       Item updated = itemRepository.save(existingItem);
       return convertToResponse(updated);
@@ -175,8 +190,19 @@ public class ItemService {
     return itemRepository.findAll();
   }
 
-  // TODO: Implement pagination and sorting for the getAllItems method
-  // TODO: Category filtering and user filtering
+  /**
+   * Retrieves all items in the database as a set of response DTOs.
+   *
+   * @return a set of all items as response DTOs
+   */
+  public Set<ItemResponseDTO> getItemsByCategoryIds(Set<Long> categoryIds) {
+    Specification<Item> spec = (root, query, cb) -> root.get("categories").get("id").in(categoryIds);
+    return itemRepository.findAll(spec)
+        .stream()
+        .map(this::convertToResponse)
+        .collect(Collectors.toSet());
+  }
+
   public List<ItemResponseDTO> getFilteredItems(String title, String categoryName, Double minPrice, Double maxPrice,
       String status) {
     Specification<Item> spec = Specification.where(null);

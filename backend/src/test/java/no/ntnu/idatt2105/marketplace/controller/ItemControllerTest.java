@@ -82,7 +82,7 @@ public class ItemControllerTest {
       itemCreateDTO.setPrice(100.0);
       itemCreateDTO.setLocationLatitude(10.0);
       itemCreateDTO.setLocationLongitude(20.0);
-      itemCreateDTO.setCategoryId(1L);
+      itemCreateDTO.setCategoryIds(Collections.singleton(1L));
       itemCreateDTO.setSellerId(1L);
 
       ItemResponseDTO itemResponseDTO = new ItemResponseDTO();

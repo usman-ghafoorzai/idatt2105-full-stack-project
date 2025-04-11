@@ -13,3 +13,14 @@ export async function fetchSearchResults(searchTerm) {
         throw error;
     }
 }
+
+export async function fetchSearchResultsByCategory(searchTerm, category) {
+    try {
+        const response = await apiClient.get(`/items/by-parent-category/${category}`);
+        console.log('API response:', response);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+        throw error;
+    }
+}

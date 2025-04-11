@@ -20,7 +20,7 @@
         <h2>{{ price }} kr</h2>
         <hr>
         <div id="categories">
-            <div id="category" v-for="category in categories" :style="{backgroundColor: randomColor()}">
+            <div id="category" v-for="category in categories" :key="category.id" :style="{backgroundColor: randomColor()}">
                  {{ category.name }}
             </div>
         </div>
