@@ -70,16 +70,16 @@ const login = async () => {
 
     <form class="login-form" @submit.prevent="login">
       <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" v-model="username" />
+        <label for="login-username">Username:</label>
+        <input type="text" id="login-username" v-model="username" />
         <span class="error-message" v-if="attempted && errorFields?.username?.[0]?.message">
           {{ errorFields.username[0].message }}
         </span>
       </div>
 
       <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" />
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" v-model="password" />
         <span class="error-message" v-if="attempted && errorFields?.password?.[0]?.message">
           {{ errorFields.password[0].message }}
         </span>
