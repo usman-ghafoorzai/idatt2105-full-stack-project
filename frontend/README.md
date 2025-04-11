@@ -1,41 +1,49 @@
-# frontend
+### Backend - Spring Boot
 
-This template should help get you started developing with Vue 3 in Vite.
+#### Tech Stack
+- Java 21
+- Spring Boot 3.4.4
+- Maven
+- Spring Web & Spring Data JPA
+- Spring Security with JWT (JJWT)
+- MySQL (runtime) and H2 (for development/testing)
+- SpringDoc OpenAPI for API documentation
+- JUnit 5 and Jacoco for testing and code coverage
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+#### Build & Run
 
-## Customize configuration
+**Prerequisites:**
+- Java 21 or higher
+- Maven 3.8+
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+**Build the Project:**
+mvn clean install
+mvn spring-boot:run
 
-## Project Setup
+**Configuration:**
+Set which properties file to use here src/main/resources/application.properties by changing spring.profiles.active=x
+standard is using a H2 database in the profile "submission"
+If you want to use namox or other Mysql database by changing profile to prod and changing settings in application-prod.properties
 
-```sh
-npm install
-```
+**Testing:**
+Run unit and integration tests:
+- mvn test
 
-### Compile and Hot-Reload for Development
+Generate code coverage report:
+- mvn verify
 
-```sh
-npm run dev
-```
+Coverage report will be avaliable at:
+- target/site/jacoco/index.html
 
-### Compile and Minify for Production
 
-```sh
-npm run build
-```
+**Security:**
+The application uses JWT for authentication and authorization, implemented using the jjwt library. Secure endpoints require a valid Bearer token in the Authorization header.
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+**API Access**
+Base URL:
+http://localhost:8888
 
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+SwaggerUI:
+http://localhost:8080/swagger-ui.html
