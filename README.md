@@ -13,6 +13,11 @@
  - node js from https://nodejs.org/en
  
 **Build and run:**
+ ```console
+  cd frontend
+  npm install
+  npm run dev
+ ```
  - Download the file and navigate to the frontend folder
  - Run the command "npm install" to install dependencies
  - Then run the command "npm run dev"
@@ -21,6 +26,11 @@
 **Testing:**
  - Follow same steps as in build and run, but instead of writing "npm run dev",
    write the command "npx vitest"
+   ```console
+    cd frontend
+    npm install
+    npx vitest
+    ```
 
 
 ### Backend - Spring Boot
