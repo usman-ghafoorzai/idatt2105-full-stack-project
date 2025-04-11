@@ -12,7 +12,6 @@
 
     defineProps({
         name: String,
-        phoneNumber: String,
         email: String,
     })
 
@@ -23,7 +22,6 @@
         <h2>Seller Information</h2>
         <div id="seller-info">
             <div><strong>Name:</strong> {{ name }}</div>
-            <div><strong>Phone Number:</strong> {{ phoneNumber }}</div>
             <div><strong>Email:</strong> {{ email }}</div>
         </div>
         <button @click="openModal">
@@ -51,7 +49,7 @@
     }
     #seller-info {
         display: grid;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto;
         gap: 5px;
         margin-left: 20px;
         width: 100%;

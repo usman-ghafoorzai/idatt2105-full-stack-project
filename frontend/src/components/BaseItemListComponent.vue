@@ -51,7 +51,7 @@ const scrollbarHeight = computed(() => {
   return props.containerHeight - 80;
 });
 
-// Use VueUse's useScroll
+
 const { y, arrivedState } = useScroll(itemsContainer);
 
 // Update scrollbar position based on y value
@@ -82,7 +82,7 @@ const updateScrollbarPosition = () => {
   }
 };
 
-// Watch for scroll changes
+// watch for changes in scroll position
 watch(y, updateScrollbarPosition);
 
 watch(() => arrivedState.bottom, (isAtBottom) => {

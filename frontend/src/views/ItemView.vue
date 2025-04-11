@@ -75,7 +75,6 @@
                 />
                 <SellerInfo
                     :name="sellerStore.sellerInformation.firstName + ' ' + sellerStore.sellerInformation.lastName + ' (' + sellerStore.sellerInformation.username + ')'"
-                    :phoneNumber="'12345678'"
                     :email="sellerInformation.email"
                 /> 
             </div>
