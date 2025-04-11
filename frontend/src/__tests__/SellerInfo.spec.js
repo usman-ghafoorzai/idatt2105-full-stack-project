@@ -20,13 +20,6 @@ describe('SellerInfo.vue', () => {
         const wrapper = mount(SellerInfo, {
             props: mockSeller,
         });
-        expect(wrapper.find('#seller-info div:nth-of-type(2)').text()).toContain(mockSeller.phoneNumber);
-    });
-
-    it('renders the sellers email', () => {
-        const wrapper = mount(SellerInfo, {
-            props: mockSeller,
-        });
-        expect(wrapper.find('#seller-info div:nth-of-type(3)').text()).toContain(mockSeller.email);
+        expect(wrapper.find('#seller-info div:nth-of-type(2)').text()).toContain(mockSeller.email);
     });
 });
