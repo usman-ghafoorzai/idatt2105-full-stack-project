@@ -46,7 +46,7 @@ const router = useRouter();
 .hero-section p {
   font-size: 1.2rem;
   margin-bottom: 30px;
-  color: #555;
+  color: #242424;
 }
 
 .hero-buttons {

@@ -118,4 +118,10 @@ ul {
 li {
   margin: 5px 0;
 }
+
+li:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: var(--color-coral)
+}
 </style>

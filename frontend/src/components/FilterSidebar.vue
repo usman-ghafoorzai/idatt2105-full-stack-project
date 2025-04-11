@@ -4,7 +4,6 @@
     import { useSearchStore } from '../stores/SearchStore.js';
     import 'leaflet/dist/leaflet.css';
     import L from 'leaflet';
-    import { getAddress } from '../utils/reverseGeoLocation.js';
     
     let map;
     let marker;
