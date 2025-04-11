@@ -22,8 +22,8 @@ describe('LoginComponent', () => {
   // Test 2: Verifies that both the username and password input fields
   // are present in the component
   it('renders username and password inputs', () => {
-    expect(wrapper.find('input#username').exists()).toBe(true);
-    expect(wrapper.find('input#password').exists()).toBe(true);
+    expect(wrapper.find('input#login-username').exists()).toBe(true);
+    expect(wrapper.find('input#login-password').exists()).toBe(true);
   });
 
   // Test 3: Checks that the submit button exists and has the correct text
@@ -36,8 +36,8 @@ describe('LoginComponent', () => {
   // Test 4: Verifies that the component correctly binds input values
   // to the component's data (using v-model)
   it('updates username and password when typing', async () => {
-    const usernameInput = wrapper.find('input#username');
-    const passwordInput = wrapper.find('input#password');
+    const usernameInput = wrapper.find('input#login-username');
+    const passwordInput = wrapper.find('input#login-password');
 
     // Simulate user typing into inputs
     await usernameInput.setValue('testuser');
@@ -55,8 +55,8 @@ describe('LoginComponent', () => {
     const consoleSpy = vi.spyOn(console, 'log');
 
     // Set values for username and password fields
-    await wrapper.find('#username').setValue('usertest');
-    await wrapper.find('#password').setValue('pass123');
+    await wrapper.find('#login-username').setValue('usertest');
+    await wrapper.find('#login-password').setValue('pass123');
 
     // Trigger the form submission
     await wrapper.find('form').trigger('submit.prevent');
