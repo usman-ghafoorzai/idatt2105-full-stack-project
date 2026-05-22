@@ -86,3 +86,7 @@ http://localhost:8888
 
 SwaggerUI:
 http://localhost:8888/swagger-ui.html
+
+### Security note
+This repository is a university full-stack demo project and is not intended as a production system.  
+See [docs/security-review.md](docs/security-review.md) for a concise security and privacy review.
