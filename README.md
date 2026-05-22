@@ -1,88 +1,94 @@
-### Frontend - Vue
+## 1. Project title
+Marketplace Full-Stack Project
 
-### Build & Run
+## 2. Overview
+This repository contains a full-stack marketplace application. Users can register and log in, browse and search listings, view item details with images and location data, create and update listings, and manage bookmarks and reservations.
 
-#### Tech Stack
- - HTML
- - CSS
- - Javascript
- - Vue.js 3.5.13 (Latest as of 11.04)
- - Vitest 3.0.8
+## 3. Context
+This project was developed as part of **IDATT2105 Full-stack Application Development** at **NTNU**.  
+It is a university project intended for learning and portfolio presentation.
 
-**Prerequisites:**
- - node js from https://nodejs.org/en
- 
-**Build and run:**
-```console
-// navigate to frontend folder
-cd frontend 
-// install all dependencies
+## 4. Features
+- User registration and login with JWT-based authentication
+- Item browsing and filtering/search flows
+- Item detail pages with image handling
+- Location display using reverse geocoding
+- Listing creation and update
+- Bookmark and reservation management
+- API documentation with Swagger UI
+
+## 5. Tech stack
+**Frontend**
+- Vue 3
+- Vite
+- Vue Router
+- Pinia
+- Axios
+- Leaflet
+- FontAwesome
+- Vitest
+- ESLint
+
+**Backend**
+- Java 21
+- Spring Boot 3.4.4
+- Spring Web
+- Spring Data JPA
+- Spring Security with JWT (JJWT)
+- H2 / MySQL
+- SpringDoc OpenAPI
+- JUnit 5
+- JaCoCo
+
+## 6. Project structure
+```text
+idatt2105-full-stack-project/
+  backend/    Spring Boot API and data layer
+  frontend/   Vue client application
+  docs/       Project documentation (including security review)
+```
+
+## 7. How to run
+**Frontend**
+```bash
+cd frontend
 npm install
 npm run dev
 ```
 
-**Testing:**
-```console
+**Backend**
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+Backend base URL: `http://localhost:8888`
+
+## 8. Testing and build commands
+**Frontend**
+```bash
 cd frontend
-npm install
-npx vitest
+npm run build
+npm run test:unit
+npm run lint
 ```
 
-
-### Backend - Spring Boot
-
-#### Tech Stack
-- Java 21
-- Spring Boot 3.4.4
-- Maven
-- Spring Web & Spring Data JPA
-- Spring Security with JWT (JJWT)
-- MySQL (runtime) and H2 (for development/testing)
-- SpringDoc OpenAPI for API documentation
-- JUnit 5 and Jacoco for testing and code coverage
-
----
-
-#### Build & Run
-
-**Prerequisites:**
-- Java 21 or higher
-- Maven 3.8+
-
-**Build the Project:**
-mvn clean install
-mvn spring-boot:run
-
-**Configuration:**
-Set which properties file to use here src/main/resources/application.properties by changing spring.profiles.active=x
-standard is using a H2 database in the profile "submission"
-If you want to use namox or other Mysql database by changing profile to prod and changing settings in application-prod.properties
-
-**Testing:**
-Run unit and integration tests:
-```console
+**Backend**
+```bash
+cd backend
 mvn test
-```
-
-Generate code coverage report:
-```console
 mvn verify
 ```
 
-Coverage report will be avaliable at:
-- target/site/jacoco/index.html
+## 9. API documentation
+Swagger UI is available when the backend is running:
 
-**Login:**
-Login to already existing user:
- - username: test
- - password: password
+- [http://localhost:8888/swagger-ui.html](http://localhost:8888/swagger-ui.html)
 
-**Security:**
-The application uses JWT for authentication and authorization, implemented using the jjwt library. Secure endpoints require a valid Bearer token in the Authorization header.
+## 10. Security note
+This repository is a university full-stack demo project and is not intended as a production system.  
+See [docs/security-review.md](docs/security-review.md) for a concise security and privacy review.
 
-**API Access**
-Base URL:
-http://localhost:8888
-
-SwaggerUI:
-http://localhost:8888/swagger-ui.html
+## 11. Status
+This is an academic portfolio project and is not production-ready.  
+Current functionality reflects coursework scope, with clear opportunities for further hardening and polish.
