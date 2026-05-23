@@ -17,14 +17,6 @@ It is a university project intended for learning and portfolio presentation.
 - Bookmark and reservation management
 - API documentation with Swagger UI
 
-## Screenshots
-Representative UI views from the current project implementation:
-
-![Home page](docs/screenshots/home-page.png)
-![Listing items](docs/screenshots/listing-items.png)
-![Register](docs/screenshots/register.png)
-![Profile](docs/screenshots/profile.png)
-
 ## 5. Tech stack
 **Frontend**
 - Vue 3
